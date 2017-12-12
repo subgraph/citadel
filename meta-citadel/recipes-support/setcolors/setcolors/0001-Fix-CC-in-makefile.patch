@@ -1,0 +1,25 @@
+From f1b77e89867d2856bdfe38ca34771e27c2c1d26a Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Fri, 8 Dec 2017 22:31:23 -0500
+Subject: [PATCH] Fix CC in makefile
+
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 7a9cc3e..1f5f278 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ PREFIX=/usr/local
+ 
+ setcolors: setcolors.c
+-	gcc -Wall setcolors.c -o setcolors
++	$(CC) $(CFLAGS) $(LDFLAGS) -Wall setcolors.c -o setcolors
+ 
+ install: setcolors setcolors.1
+ 	install -Dm 755 setcolors "${DESTDIR}${PREFIX}/bin/setcolors"
+-- 
+2.14.3
+
