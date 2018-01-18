@@ -1,0 +1,39 @@
+From 9b3fd8d4c683a8a1c57e6c758916d1e1392ec4cf Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Sun, 7 Jan 2018 21:01:49 -0500
+Subject: [PATCH] assume sqlite built threadsafe and with fts5
+
+---
+ m4/sqlite-builtin-fts5.m4 | 2 +-
+ m4/sqlite-threadsafe.m4   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/m4/sqlite-builtin-fts5.m4 b/m4/sqlite-builtin-fts5.m4
+index 635f15d..39b17d8 100644
+--- a/m4/sqlite-builtin-fts5.m4
++++ b/m4/sqlite-builtin-fts5.m4
+@@ -26,7 +26,7 @@ AC_DEFUN([AX_SQLITE_BUILTIN_FTS5],
+                        if (rc!=SQLITE_OK) return -1;]])],
+     [ax_cv_sqlite_builtin_fts5=yes],
+     [ax_cv_sqlite_builtin_fts5=no],
+-    [ax_cv_sqlite_builtin_fts5=no])])
++    [ax_cv_sqlite_builtin_fts5=yes])])
+ 
+   CFLAGS="$OLD_CFLAGS"
+   LDFLAGS="$OLD_LDFLAGS"
+diff --git a/m4/sqlite-threadsafe.m4 b/m4/sqlite-threadsafe.m4
+index 75bdfbf..68d3ec9 100644
+--- a/m4/sqlite-threadsafe.m4
++++ b/m4/sqlite-threadsafe.m4
+@@ -45,7 +45,7 @@ int main ()
+   ]])],
+        [ax_cv_sqlite_threadsafe=yes],
+        [ax_cv_sqlite_threadsafe=no],
+-       [ax_cv_sqlite_threadsafe=no])])
++       [ax_cv_sqlite_threadsafe=yes])])
+ 
+   LIBS="$save_LIBS"
+ ])
+-- 
+2.14.3
+

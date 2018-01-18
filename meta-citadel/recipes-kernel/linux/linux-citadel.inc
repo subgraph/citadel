@@ -17,6 +17,8 @@ SRC_URI += "https://github.com/minipli/linux-unofficial_grsec/releases/download/
 SRC_URI += " \
     file://defconfig \
     file://ignore-sysroot-for-plugin-build.patch \
+    file://0114-smpboot-reuse-timer-calibration.patch \
+    file://0116-Initialize-ata-before-graphics.patch \
     "
 
 S = "${WORKDIR}/linux-${LINUX_VERSION}"
@@ -25,6 +27,9 @@ do_deploy_append() {
     rm ${DEPLOYDIR}/bzImage
     ln -sf bzImage-initramfs${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOYDIR}/bzImage
 }
+
+# Don't install kernel into images, see kernel.bbclass
+RDEPENDS_kernel-base = ""
 
 #
 # https://github.com/96boards/meta-96boards/issues/81#issuecomment-311256044

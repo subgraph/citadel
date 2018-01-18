@@ -16,25 +16,25 @@ DEPENDS = "libcap libpng cairo dbus udev"
 PROVIDES = "virtual/psplash"
 RPROVIDES_${PN} = "virtual-psplash virtual-psplash-support"
 
-SRC_URI = "http://www.freedesktop.org/software/plymouth/releases/${BPN}-${PV}.tar.bz2"
-SRC_URI[md5sum] = "ff420994deb7ea203df678df92e7ab7d"
-SRC_URI[sha256sum] = "2f0ce82042cf9c7eadd2517a1f74c8a85fa8699781d9f294a06eade29fbed57f"
+SRC_URI = "http://www.freedesktop.org/software/plymouth/releases/${BPN}-${PV}.tar.xz file://plymouthd.conf file://subgraph.png"
+SRC_URI[md5sum] = "b261c720888a5431cdfce8494805eab3"
+SRC_URI[sha256sum] = "9f8dd08a90ceaf6228dcd8c27759adf18fc9482f15b6c56dcbcced268b4e4a74"
 
 EXTRA_OECONF += " --enable-shared --disable-static --disable-gtk --disable-documentation \
     --with-logo=${LOGO} \
-    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '--enable-systemd-integration --with-system-root-install', '', d)} \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '--enable-systemd-integration', '', d)} \
 "
 
-PACKAGECONFIG ??= "pango initrd"
+PACKAGECONFIG ??= "pango"
 PACKAGECONFIG_append_x86 = " drm"
 PACKAGECONFIG_append_x86-64 = " drm"
 
 PACKAGECONFIG[drm] = "--enable-drm,--disable-drm,libdrm"
 PACKAGECONFIG[pango] = "--enable-pango,--disable-pango,pango"
 PACKAGECONFIG[gtk] = "--enable-gtk,--disable-gtk,gtk+"
-PACKAGECONFIG[initrd] = ",,,"
+#PACKAGECONFIG[initrd] = ",,,"
 
-LOGO ??= "${datadir}/plymouth/bizcom.png"
+LOGO = "${WORKDIR}/subgraph.png"
 
 inherit autotools pkgconfig systemd
 
@@ -45,22 +45,33 @@ do_install_append() {
     # Remove /var/run from package as plymouth will populate it on startup
     rm -fr "${D}${localstatedir}/run"
 
-    if ! ${@bb.utils.contains('PACKAGECONFIG', 'initrd', 'true', 'false', d)}; then
+    rm -rf ${D}/etc/plymouth/plymouthd.conf
+    install -d ${D}/etc/plymouth
+    install -m 644 ${WORKDIR}/plymouthd.conf ${D}/etc/plymouth/plymouthd.conf
+
+#    if ! ${@bb.utils.contains('PACKAGECONFIG', 'initrd', 'true', 'false', d)}; then
         rm -rf "${D}${libexecdir}"
-    fi
+#    fi
+
+    # https://patchwork.openembedded.org/patch/146656/
+    sed -i 's#ExecStart= -#ExecStart=/usr/bin/systemd-tty-ask-password-agent -#' ${D}${systemd_unitdir}/system/systemd-ask-password-plymouth.service
+
+    # https://aur.archlinux.org/packages/plymouth/#comment-613012
+    printf "RuntimeDirectory=plymouth\n" >> ${D}${systemd_unitdir}/system/systemd-ask-password-plymouth.service
+    
 }
 
-PACKAGES =. "${@bb.utils.contains('PACKAGECONFIG', 'initrd', '${PN}-initrd ', '', d)}"
+#PACKAGES =. "${@bb.utils.contains('PACKAGECONFIG', 'initrd', '${PN}-initrd ', '', d)}"
 PACKAGES =+ "${PN}-set-default-theme"
 
-FILES_${PN}-initrd = "${libexecdir}/plymouth/*"
+#FILES_${PN}-initrd = "${libexecdir}/plymouth/*"
 FILES_${PN}-set-default-theme = "${sbindir}/plymouth-set-default-theme"
 
 FILES_${PN} += "${systemd_unitdir}/system/*"
 FILES_${PN}-dbg += "${libdir}/plymouth/renderers/.debug"
 
 
-RDEPENDS_${PN}-initrd = "bash dracut"
+#RDEPENDS_${PN}-initrd = "bash dracut"
 RDEPENDS_${PN}-set-default-theme = "bash"
 
 SYSTEMD_SERVICE_${PN} = "plymouth-start.service"

@@ -1,0 +1,36 @@
+From 34427159313638292e6f06b18137c7de4de65ea3 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 12 Dec 2017 20:13:06 -0500
+Subject: [PATCH] Don't include gdialog
+
+---
+ src/Makefile.am | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index bcdd205..ff70892 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,7 +1,5 @@
+ bin_PROGRAMS = zenity
+ 
+-bin_SCRIPTS = gdialog
+-
+ zenity_SOURCES = \
+ 	about.c		\
+ 	calendar.c	\
+@@ -48,10 +46,5 @@ uidir = $(datadir)/zenity
+ ui_DATA = \
+ 	zenity.ui
+ 
+-DISTCLEANFILES= \
+-	gdialog
+-
+ EXTRA_DIST = \
+-	$(ui_DATA) \
+-	gdialog \
+-	gdialog.in
++	$(ui_DATA) 
+-- 
+2.14.3
+

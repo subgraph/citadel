@@ -1,0 +1,33 @@
+From f7582d395c8d4fcd4232df0cae524eb8e5d4cf61 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Sun, 24 Dec 2017 17:44:02 -0500
+Subject: [PATCH] do not use python path from build environment
+
+---
+ src/gnome-shell-extension-tool.in | 2 +-
+ src/gnome-shell-perf-tool.in      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/gnome-shell-extension-tool.in b/src/gnome-shell-extension-tool.in
+index f6c3762..07ac37d 100755
+--- a/src/gnome-shell-extension-tool.in
++++ b/src/gnome-shell-extension-tool.in
+@@ -1,4 +1,4 @@
+-#!@PYTHON@
++#!/usr/bin/env python3
+ # -*- mode: Python; indent-tabs-mode: nil; -*-
+ 
+ import os
+diff --git a/src/gnome-shell-perf-tool.in b/src/gnome-shell-perf-tool.in
+index b2a4521..88a10f6 100755
+--- a/src/gnome-shell-perf-tool.in
++++ b/src/gnome-shell-perf-tool.in
+@@ -1,4 +1,4 @@
+-#!@PYTHON@
++#!/usr/bin/env python3
+ # -*- mode: Python; indent-tabs-mode: nil; -*-
+ 
+ import datetime
+-- 
+2.14.3
+

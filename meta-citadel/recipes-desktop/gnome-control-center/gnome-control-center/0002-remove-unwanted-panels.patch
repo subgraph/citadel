@@ -1,0 +1,84 @@
+From 685f0fc6ae8fe70d1d3b6f12cc2aea8614632215 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 19 Dec 2017 14:06:06 -0500
+Subject: [PATCH 2/5] remove unwanted panels
+
+---
+ panels/Makefile.am      | 5 +----
+ shell/Makefile.am       | 5 +----
+ shell/cc-panel-loader.c | 6 +++---
+ 3 files changed, 5 insertions(+), 11 deletions(-)
+
+diff --git a/panels/Makefile.am b/panels/Makefile.am
+index 507cd2f..1d36f3d 100644
+--- a/panels/Makefile.am
++++ b/panels/Makefile.am
+@@ -6,18 +6,15 @@ SUBDIRS= \
+ 	display \
+ 	mouse \
+ 	notifications \
+-	online-accounts \
+ 	region \
+ 	info \
+ 	sound \
+ 	keyboard \
+ 	universal-access \
+-	user-accounts \
+ 	datetime \
+ 	search \
+ 	privacy \
+-	sharing \
+-	printers
++	sharing
+ 
+ if BUILD_WACOM
+ SUBDIRS += wacom
+diff --git a/shell/Makefile.am b/shell/Makefile.am
+index 8099330..de3e53d 100644
+--- a/shell/Makefile.am
++++ b/shell/Makefile.am
+@@ -87,16 +87,13 @@ gnome_control_center_LDADD =						\
+ 	$(top_builddir)/panels/keyboard/libkeyboard.la			\
+ 	$(top_builddir)/panels/mouse/libmouse-properties.la		\
+ 	$(top_builddir)/panels/notifications/libnotifications.la	\
+-	$(top_builddir)/panels/online-accounts/libonline-accounts.la	\
+ 	$(top_builddir)/panels/power/libpower.la			\
+ 	$(top_builddir)/panels/privacy/libprivacy.la			\
+ 	$(top_builddir)/panels/region/libregion.la			\
+ 	$(top_builddir)/panels/search/libsearch.la			\
+ 	$(top_builddir)/panels/sharing/libsharing.la			\
+ 	$(top_builddir)/panels/sound/libsound.la			\
+-	$(top_builddir)/panels/universal-access/libuniversal-access.la	\
+-	$(top_builddir)/panels/user-accounts/libuser-accounts.la	\
+-	$(top_builddir)/panels/printers/libprinters.la
++	$(top_builddir)/panels/universal-access/libuniversal-access.la	
+ 
+ if BUILD_WACOM
+ gnome_control_center_LDADD += $(top_builddir)/panels/wacom/libwacom-properties.la
+diff --git a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
+index 8be3bb9..b244593 100644
+--- a/shell/cc-panel-loader.c
++++ b/shell/cc-panel-loader.c
+@@ -93,16 +93,16 @@ static struct {
+   PANEL_TYPE("wifi",             cc_wifi_panel_get_type         ),
+ #endif
+   PANEL_TYPE("notifications",    cc_notifications_panel_get_type),
+-  PANEL_TYPE("online-accounts",  cc_goa_panel_get_type          ),
++//  PANEL_TYPE("online-accounts",  cc_goa_panel_get_type          ),
+   PANEL_TYPE("power",            cc_power_panel_get_type        ),
+-  PANEL_TYPE("printers",         cc_printers_panel_get_type     ),
++//  PANEL_TYPE("printers",         cc_printers_panel_get_type     ),
+   PANEL_TYPE("privacy",          cc_privacy_panel_get_type      ),
+   PANEL_TYPE("region",           cc_region_panel_get_type       ),
+   PANEL_TYPE("search",           cc_search_panel_get_type       ),
+   PANEL_TYPE("sharing",          cc_sharing_panel_get_type      ),
+   PANEL_TYPE("sound",            cc_sound_panel_get_type        ),
+   PANEL_TYPE("universal-access", cc_ua_panel_get_type           ),
+-  PANEL_TYPE("user-accounts",    cc_user_panel_get_type         ),
++//  PANEL_TYPE("user-accounts",    cc_user_panel_get_type         ),
+ #ifdef BUILD_WACOM
+   PANEL_TYPE("wacom",            cc_wacom_panel_get_type        ),
+ #endif
+-- 
+2.14.3
+

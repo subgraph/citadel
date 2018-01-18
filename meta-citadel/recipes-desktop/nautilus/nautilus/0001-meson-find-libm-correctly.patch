@@ -1,0 +1,25 @@
+From ac6e603cbb7578d5148fb0ec780252c290cd7dca Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 9 Jan 2018 13:24:29 -0500
+Subject: [PATCH] meson find libm correctly
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 0816d74..62c6af1 100644
+--- a/meson.build
++++ b/meson.build
+@@ -53,7 +53,7 @@ gio_unix = dependency ('gio-unix-2.0', version: glib_ver)
+ gsettings_desktop_schemas = dependency ('gsettings-desktop-schemas',
+                                         version: schemas_ver)
+ 
+-libm = cc.find_library ('libm')
++libm = cc.find_library ('m')
+ 
+ conf = configuration_data ()
+ conf.set_quoted ('VERSION', meson.project_version ())
+-- 
+2.14.3
+

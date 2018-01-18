@@ -1,0 +1,68 @@
+From 221d6ad64908cec5f9eca85abbb6685e7117d2a4 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Mon, 18 Dec 2017 14:55:04 -0500
+Subject: [PATCH] use exe wrapper for custom targets
+
+---
+ mesonbuild/backend/backends.py | 39 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 30 insertions(+), 9 deletions(-)
+
+diff --git a/mesonbuild/backend/backends.py b/mesonbuild/backend/backends.py
+index 3f1e4ced..43091164 100644
+--- a/mesonbuild/backend/backends.py
++++ b/mesonbuild/backend/backends.py
+@@ -634,21 +634,42 @@ class Backend:
+                 deps.append(os.path.join(self.build_to_src, sp, 'meson_options.txt'))
+         return deps
+ 
++
++    def exe_object_needs_wrapper(self, exe):
++        return isinstance(exe, build.BuildTarget) and exe.is_cross and \
++                self.environment.is_cross_build() and \
++                self.environment.cross_info.need_exe_wrapper()
++
++    def wrapped_exe_to_cmd_array(self, exe):
++        if 'exe_wrapper' not in self.environment.cross_info.config['binaries']:
++            s = 'Can not use target %s as a generator because it is cross-built\n'
++            s += 'and no exe wrapper is defined. You might want to set it to native instead.'
++            s = s % exe.name
++            raise MesonException(s)
++
++        exe_wrapper = self.environment.cross_info.config['binaries'].get('exe_wrapper')
++        exe_path = os.path.join(self.environment.get_build_dir(), self.get_target_filename(exe))
++        return [exe_wrapper, exe_path]
++
++
++
+     def exe_object_to_cmd_array(self, exe):
+-        if self.environment.is_cross_build() and \
+-           self.environment.cross_info.need_exe_wrapper() and \
+-           isinstance(exe, build.BuildTarget) and exe.is_cross:
+-            if 'exe_wrapper' not in self.environment.cross_info.config['binaries']:
+-                s = 'Can not use target %s as a generator because it is cross-built\n'
+-                s += 'and no exe wrapper is defined. You might want to set it to native instead.'
+-                s = s % exe.name
+-                raise MesonException(s)
+-        if isinstance(exe, build.BuildTarget):
++        need_wrapper = \
++                isinstance(exe, build.BuildTarget) and \
++                exe.is_cross and \
++                self.environment.is_cross_build() and \
++                self.environment.cross_info.need_exe_wrapper()
++
++        if need_wrapper:
++            exe_arr = self.wrapped_exe_to_cmd_array(exe)
++        elif isinstance(exe, build.BuildTarget):
+             exe_arr = [os.path.join(self.environment.get_build_dir(), self.get_target_filename(exe))]
+         else:
+             exe_arr = exe.get_command()
++
+         return exe_arr
+ 
++
+     def replace_extra_args(self, args, genlist):
+         final_args = []
+         for a in args:
+-- 
+2.14.3
+

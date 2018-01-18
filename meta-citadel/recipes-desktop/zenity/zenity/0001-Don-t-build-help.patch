@@ -1,0 +1,26 @@
+From badb3369dbaaa3a14a7e4415077de3c3c13f4581 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 12 Dec 2017 19:18:11 -0500
+Subject: [PATCH] Don't build help
+
+---
+ Makefile.am | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index df84b81..c948125 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -4,8 +4,7 @@ INCLUDES = src
+ SUBDIRS = \
+ 	src	\
+ 	po	\
+-	data	\
+-	help
++	data	
+ 
+ EXTRA_DIST = \
+ 	autogen.sh		\
+-- 
+2.14.3
+

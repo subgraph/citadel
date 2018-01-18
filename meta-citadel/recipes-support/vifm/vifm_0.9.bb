@@ -10,5 +10,12 @@ SRC_URI[sha256sum] = "ab10c99d1e4c24ff8a03c20be1c202cc15874750cc47a1614e6fe4f8d8
 DEPENDS = "file ncurses libx11 groff-native"
 RDEPENDS_${PN} = "ncurses-terminfo"
 
+FILES_${PN} += "\
+    ${datadir}/bash-completion \
+"
+
+do_install_append() {
+    rm -rf ${D}${datadir}/zsh
+}
 inherit perlnative autotools
 

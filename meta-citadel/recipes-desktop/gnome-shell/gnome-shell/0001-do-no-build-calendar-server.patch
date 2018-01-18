@@ -1,0 +1,41 @@
+From ab1b210071c9d43b1d743624407e2d47e2fa4b66 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 19 Dec 2017 14:49:57 -0500
+Subject: [PATCH] do no build calendar server
+
+---
+ meson.build     | 4 ++--
+ src/meson.build | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 48771eb..4d0d90b 100644
+--- a/meson.build
++++ b/meson.build
+@@ -69,8 +69,8 @@ endif
+ atk_bridge_dep = dependency('atk-bridge-2.0')
+ canberra_dep = dependency('libcanberra')
+ canberra_gtk_dep = dependency('libcanberra-gtk3')
+-ecal_dep = dependency('libecal-1.2', version: ecal_req)
+-eds_dep = dependency('libedataserver-1.2', version: eds_req)
++#ecal_dep = dependency('libecal-1.2', version: ecal_req)
++#eds_dep = dependency('libedataserver-1.2', version: eds_req)
+ gcr_dep = dependency('gcr-base-3', version: gcr_req)
+ gdk_x11_dep = dependency('gdk-x11-3.0')
+ gdk_pixbuf_dep = dependency('gdk-pixbuf-2.0')
+diff --git a/src/meson.build b/src/meson.build
+index 3e55573..9b55a62 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -1,7 +1,7 @@
+ service_data = configuration_data()
+ service_data.set('libexecdir', libexecdir)
+ 
+-subdir('calendar-server')
++#subdir('calendar-server')
+ subdir('hotplug-sniffer')
+ subdir('st')
+ subdir('tray')
+-- 
+2.14.3
+

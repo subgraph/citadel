@@ -1,0 +1,25 @@
+From d0c44d704d8ad95e9bd2491b60ed6a0f7cc832e7 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Mon, 25 Dec 2017 16:59:53 -0500
+Subject: [PATCH] allow building introspection without docs
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index f8dcd13..ac3b6d7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1258,7 +1258,7 @@ GTK_DOC_CHECK(1.0)
+ 
+ # check if we can build setting property documentation
+ build_docs=no
+-if test -n "$INTROSPECTION_MAKEFILE"; then
++if test -n "$INTROSPECTION_MAKEFILE" -a "$enable_gtk_doc" = "yes"; then
+ 	# If g-i is installed we know we have python, but we might not have pygobject
+ 	if ! "$PYTHON" -c 'from gi.repository import GObject' >& /dev/null; then
+ 		AC_MSG_ERROR(["--enable-introspection aims to build the settings documentation. This requires GObject introspection for python (pygobject)])
+-- 
+2.14.3
+

@@ -1,0 +1,136 @@
+From 618a2b52c41161d63f7ab4b5f72de7012fdc2f58 Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 19 Dec 2017 14:04:28 -0500
+Subject: [PATCH 1/5] Remove grilo miner from background panel
+
+---
+ panels/background/Makefile.am          |  2 --
+ panels/background/bg-pictures-source.c | 20 ++++++++++++++------
+ 2 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/panels/background/Makefile.am b/panels/background/Makefile.am
+index ccb8017..c49837f 100644
+--- a/panels/background/Makefile.am
++++ b/panels/background/Makefile.am
+@@ -27,8 +27,6 @@ libbackground_chooser_la_SOURCES =	\
+ 	$(BUILT_SOURCES)		\
+ 	cc-background-chooser-dialog.c	\
+ 	cc-background-chooser-dialog.h	\
+-	cc-background-grilo-miner.c	\
+-	cc-background-grilo-miner.h	\
+ 	cc-background-item.c		\
+ 	cc-background-item.h		\
+ 	cc-background-xml.c		\
+diff --git a/panels/background/bg-pictures-source.c b/panels/background/bg-pictures-source.c
+index a3b35f3..9e5d23d 100644
+--- a/panels/background/bg-pictures-source.c
++++ b/panels/background/bg-pictures-source.c
+@@ -29,7 +29,7 @@
+ #include <string.h>
+ #include <cairo-gobject.h>
+ #include <gio/gio.h>
+-#include <grilo.h>
++// #include <grilo.h>
+ #include <libgnome-desktop/gnome-desktop-thumbnail.h>
+ #include <gdesktop-enums.h>
+ 
+@@ -46,7 +46,7 @@ struct _BgPicturesSourcePrivate
+ {
+   GCancellable *cancellable;
+ 
+-  CcBackgroundGriloMiner *grl_miner;
++//  CcBackgroundGriloMiner *grl_miner;
+ 
+   GnomeDesktopThumbnailFactory *thumb_factory;
+ 
+@@ -86,7 +86,7 @@ bg_pictures_source_dispose (GObject *object)
+       g_clear_object (&priv->cancellable);
+     }
+ 
+-  g_clear_object (&priv->grl_miner);
++//  g_clear_object (&priv->grl_miner);
+   g_clear_object (&priv->thumb_factory);
+ 
+   G_OBJECT_CLASS (bg_pictures_source_parent_class)->dispose (object);
+@@ -479,7 +479,7 @@ add_single_file (BgPicturesSource     *bg_source,
+   gboolean needs_download;
+   gboolean retval = FALSE;
+   GFile *pictures_dir, *cache_dir;
+-  GrlMedia *media;
++//  GrlMedia *media;
+ 
+   /* find png and jpeg files */
+   if (!content_type)
+@@ -538,14 +538,15 @@ add_single_file (BgPicturesSource     *bg_source,
+ 
+  read_file:
+ 
+-  media = g_object_get_data (G_OBJECT (file), "grl-media");
+-  if (media == NULL)
++//  media = g_object_get_data (G_OBJECT (file), "grl-media");
++//  if (media == NULL)
+     {
+       g_object_set_data_full (G_OBJECT (file), "item", g_object_ref (item), g_object_unref);
+       g_file_read_async (file, G_PRIORITY_DEFAULT,
+                          bg_source->priv->cancellable,
+                          picture_opened_for_read, bg_source);
+     }
++#if 0
+   else
+     {
+       GFile *native_file;
+@@ -587,6 +588,7 @@ add_single_file (BgPicturesSource     *bg_source,
+       g_free (native_dir);
+       g_free (native_path);
+     }
++#endif
+ 
+   retval = TRUE;
+ 
+@@ -621,6 +623,7 @@ add_single_file_from_info (BgPicturesSource     *bg_source,
+   return add_single_file (bg_source, file, content_type, mtime, ret_row_ref);
+ }
+ 
++#if 0
+ static gboolean
+ add_single_file_from_media (BgPicturesSource *bg_source,
+                             GFile            *file,
+@@ -645,6 +648,7 @@ add_single_file_from_media (BgPicturesSource *bg_source,
+ 
+   return add_single_file (bg_source, file, content_type, (guint64) mtime_unix, NULL);
+ }
++#endif
+ 
+ gboolean
+ bg_pictures_source_add (BgPicturesSource     *bg_source,
+@@ -988,6 +992,7 @@ monitor_path (BgPicturesSource *self,
+   return monitor;
+ }
+ 
++#if 0
+ static void
+ media_found_cb (BgPicturesSource *self, GrlMedia *media)
+ {
+@@ -999,6 +1004,7 @@ media_found_cb (BgPicturesSource *self, GrlMedia *media)
+   g_object_set_data_full (G_OBJECT (file), "grl-media", g_object_ref (media), g_object_unref);
+   add_single_file_from_media (self, file, media);
+ }
++#endif
+ 
+ static void
+ bg_pictures_source_init (BgPicturesSource *self)
+@@ -1026,9 +1032,11 @@ bg_pictures_source_init (BgPicturesSource *self)
+   priv->cache_dir_monitor = monitor_path (self, cache_path);
+   g_free (cache_path);
+ 
++#if 0
+   priv->grl_miner = cc_background_grilo_miner_new ();
+   g_signal_connect_swapped (priv->grl_miner, "media-found", G_CALLBACK (media_found_cb), self);
+   cc_background_grilo_miner_start (priv->grl_miner);
++#endif
+ 
+   priv->thumb_factory =
+     gnome_desktop_thumbnail_factory_new (GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE);
+-- 
+2.14.3
+

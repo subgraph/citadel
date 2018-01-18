@@ -1,0 +1,25 @@
+From 4a309893fefb63d91a62a4f959456bd6d8f4703f Mon Sep 17 00:00:00 2001
+From: brl <bruce@subgraph.com>
+Date: Tue, 26 Dec 2017 11:32:58 -0500
+Subject: [PATCH] dont process the same method call twice in logind
+
+---
+ src/login/logind-session-dbus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/login/logind-session-dbus.c b/src/login/logind-session-dbus.c
+index 22e5349a6..649f3c155 100644
+--- a/src/login/logind-session-dbus.c
++++ b/src/login/logind-session-dbus.c
+@@ -457,7 +457,7 @@ static int method_take_device(sd_bus_message *message, void *userdata, sd_bus_er
+                 goto error;
+ 
+         session_save(s);
+-        return 0;
++        return 1;
+ 
+ error:
+         session_device_free(sd);
+-- 
+2.14.3
+

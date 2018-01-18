@@ -1,0 +1,3 @@
+require gnome-terminal.inc
+SRC_URI[archive.md5sum] = "879ac789833483a9d85342bc7502164a"
+SRC_URI[archive.sha256sum] = "3a9ba414a814569476515275ad303d8056f296b2669234447712559aa97005b0"

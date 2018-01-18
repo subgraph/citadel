@@ -1,0 +1,3 @@
+require networkmanager.inc
+SRC_URI[md5sum] = "fefd157d884f7fd50384268704c5aa5d"
+SRC_URI[sha256sum] = "625e2eb36386dcae599075226200140d010f213b47f7202d83b3b1a202029212"
