@@ -1,0 +1,27 @@
+[org.gnome.desktop.peripherals.touchpad]
+natural-scroll=true
+tap-to-click=true
+
+[org.gnome.desktop.background]
+picture-uri='file:///usr/share/backgrounds/gnome/Waterfalls.jpg'
+
+[org.gnome.desktop.wm.preferences]
+theme='Adapta'
+titlebar-font='Roboto Bold 11'
+
+
+[org.gnome.desktop.interface]
+gtk-theme='Adapta'
+cursor-theme='Paper'
+icon-theme='Paper'
+font-name='Roboto 11'
+gtk-enable-primary-paste=false
+
+[org.gnome.shell.extensions]
+user-theme-name='Adapta'
+
+[org.gnome.settings-daemon.plugins.xsettings]
+antialiasing='rgba'
+
+[org.gnome.desktop.input-sources]
+xkb-options=['ctrl:nocaps']
