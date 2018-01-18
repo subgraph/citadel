@@ -14,6 +14,7 @@ RDEPENDS_${PN} = "\
     util-linux \
     net-tools \
     iputils \
+    which \
     parted \
     bash \
     bash-completion \
@@ -26,10 +27,16 @@ RDEPENDS_${PN} = "\
     polkit \
     wpa-supplicant \
     networkmanager \
-    openssh-sshd \
     kernel-modules \
     packagegroup-firmware \
     vim \
     vifm \
-    setcolors \
+    citadel-user \
+    tzdata \
+    tzdata-americas \
+    tzdata-asia \
+    tzdata-europe \
+    tzdata-posix \
+    glibc-charmap-utf-8 \
+    lvm2 \
 "

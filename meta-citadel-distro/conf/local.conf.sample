@@ -26,6 +26,7 @@ DISTRO ?= "citadel-distro"
 MACHINE ?= "intel-corei7-64"
 
 
+DEPLOY_DIR_IMAGE = "${TOPDIR}/images"
 #
 #
 # Where to place downloads

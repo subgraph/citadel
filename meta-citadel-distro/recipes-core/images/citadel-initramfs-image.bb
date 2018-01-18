@@ -1,16 +1,22 @@
 DESCRIPTION = "Image for rootfs"
 
 PACKAGE_INSTALL = "\
-    initramfs-framework-base \
-    initramfs-module-udev \
-    initramfs-module-setup-live \
-    ${VIRTUAL-RUNTIME_base-utils} \
-    udev \
+    base-files \
     base-passwd \
-    ${ROOTFS_BOOTSTRAP_INSTALL} \
+    busybox \
+    kbd \
+    keymaps \
+    systemd-initrd \
+    systemd-initrd-analyze \
+    util-linux \
     linux-firmware-i915 \
     kernel-module-arc4 \
     kernel-module-ansi-cprng \
+    kernel-module-apple-bl \
+    kernel-module-apple-gmux \
+    kernel-module-applesmc \
+    kernel-module-appletouch \
+    kernel-module-bcm5974 \
     kernel-module-ccm \
     kernel-module-cmac \
     kernel-module-crc32-pclmul \
@@ -20,8 +26,8 @@ PACKAGE_INSTALL = "\
     kernel-module-ehci-platform \
     kernel-module-ghash-clmulni-intel \
     kernel-module-hid-a4tech \
-    kernel-module-hid-alps \
     kernel-module-hid-apple \
+    kernel-module-hid-alps \
     kernel-module-hid-asus \
     kernel-module-hid-aureal \
     kernel-module-hid-belkin \
@@ -78,14 +84,17 @@ PACKAGE_INSTALL = "\
     kernel-module-serio-raw \
     kernel-module-snd \
     kernel-module-soundcore \
-    kernel-module-usb-storage \
     kernel-module-wmi \
     kernel-module-xhci-plat-hcd \
-    setcolors \
+    citadel-initramfs \
+    liberation-fonts \
+    plymouth \
 "
 
-IMAGE_FEATURES = ""
-export IMAGE_BASENAME = "citadel-initramfs"
+SYSTEMD_DEFAULT_TARGET = "initrd.target"
+#IMAGE_FEATURES = ""
+#IMAGE_FEATURES_append = " empty-root-password"
+export IMAGE_BASENAME = "citadel-initramfs-image"
 IMAGE_LINGUAS = ""
 
 LICENSE = "MIT"
