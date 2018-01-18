@@ -1,4 +1,4 @@
 
 VOLATILE_BINDS += "\
-    /storage/home/root /home/root\
+    /storage/home /home \
 "
