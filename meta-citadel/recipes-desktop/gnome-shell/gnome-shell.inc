@@ -11,7 +11,7 @@ SRC_URI += "file://0001-do-no-build-calendar-server.patch \
            file://0001-do-not-use-python-path-from-build-environment.patch \
 "
 
-DEPENDS = "glib-2.0-native systemd libcanberra gtk+3 glib-2.0 libxml2 libcroco mutter libsoup-2.4 gsettings-desktop-schemas gcr atk polkit startup-notification libx11 gnome-bluetooth libsecret networkmanager gjs mozjs52 nm-applet pulseaudio libxml2-native paxctl-native"
+DEPENDS = "glib-2.0-native systemd libcanberra gtk+3 glib-2.0 libxml2 libcroco mutter libsoup-2.4 gsettings-desktop-schemas gcr atk polkit startup-notification libx11 gnome-bluetooth libsecret networkmanager gjs mozjs52 network-manager-applet pulseaudio libxml2-native paxctl-native"
 
 RDEPENDS_${PN} = "xserver-xorg-xwayland cantarell-fonts gnome-theme-adwaita gnome-theme-adwaita-dark gnome-backgrounds gnome-control-center gnome-session adwaita-icon-theme dconf"
 
