@@ -5,7 +5,9 @@ LIC_FILES_CHKSUM = "file://../../LICENSE;md5=815ca599c9df247a0c7f619bab123dad"
 
 RELEASE_VERSION = "mozjs-52.2.1gnome1"
 
-SRC_URI = "https://download.gnome.org/teams/releng/tarballs-needing-help/mozjs/${RELEASE_VERSION}.tar.gz"
+SRC_URI = "https://download.gnome.org/teams/releng/tarballs-needing-help/mozjs/${RELEASE_VERSION}.tar.gz \
+           file://0001-do-not-include-RequiredDefines.patch \
+           "
 SRC_URI[md5sum] = "72bd9a715ed1ab70b2aebe92969f6b63"
 SRC_URI[sha256sum] = "31697943b1dbbb51ba9aee35b8269a353c487d7af4d336010b90054dc4f9b0af"
 
@@ -35,6 +37,7 @@ EXTRA_OECONF = " \
     --with-intl-api \
     --disable-jemalloc \
     --disable-static \
+    --without-x \
 "
 
 
