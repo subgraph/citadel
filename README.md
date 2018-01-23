@@ -3,7 +3,7 @@
 ## Very basic build instructions
 
     $ source setup-build-env
-    $ bitbake citadel-image-minimal
+    $ bitbake citadel-image
 
 ## Git subtrees included
 
