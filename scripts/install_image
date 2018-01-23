@@ -92,7 +92,7 @@ setup_luks() {
 }
 
 setup_lvm() {
-    pvcreate -ff /dev/mapper/e1
+    pvcreate -ff --yes /dev/mapper/e1
     vgcreate --yes citadel /dev/mapper/e1
     #pvcreate -ff ${TARGET_LVM}
     #vgcreate --yes citadel ${TARGET_LVM}
