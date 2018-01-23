@@ -65,4 +65,13 @@ RDEPENDS_${PN} = "\
     citadel-desktop-gsettings \
     nautilus \
     systemd-analyze \
+    debootstrap \
+    wget \
+    sed \
+    binutils \
+    xz \
+    openssh-ssh \
+    cryptsetup \
+    e2fsprogs \
+    dosfstools \
 "
