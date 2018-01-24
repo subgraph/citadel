@@ -37,7 +37,7 @@ EXTRA_OECONF = " \
     --with-intl-api \
     --disable-jemalloc \
     --disable-static \
-    --without-x \
+    --with-x=no \
 "
 
 
