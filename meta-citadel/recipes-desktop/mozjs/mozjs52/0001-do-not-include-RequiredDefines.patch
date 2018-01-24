@@ -5,13 +5,13 @@ Subject: [PATCH] do not include RequiredDefines
 
 pkg-config does not correctly prepend sysroot to this
 ---
- js/src/js.pc.in | 2 +-
+ js.pc.in | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/js/src/js.pc.in b/js/src/js.pc.in
+diff --git a/js.pc.in b/js.pc.in
 index 1efea33..f6614ff 100644
---- a/js/src/js.pc.in
-+++ b/js/src/js.pc.in
+--- a/js.pc.in
++++ b/js.pc.in
 @@ -8,4 +8,4 @@ Description: The Mozilla library for JavaScript
  Version: @MOZILLA_VERSION@
  Requires.private: @NSPR_PKGCONF_CHECK@
