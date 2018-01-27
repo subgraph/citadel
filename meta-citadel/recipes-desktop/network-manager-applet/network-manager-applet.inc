@@ -7,5 +7,9 @@ DEPENDS = "gcr iso-codes networkmanager libgudev gtk+3 intltool-native modemmana
 
 inherit gettext gobject-introspection gnome
 
+do_compile_prepend() {
+    export GIR_EXTRA_LIBS_PATH="${B}/src/libnma/.libs:${B}/src/utils/.libs:${B}/src/wireless-security/.libs:${B}/src/libnm-gtk/.libs"
+}
+
 EXTRA_OECONF = "--without-selinux --without-team --enable-introspection --with-libnm-gtk"
 

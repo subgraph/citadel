@@ -21,7 +21,8 @@ FILES_${PN}-doc += "\
     ${datadir}/help \
 "
 
-inherit gettext gnome
+# python3native is needed to run itstool during build
+inherit gettext gnome python3native
 
 EXTRA_OECONF = "--disable-search-provider --without-nautilus-extension --disable-gterminal"
 

@@ -9,6 +9,10 @@ SRC_URI[archive.sha256sum] = "e1fe2c06eed30305c38bf0939c72b0e51b4716658e2663a0cf
 
 DEPENDS = "glib-2.0 gtk+3 glib-2.0-native gnome-common autoconf-archive libarchive"
 
+do_compile_prepend() {
+       export GIR_EXTRA_LIBS_PATH="${B}/gnome-autoar/.libs"
+}
+
 inherit gnomebase gobject-introspection vala 
 
 EXTRA_OECONF = ""
