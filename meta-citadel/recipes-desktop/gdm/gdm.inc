@@ -6,7 +6,10 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 inherit gnomebase useradd gettext pkgconfig autotools gobject-introspection systemd
 
-SRC_URI += "file://gdm.conf"
+SRC_URI = "${GNOME_MIRROR}/${GNOMEBN}/${@gnome_verdir("${PV}")}/${GNOMEBN}-${PV}.tar.${GNOME_COMPRESS_TYPE};name=archive \
+           file://gdm.conf \
+           file://0001-replace-absolute-path-with-staging-path.patch \
+           "
 
 DEPENDS = "libxcb libxinerama libxau libxdmcp intltool-native glib-2.0 accountsservice libpam libcheck libcanberra gtk+3 libx11 libxi systemd libxext glib-2.0-native dconf-native plymouth"
 

@@ -1,0 +1,25 @@
+From 5a39825877c98495de2d9ae91544b25053fe5687 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Fri, 2 Feb 2018 19:17:41 -0500
+Subject: [PATCH] replace absolute path with staging path
+
+---
+ data/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/data/Makefile.am b/data/Makefile.am
+index c10c915..3a94592 100644
+--- a/data/Makefile.am
++++ b/data/Makefile.am
+@@ -298,7 +298,7 @@ endif
+ 	fi
+ 
+ 	system=`uname`; \
+-	if test -f /usr/include/security/pam_appl.h; then \
++	if test -f $(STAGING_INCDIR)/security/pam_appl.h; then \
+ 	  if test '!' -d $(DESTDIR)$(PAM_PREFIX)/pam.d; then \
+ 		$(mkinstalldirs) $(DESTDIR)$(PAM_PREFIX)/pam.d; \
+ 		chmod 755 $(DESTDIR)$(PAM_PREFIX)/pam.d; \
+-- 
+2.15.1
+
