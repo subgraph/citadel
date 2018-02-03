@@ -1,4 +1,4 @@
-require linux-citadel.inc
+require citadel-kernel.inc
 
 SRC_URI[kernel.md5sum] = "60e1a229fb5ffc2a82462ed9400ce3d0"
 SRC_URI[kernel.sha256sum] = "24ba70877549a3cf25dc5f12efd260d3e957bce64c087de98baf8968ee514895"
