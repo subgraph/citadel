@@ -26,5 +26,4 @@ ROOT_PASSWORD ?= "citadel"
 inherit core-image showvars
 
 WKS_FILE="citadel-image-minimal.wks"
-DEPENDS += "linux-citadel"
 
