@@ -74,4 +74,5 @@ RDEPENDS_${PN} = "\
     cryptsetup \
     e2fsprogs \
     dosfstools \
+    default-user-rootfs \
 "
