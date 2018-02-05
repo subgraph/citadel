@@ -35,6 +35,10 @@ Docker will realize that the Dockerfile has not changed and do nothing.
 
     $ make docker-image
 
+To list available make targets, run `make help` or just `make` as this is the default target:
+
+    $ make help
+
 To run a shell inside the docker build container:
 
     $ make docker-shell
@@ -43,7 +47,7 @@ The shell will run in the build directory and be configured to run build command
 
 To build a full citadel image:
 
-    $ bitbake citadel-image
+    $ make citadel-image
 
 The build will take several hours the first time, but for later builds the build system will use cached artifacts stored 
 in `citadel/build/sstate-cache` for components that have not changed and new builds will usually only take a few minutes.
