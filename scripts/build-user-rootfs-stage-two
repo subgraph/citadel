@@ -1,0 +1,25 @@
+#!/bin/bash
+
+PACKAGES="man manpages vim less xz-utils sudo tmux dbus libpam-systemd vifm openssh-client gnome-terminal packagekit-gtk3-module libcanberra-gtk3-module firefox"
+
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8
+export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.UTF-8
+
+mkdir -p /etc/systemd/user.conf.d
+printf '[Manager]\nDefaultEnvironment="DISPLAY=:0"\n' > /etc/systemd/user.conf.d/50-display-env.conf
+
+echo "subgraph" > /etc/hostname
+echo "deb http://http.debian.net/debian unstable main" >> /etc/apt/sources.list
+useradd -s /bin/bash -m user
+echo "user:user" | chpasswd 
+usermod -aG sudo user
+echo "export DISPLAY=:0" >> /home/user/.bashrc
+
+apt-get update
+apt-get --assume-yes upgrade
+apt-get --assume-yes --no-install-recommends install ${PACKAGES}
+
+printf "\n\nInstalled Packages\n\n"
+dpkg -l

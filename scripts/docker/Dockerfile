@@ -26,6 +26,8 @@ RUN apt update && apt install -y gawk \
     libmpc-dev \
     libelf-dev \
     nano \
+    sudo \
+    debootstrap \
     inkscape
 
 # python
@@ -36,6 +38,7 @@ ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 
 RUN useradd -ms /bin/bash builder
+RUN echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 USER builder
 RUN echo ". /home/builder/citadel/setup-build-env" >> /home/builder/.bashrc
