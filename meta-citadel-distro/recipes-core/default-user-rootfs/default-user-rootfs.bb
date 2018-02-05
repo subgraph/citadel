@@ -1,20 +1,19 @@
 
-DESCRIPTION = ""
-HOMEPAGE = ""
+DESCRIPTION = "Install systemd unit file to automatically start default-user-rootfs container"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 SECTION = ""
 DEPENDS = ""
 
+inherit systemd
+
 SRC_URI = "file://default-user-rootfs.service"
 
 S = "${WORKDIR}"
 
-do_install() {
-    install -d ${D}${sysconfdir}/systemd/system
-    install -m 644 ${WORKDIR}/default-user-rootfs.service ${D}${sysconfdir}/systemd/system
-}
+SYSTEMD_SERVICE_${PN} = "default-user-rootfs.service"
 
-pkt_postinst_${PN}() {
-    systemctl --root=$D enable default-user-rootfs
+do_install() {
+    install -d ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/default-user-rootfs.service ${D}${systemd_system_unitdir}
 }
