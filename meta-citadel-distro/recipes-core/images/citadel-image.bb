@@ -6,8 +6,7 @@ SYSTEMD_DEFAULT_TARGET = "graphical.target"
 
 require citadel-image-base.bb
 
-
-ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; "
+ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; symlink_lib64; "
 
 #IMAGE_FSTYPES += "ext2"
 IMAGE_FSTYPES = "ext2"
@@ -23,4 +22,8 @@ set_blank_user_password() {
 set_citadel_user_password() {
     # crypt("citadel", "aa")
     sed -i 's%^citadel:!:%citadel:aadg8rGtZzOY6:%' ${IMAGE_ROOTFS}/etc/shadow
+}
+
+symlink_lib64() {
+    ln -s /usr/lib ${IMAGE_ROOTFS}/lib64
 }
