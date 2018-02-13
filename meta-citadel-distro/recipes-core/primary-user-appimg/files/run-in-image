@@ -1,0 +1,2 @@
+#!/bin/bash
+machinectl -E DESKTOP_STARTUP_ID=${DESKTOP_STARTUP_ID} shell user@primary /usr/libexec/launch $@

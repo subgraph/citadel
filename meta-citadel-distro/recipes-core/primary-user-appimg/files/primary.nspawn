@@ -1,0 +1,6 @@
+Boot=true
+BindReadOnly=/usr/share/themes/Adapta
+BindReadOnly=/usr/share/themes/Adapta-Eta
+BindReadOnly=/usr/share/themes/Adapta-Nokto
+BindReadOnly=/usr/share/themes/Adapta-Nokto-Eta
+BindReadOnly=/usr/share/icons/Paper

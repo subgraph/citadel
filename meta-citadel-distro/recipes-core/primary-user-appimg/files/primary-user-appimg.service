@@ -1,0 +1,14 @@
+[Unit]
+Description=Default User appimg 
+ConditionPathExists=/storage/appimg/primary/rootfs
+
+[Service]
+ExecStart=/usr/bin/systemd-nspawn --quiet --keep-unit --machine=primary --link-journal=try-guest --directory=/storage/appimg/primary/rootfs
+
+KillMode=mixed
+Type=notify
+RestartForceExitStatus=133
+SuccessExitStatus=133
+
+[Install]
+WantedBy=multi-user.target
