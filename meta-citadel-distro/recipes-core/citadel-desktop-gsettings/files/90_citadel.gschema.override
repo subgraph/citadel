@@ -16,6 +16,7 @@ cursor-theme='Paper'
 icon-theme='Paper'
 font-name='Roboto 11'
 gtk-enable-primary-paste=false
+clock-format='12h'
 
 [org.gnome.shell.extensions]
 user-theme-name='Adapta'
