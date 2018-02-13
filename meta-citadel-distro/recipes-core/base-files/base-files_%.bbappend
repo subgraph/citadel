@@ -1,5 +1,5 @@
 
-hostname="citadel"
+hostname="subgraph"
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += "\
     file://locale.conf \
