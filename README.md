@@ -30,6 +30,11 @@ A user with access to the docker group can easily escalate privileges to root wh
 A `Makefile` is provided which only contains a couple of simple targets that execute docker commands to set up and run the 
 builder container.
 
+The project uses git submodules to track openembedded layers it depends upon.  After cloning this repository you will need to 
+retrieve the dependent submodules with the following command:
+
+    $ make update-submodules
+
 To create the builder docker image use the following command.  You only need to do this one time, but if you run it again
 Docker will realize that the Dockerfile has not changed and do nothing.
 

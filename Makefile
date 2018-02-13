@@ -1,4 +1,4 @@
-.PHONY: help docker-image docker-shell citadel-image citadel-kernel user-rootfs
+.PHONY: help docker-image docker-shell citadel-image citadel-kernel user-rootfs update-submodules
 
 BASE_DIR = $(shell pwd)
 BASE_BINDMOUNT = type=bind,source=$(BASE_DIR),target=/home/builder/citadel
@@ -27,3 +27,6 @@ citadel-kernel: ## Build citadel-kernel with bitbake
 user-rootfs: ## Build user-rootfs tarball with debootstrap and configuration scripts
 	mkdir -p build/debootstrap
 	$(DOCKER_RUN_PRIV) sudo scripts/build-user-rootfs-stage-one | tee build/debootstrap/build-user-rootfs.log
+
+update-submodules: ## Retrieve or update submodule projects
+	git submodule update --init
