@@ -76,4 +76,5 @@ RDEPENDS_${PN} = "\
     dosfstools \
     btrfs-tools \
     primary-user-appimg\
+    desktopd \
 "
