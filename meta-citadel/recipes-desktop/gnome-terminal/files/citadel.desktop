@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Citadel Terminal
+Exec=/bin/bash
+Terminal=true
+Type=Application
+Icon=xterm
+StartupNotify=false
