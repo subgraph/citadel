@@ -7,16 +7,25 @@ DEPENDS = ""
 
 inherit systemd
 
-SRC_URI = "file://primary-user-appimg.service file://primary.nspawn file://run-in-image"
+SRC_URI = "file://primary-user-appimg.path file://primary-user-appimg.service file://primary.nspawn file://watch-run-user.path file://watch-run-user.service file://run-in-image"
 
 S = "${WORKDIR}"
 
-SYSTEMD_SERVICE_${PN} = "primary-user-appimg.service"
+SYSTEMD_SERVICE_${PN} = "watch-run-user.path"
 RDEPENDS_${PN} = "bash"
+
+FILES_${PN} += "\
+    ${systemd_system_unitdir}/watch-run-user.service \
+    ${systemd_system_unitdir}/primary-user-appimg.path \
+    ${systemd_system_unitdir}/primary-user-appimg.service \
+"
 
 do_install() {
     install -d ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/primary-user-appimg.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/primary-user-appimg.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/watch-run-user.path ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/watch-run-user.service ${D}${systemd_system_unitdir}
     install -d ${D}${sysconfdir}/systemd/nspawn
     install -m 644 ${WORKDIR}/primary.nspawn ${D}${sysconfdir}/systemd/nspawn
     install -d ${D}${libexecdir}

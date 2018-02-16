@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch Just watching Run User
+After=run-user-1000.mount
+Requires=run-user-1000.mount
+
+[Path]
+PathExists=/run/user/1000
+
+[Install]
+WantedBy=multi-user.target
