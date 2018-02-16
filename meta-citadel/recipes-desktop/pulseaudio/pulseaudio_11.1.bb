@@ -10,3 +10,5 @@ do_compile_prepend() {
     mkdir -p ${S}/libltdl
     cp ${STAGING_LIBDIR}/libltdl* ${S}/libltdl
 }
+
+RDEPENDS_pulseaudio-server_remove = "pulseaudio-module-console-kit"
