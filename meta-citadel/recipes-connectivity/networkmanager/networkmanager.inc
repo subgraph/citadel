@@ -15,6 +15,7 @@ export GI_TYPELIB_PATH = "${STAGING_LIBDIR_NATIVE}/girepository-1.0"
 inherit gnomebase gettext systemd bluetooth gobject-introspection upstream-version-is-even python3native gtk-doc
 
 SRC_URI = "${GNOME_MIRROR}/NetworkManager/${@gnome_verdir("${PV}")}/NetworkManager-${PV}.tar.xz \
+    file://watch-resolvconf.path file://watch-resolvconf.service \
            "
 S = "${WORKDIR}/NetworkManager-${PV}"
 
@@ -118,8 +119,10 @@ FILES_${PN}-nmtui-doc = " \
     ${mandir}/man1/nmtui* \
 "
 
-SYSTEMD_SERVICE_${PN} = "NetworkManager.service NetworkManager-dispatcher.service"
+SYSTEMD_SERVICE_${PN} = "NetworkManager.service NetworkManager-dispatcher.service watch-resolvconf.path"
 
 do_install_append() {
     rm -rf ${D}/run ${D}${localstatedir}/run
+    install -m 644 ${WORKDIR}/watch-resolvconf.path ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/watch-resolvconf.service ${D}${systemd_system_unitdir}
 }

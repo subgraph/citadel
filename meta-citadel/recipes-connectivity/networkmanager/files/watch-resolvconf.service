@@ -1,0 +1,7 @@
+[Unit]
+Description=Copy resolv.conf to /storage/citadel-state
+ConditionPathExists=/run/NetworkManager/resolv.conf
+ConditionPathExists=/storage/citadel-state
+[Service]
+Type=oneshot
+ExecStart=/bin/cp /run/NetworkManager/resolv.conf /storage/citadel-state/resolv.conf

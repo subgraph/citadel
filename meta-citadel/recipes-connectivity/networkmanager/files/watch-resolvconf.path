@@ -1,0 +1,10 @@
+[Unit]
+Description=Watch /run/NetworkManager
+
+[Path]
+PathExists=/run/NetworkManager/resolv.conf
+PathChanged=/run/NetworkManager
+MakeDirectory=true
+
+[Install]
+WantedBy=multi-user.target
