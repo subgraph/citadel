@@ -1,7 +1,5 @@
 /dev/root                           /                    auto       defaults              1  1
-tmpfs                               /var                 tmpfs      defaults              0  0
 /dev/mapper/citadel-storage         /storage             auto       defaults              0  0
 
 /storage/citadel-state/home         /home                none       bind                  0  0
-/storage/citadel-state/var/log      /var/log             none       bind                  0  0
-/storage/citadel-state/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections none bind 0 0
+/storage/citadel-state/var          /var                 none       bind                  0  0
