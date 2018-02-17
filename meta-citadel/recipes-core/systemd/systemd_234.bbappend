@@ -6,6 +6,8 @@ RDEPENDS_${PN}_remove = "systemd-serialgetty"
 RDEPENDS_${PN}_remove = "volatile-binds"
 RDEPENDS_${PN}_remove = "update-rc.d"
 
+ALTERNATIVE_${PN}_remove = "resolv-conf"
+
 GROUPADD_PARAM_${PN} += "; -r kvm"
 PACKAGECONFIG = "\
     efi ldconfig pam usrmerge rfkill backlight binfmt hostnamed ima localed logind machined myhostname \
