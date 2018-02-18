@@ -16,4 +16,5 @@ PACKAGECONFIG = "\
 
 do_install_append() {
     rm -f ${D}${sysconfdir}/tmpfiles.d/00-create-volatile.conf
+    echo "a4e415feff81466c925aab34b0c35a3c" > ${D}${sysconfdir}/machine-id
 }
