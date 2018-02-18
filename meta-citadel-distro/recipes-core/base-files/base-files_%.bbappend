@@ -8,12 +8,16 @@ SRC_URI += "\
     file://99-grsec-debootstrap.conf \
     file://00-storage-tmpfiles.conf \
     file://NetworkManager.conf \
+    file://zram-swap.service \
 "
 
 dirs1777_remove = "${localstatedir}/volatile/tmp"
 dirs755="/boot /dev /usr/bin /usr/sbin /usr/lib /etc /etc/default /etc/skel /usr/lib /mnt /proc /home/root /run /usr /usr/bin /usr/share/doc/base-files-3.0.14 /usr/include /usr/lib /usr/sbin /usr/share /usr/share/common-licenses /usr/share/info /usr/share/man /usr/share/misc /var /sys /home /media"
 
 volatiles = ""
+
+inherit systemd
+SYSTEMD_SERVICE_${PN} = "zram-swap.service"
 
 do_install_append () {
     install -m 0755 -d ${D}/storage
@@ -29,6 +33,9 @@ do_install_append () {
     install -m 0644 ${WORKDIR}/fstab ${D}${sysconfdir}/fstab
     install -m 0644 ${WORKDIR}/00-storage-tmpfiles.conf ${D}${sysconfdir}/tmpfiles.d
     install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
+
+    install -d ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/zram-swap.service ${D}${systemd_system_unitdir}
 
     # disable some pax and grsecurity features so that debootstrap will work
     # this should be removed later

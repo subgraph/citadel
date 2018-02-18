@@ -1,0 +1,18 @@
+[Unit]
+Description=Enable/Disable zram swap device
+ConditionPathExists=/dev/zram0
+ConditionPathExists=/sys/block/zram0
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/bin/sh -c 'echo 2G > /sys/block/zram0/disksize'
+ExecStart=/sbin/mkswap /dev/zram0
+ExecStart=/sbin/swapon /dev/zram0 -p 10
+
+ExecStop=/sbin/swapoff /dev/zram0
+ExecStop=/bin/sh -c 'echo 1 > /sys/block/zram0/reset'
+
+[Install]
+WantedBy=multi-user.target
