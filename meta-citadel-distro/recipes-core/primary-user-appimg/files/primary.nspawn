@@ -11,10 +11,20 @@ BindReadOnly=/usr/share/icons/Paper
 Bind=/storage/user-data/primary-home:/home/user
 BindReadOnly=/storage/citadel-state/resolv.conf:/etc/resolv.conf
 
+#
+# Bind mounts for sound and pulse audio
+#
 Bind=/dev/snd
 Bind=/dev/shm
 Bind=/run/user/1000/pulse:/run/user/host/pulse
 
-#Bind=/run/user/1000/wayland-0:/run/user/host/wayland-0
+#
+# Uncomment to enable kvm access in container
+#
 #Bind=/dev/kvm
+
+#
+# Uncomment to enable GPU access in container
+#
+#Bind=/dev/dri/renderD128
 
