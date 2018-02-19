@@ -25,7 +25,7 @@ DISTRO ?= "citadel-distro"
 
 MACHINE ?= "intel-corei7-64"
 
-
+DEFAULT_TIMEZONE = "America/New_York"
 DEPLOY_DIR_IMAGE = "${TOPDIR}/images"
 #
 #
