@@ -1,5 +1,4 @@
-/dev/root                           /                    auto       defaults              1  1
-/dev/mapper/citadel-storage         /storage             auto       defaults              0  0
-
-/storage/citadel-state/home         /home                none       bind                  0  0
-/storage/citadel-state/var          /var                 none       bind                  0  0
+/dev/root                           /             auto       defaults                   1  1
+/dev/mapper/citadel-storage         /storage      auto       defaults                   0  0
+/storage/citadel-state/var          /var          none       bind                       0  0
+tmpfs                               /home         tmpfs      rw,nosuid,nodev,mode=755   0  0
