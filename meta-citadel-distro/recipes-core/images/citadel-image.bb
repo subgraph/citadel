@@ -30,6 +30,8 @@ setup_var() {
 
     install -m 0755 -o 1000 -g 1000 -d ${IMAGE_ROOTFS}/home/citadel/.local/share/applications
 
+    rmdir ${IMAGE_ROOTFS}/var/log/journal
+
     mv ${IMAGE_ROOTFS}/var/lib ${IMAGE_ROOTFS}/usr/share/factory/var
     mv ${IMAGE_ROOTFS}/var/log ${IMAGE_ROOTFS}/usr/share/factory/var
     mv ${IMAGE_ROOTFS}/var/cache  ${IMAGE_ROOTFS}/usr/share/factory/var
