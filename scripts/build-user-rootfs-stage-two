@@ -23,6 +23,7 @@ cat > /usr/libexec/launch <<- 'EOF'
 EOF
 chmod +x /usr/libexec/launch
 
+printf "127.0.0.1\tsubgraph localhost\n" > /etc/hosts
 echo "subgraph" > /etc/hostname
 echo "deb http://http.debian.net/debian unstable main" >> /etc/apt/sources.list
 useradd -s /bin/bash -m user
