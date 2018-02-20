@@ -3,6 +3,7 @@ Description=Default User appimg
 ConditionPathExists=/storage/appimg/primary/rootfs
 
 [Service]
+Environment=SYSTEMD_NSPAWN_SHARE_NS_IPC=1
 ExecStart=/usr/bin/systemd-nspawn --quiet --keep-unit --machine=primary --link-journal=try-guest --directory=/storage/appimg/primary/rootfs
 
 KillMode=mixed
