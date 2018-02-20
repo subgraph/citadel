@@ -6,8 +6,9 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
                     file://LICENSE_CC_BY_SA4;md5=e277f2eefa979e093628e4fb368f5044"
 
 SRC_URI = "https://github.com/adapta-project/adapta-gtk-theme/archive/${PV}.tar.gz;downloadfilename=adapta-gtk-theme-${PV}.tar.gz"
-SRC_URI[md5sum] = "612fb300b6e54db0044808da9e90c2a4"
-SRC_URI[sha256sum] = "6f6ce6cbe0a78606b8c422a1d2c9e4c6a794047be4cfc4a322f89d2c369a0d40"
+SRC_URI[md5sum] = "b0589258b43fdc92604b5140a9c5c03a"
+SRC_URI[sha256sum] = "4fa8db96ca351fe4cd983891a1b44a06502b31a473decea55da13dc23ca8fc31"
+
 
 S = "${WORKDIR}/${BPN}-${PV}"
 
@@ -17,5 +18,5 @@ inherit pkgconfig autotools-brokensep allarch
 
 FILES_${PN} = "${datadir}/themes"
 
-EXTRA_OECONF = "--disable-cinnamon --disable-flashback --disable-unity --disable-xfce --disable-mate --disable-openbox --disable-plank --disable-telegram --disable-chrome --disable-gtk_next --disable-parallel"
+EXTRA_OECONF = "--disable-cinnamon --disable-flashback --disable-xfce --disable-mate --disable-openbox --disable-plank --disable-telegram --disable-chrome_legacy --disable-gtk_next --disable-gtk_legacy --disable-parallel"
 
