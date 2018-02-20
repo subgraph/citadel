@@ -28,7 +28,8 @@ setup_var() {
     install -m 0755 -d ${IMAGE_ROOTFS}/usr/share/factory/var
     install -m 0755 -d ${IMAGE_ROOTFS}/usr/share/factory/home
 
-    install -m 0755 -o 1000 -g 1000 -d ${IMAGE_ROOTFS}/home/citadel/.local/share/applications
+    install -m 0755 -d ${IMAGE_ROOTFS}/home/citadel/.local/share/applications
+    chown -R 1000:1000 ${IMAGE_ROOTFS}/home/citadel/.local
 
     rmdir ${IMAGE_ROOTFS}/var/log/journal
 
