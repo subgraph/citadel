@@ -1,40 +1,56 @@
 #!/bin/bash
 
+DEBIAN_MIRROR="https://deb.debian.org/debian"
+DEBIAN_RELEASE="buster"
 
-#SCRIPT=$(realpath ${BASH_SOURCE})
 SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE}))
 DBS_BASE=$(realpath ${SCRIPT_DIR}/../build/debootstrap)
 DBS_ROOT=${DBS_BASE}/rootfs
 CACHE_DIR=${DBS_BASE}/var-cache-apt-archives
 
-[[ -d ${DBS_ROOT} ]] && rm -rf ${DBS_ROOT}
 
-[[ -f ${CACHE_DIR}/lock ]] && rm -f ${CACHE_DIR}/lock
-mkdir -p ${CACHE_DIR} ${DBS_ROOT}/var/cache/apt/archives 
-mount --bind ${CACHE_DIR} ${DBS_ROOT}/var/cache/apt/archives
+run_debootstrap() {
+    [[ -d ${DBS_ROOT} ]] && rm -rf ${DBS_ROOT}
 
-debootstrap --verbose --merged-usr --variant=minbase --include=systemd-sysv,locales \
-    --exclude=sysv-rc,initscripts,startpar,lsb-base,insserv \
-    buster ${DBS_ROOT}
+    [[ -f ${CACHE_DIR}/lock ]] && rm -f ${CACHE_DIR}/lock
+    mkdir -p ${CACHE_DIR} ${DBS_ROOT}/var/cache/apt/archives 
+    mount --bind ${CACHE_DIR} ${DBS_ROOT}/var/cache/apt/archives
 
-mount chproc ${DBS_ROOT}/proc -t proc
-mount chsys ${DBS_ROOT}/sys -t sysfs
+    debootstrap --verbose --merged-usr --variant=minbase \
+        --include=systemd-sysv,locales \
+        --exclude=sysv-rc,initscripts,startpar,lsb-base,insserv \
+        ${DEBIAN_RELEASE} ${DBS_ROOT} ${DEBIAN_MIRROR}
+}
 
-cp --preserve=mode ${SCRIPT_DIR}/build-user-rootfs-stage-two ${DBS_ROOT}/root/install.sh
+run_chroot_stage() {
+    mount chproc ${DBS_ROOT}/proc -t proc
+    mount chsys ${DBS_ROOT}/sys -t sysfs
 
-DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot ${DBS_ROOT} /root/install.sh
-rm -f ${DBS_ROOT}/root/install.sh
+    cp --preserve=mode ${SCRIPT_DIR}/build-user-rootfs-stage-two ${DBS_ROOT}/root/install.sh
 
-umount ${DBS_ROOT}/proc
-umount ${DBS_ROOT}/sys
-umount ${DBS_ROOT}/var/cache/apt/archives
-rm -f ${DBS_ROOT}/var/cache/apt/pkgcache.bin
-rm -f ${DBS_ROOT}/var/cache/apt/srcpkgcache.bin
-
-printf "\n\n----- Generating compressed tarball (this will take a couple of minutes) -----\n\n"
-tar -C ${DBS_ROOT} -c --xattrs --xattrs-include=* -f ${DBS_BASE}/user-rootfs.tar .
-xz --force --threads=0 ${DBS_BASE}/user-rootfs.tar
-ls -al ${DBS_BASE}/user-rootfs.tar.xz
-printf "\n\n"
+    DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot ${DBS_ROOT} /root/install.sh ${DEBIAN_RELEASE} ${DEBIAN_MIRROR}
+    rm -f ${DBS_ROOT}/root/install.sh
+}
 
 
+cleanup_chroot() {
+    umount ${DBS_ROOT}/proc
+    umount ${DBS_ROOT}/sys
+    umount ${DBS_ROOT}/var/cache/apt/archives
+    rm -f ${DBS_ROOT}/var/cache/apt/pkgcache.bin
+    rm -f ${DBS_ROOT}/var/cache/apt/srcpkgcache.bin
+}
+
+generate_tarball() {
+    printf "\n\n----- Generating rootfs tarball -----\n\n"
+    tar -C ${DBS_ROOT} -c --xattrs --xattrs-include=* -f ${DBS_BASE}/user-rootfs.tar .
+    #xz --force --threads=0 ${DBS_BASE}/user-rootfs.tar
+    ls -al ${DBS_BASE}/user-rootfs.tar
+    printf "\n\n"
+}
+
+
+run_debootstrap
+run_chroot_stage
+cleanup_chroot
+generate_tarball
