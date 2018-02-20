@@ -41,6 +41,8 @@ setup_etc() {
     printf "127.0.0.1\tsubgraph localhost\n" > /etc/hosts
     echo "subgraph" > /etc/hostname
     generate_apt_sources > /etc/apt/sources.list
+    echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/99no-install-recommends
+    echo 'APT::Install-Suggests "0";' >> /etc/apt/apt.conf.d/99no-install-recommends
 }
 
 create_user() {
@@ -53,7 +55,7 @@ create_user() {
 install_packages() {
     apt-get update
     apt-get --assume-yes upgrade
-    apt-get --assume-yes --no-install-recommends install ${PACKAGES}
+    apt-get --assume-yes install ${PACKAGES}
 
     printf "\n\nInstalled Packages\n\n"
     dpkg -l
