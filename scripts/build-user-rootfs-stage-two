@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-PACKAGES="man manpages vim less xz-utils sudo tmux dbus libpam-systemd vifm openssh-client gnome-terminal packagekit-gtk3-module libcanberra-gtk3-module firefox fonts-roboto-hinted nautilus eog evince unzip"
+PACKAGES="man manpages vim less xz-utils sudo tmux dbus libpam-systemd vifm openssh-client gnome-terminal packagekit-gtk3-module libcanberra-gtk3-module libpulse0 firefox fonts-roboto-hinted nautilus eog evince unzip"
 
 setup_locale() {
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
