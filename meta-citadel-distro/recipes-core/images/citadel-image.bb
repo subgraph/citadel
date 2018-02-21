@@ -43,6 +43,9 @@ setup_var() {
     mv ${IMAGE_ROOTFS}/home/citadel ${IMAGE_ROOTFS}/usr/share/factory/home
     mv ${IMAGE_ROOTFS}/home/root ${IMAGE_ROOTFS}/usr/share/factory/home
 
+    rm /usr/share/gnome-shell/gnome-shell-theme.gresource
+    ln -sf ../themes/Adapta-Nokto/gnome-shell/gnome-shell-theme.gresource /usr/share/gnome-shell/gnome-shell-theme.gresource
+
     # do_rootfs() will fail otherwise
     ln -sf ../usr/share/factory/var/lib ${IMAGE_ROOTFS}/var/lib
 }
