@@ -61,6 +61,13 @@ install_packages() {
     dpkg -l
 }
 
+post_install_packages() {
+    # Otherwise gnome-terminal won't work if nothing else has been launched
+    # see 'enable-linger' in loginctl(1)
+    mkdir /var/lib/systemd/linger
+    touch /var/lib/systemd/linger/user
+}
+
 set -u
 set -e
 
