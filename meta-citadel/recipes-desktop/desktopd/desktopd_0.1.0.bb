@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM=" \
 
 inherit cargo systemd
 
-SRC_URI += "git://github.com/subgraph/desktopd;protocol=https"
+SRC_URI += "git://github.com/subgraph/desktopd;protocol=https file://desktopd.config"
 SRCREV = "62837261f8f80c102c9f093398aa7f60b55e64df"
 S = "${WORKDIR}/git"
 CARGO_SRC_DIR=""
@@ -77,6 +77,6 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
 
     install -m 755 ${B}/target/${CARGO_TARGET_SUBDIR}/desktopd ${D}${libexecdir}
-    install -m 644 ${B}/data/desktopd.config ${D}${sysconfdir}
+    install -m 644 ${WORKDIR}/desktopd.config ${D}${sysconfdir}
     install -m 644 ${B}/data/desktopd.service ${D}${systemd_system_unitdir}
 }
