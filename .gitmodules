@@ -1,3 +1,6 @@
 [submodule "meta-rust"]
 	path = meta-rust
 	url = https://github.com/meta-rust/meta-rust.git
+[submodule "poky"]
+	path = poky
+	url = https://git.yoctoproject.org/git/poky
