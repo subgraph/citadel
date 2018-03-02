@@ -1,4 +1,0 @@
-part /boot --source bootimg-efi --sourceparams="loader=systemd-boot" --size=64 --fstype=vfat --label boot --active --align 1024 --use-uuid
-part / --source rootfs --fstype=ext4 --label rootfs --align 1024 --use-uuid 
-part /storage --fstype=ext4 --label storage --size=16 --use-uuid
-bootloader --ptable gpt --timeout=5 --append="add_efi_memmap intel_iommu=igfx_off cryptomgr.notests rcupdate.rcu_expedited=1 rcu_nocbs=0-64 tsc=reliable no_timer_check noreplace-smp i915.fastboot=1 quiet splash" 
