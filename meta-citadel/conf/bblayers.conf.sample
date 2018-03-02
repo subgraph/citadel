@@ -10,6 +10,5 @@ BBLAYERS ?= " \
   ##OEROOT##/../meta-intel \
   ##OEROOT##/../meta-rust \
   ##OEROOT##/../meta-citadel \
-  ##OEROOT##/../meta-citadel-distro \
-  ##OEROOT##/../meta-foreign \
+  ##OEROOT##/../meta-gnome \
   "
