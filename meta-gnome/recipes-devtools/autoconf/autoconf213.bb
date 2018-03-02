@@ -15,7 +15,7 @@ export PERL = "${USRBINPATH}/perl"
 S = "${WORKDIR}/autoconf-2.13"
 FILES_${PN} += "/usr/share/autoconf"
 
-inherit autotools showvars
+inherit autotools
 
 do_configure() {
     oe_runconf --program-suffix=213 --infodir=${D}/${infodir} --bindir=${D}/${bindir} --datadir=${D}/${datadir}

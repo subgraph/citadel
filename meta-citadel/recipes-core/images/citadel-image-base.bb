@@ -23,7 +23,7 @@ RRECOMMENDS_${PN} = "\
 
 ROOT_PASSWORD ?= "citadel"
 
-inherit core-image showvars
+inherit core-image
 
 WKS_FILE="citadel-image-minimal.wks"
 
