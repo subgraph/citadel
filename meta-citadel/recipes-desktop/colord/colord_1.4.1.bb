@@ -59,5 +59,5 @@ do_configure_prepend() {
 
 USERADD_PACKAGES = "${PN}"
 USERADD_PARAM_${PN} = "--system --home /var/lib/colord --no-create-home --shell /bin/false --user-group colord"
-inherit meson systemd useradd
+inherit meson systemd useradd gettext
 

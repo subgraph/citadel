@@ -5,11 +5,15 @@ LICENSE = "GPLv3 & LGPLv2.1"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=d32239bcb673463ab874e80d47fae504 \
                     file://libnautilus-extension/LICENSE;md5=321bf41f280cf805086dd5a720b37785"
 
-SRC_URI = "https://download.gnome.org/sources/nautilus/3.26/nautilus-${PV}.tar.xz \
-           file://0001-meson-find-libm-correctly.patch \
-           "
-SRC_URI[md5sum] = "1b1d05e4d734e2e0710275849e83b85e"
-SRC_URI[sha256sum] = "a02b30ef9033f6f92fbc5e29abaceeb58ce6a600ed9fa5a4697ba82901d07924"
+GNOMEBASEBUILDCLASS = "meson"
+inherit gnomebase gobject-introspection gettext
+
+#SRC_URI = "https://download.gnome.org/sources/nautilus/3.26/nautilus-${PV}.tar.xz 
+
+SRC_URI += "file://0001-meson-find-libm-correctly.patch"
+SRC_URI[archive.md5sum] = "1b1d05e4d734e2e0710275849e83b85e"
+SRC_URI[archive.sha256sum] = "a02b30ef9033f6f92fbc5e29abaceeb58ce6a600ed9fa5a4697ba82901d07924"
+
 
 FILES_${PN} += "\
     ${datadir}/glib-2.0/schemas \
@@ -18,7 +22,6 @@ FILES_${PN} += "\
     ${datadir}/icons/hicolor/ \
     ${datadir}/dbus-1/services \
 "
-inherit meson gobject-introspection
 
 DEPENDS += "gtk+3 glib-2.0 pango gnome-autoar libxml2 gnome-desktop tracker"
 # This probably belongs in meson.bbclass

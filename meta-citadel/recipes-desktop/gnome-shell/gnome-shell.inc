@@ -1,6 +1,8 @@
 LICENSE = "GPLv2" 
 LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
+inherit meson gobject-introspection gettext
+
 def gnome_verdir(v):
     return oe.utils.trim_version(v, 2)
 
@@ -52,4 +54,3 @@ do_install_append() {
 }
 
 EXTRA_OEMESON = "--buildtype=release -Denable-browser-plugin=false -Denable-man=false -Denable-systemd=yes -Denable-networkmanager=yes"
-inherit meson gobject-introspection 
