@@ -10,6 +10,9 @@ DEPENDS = "intltool-native gperf-native libcap libcgroup util-linux kmod cryptse
 inherit useradd pkgconfig autotools 
 SRCREV = "c1edab7ad1e7ccc9be693bedfd464cd1cbffb395"
 
+# Added by useradd class
+DEPENDS_remove = "base-files"
+
 SRC_URI = "git://github.com/systemd/systemd.git;protocol=git"
 
 S = "${WORKDIR}/git"
@@ -182,7 +185,21 @@ FILES_${PN}-not-used = "\
     ${bindir}/systemd-* \
     ${bindir}/busctl \
     ${bindir}/hostnamectl \
+    ${bindir}/loginctl \
     ${bindir}/kernel-install \
+    ${systemd_unitdir}/systemd/systemd-hostnamed \
+    ${systemd_unitdir}/systemd/systemd-backlight \
+    ${systemd_unitdir}/systemd/systemd-logind \
+    ${systemd_unitdir}/systemd/systemd-socket-proxyd \
+    ${systemd_unitdir}/systemd/systemd-sleep \
+    ${systemd_unitdir}/systemd/systemd-volatile-root \
+    ${systemd_unitdir}/systemd/systemd-dissect \
+    ${systemd_unitdir}/systemd/systemd-remount-fs \
+    ${systemd_unitdir}/systemd/systemd-ac-power \
+    ${systemd_unitdir}/systemd/systemd-update-done \
+    ${systemd_unitdir}/systemd/systemd-initctl \
+    ${systemd_unitdir}/systemd \
+    ${localstatedir}/lib/systemd \
 "
 
 INSANE_SKIP_${PN} += "dev-so"
@@ -203,6 +220,7 @@ FILES_${PN} = "\
     ${systemd_unitdir}/systemd/systemd-journald \
     ${systemd_unitdir}/systemd/systemd-sysctl \
     ${systemd_unitdir}/systemd/systemd-modules-load \
+    ${systemd_unitdir}/systemd/systemd-veritysetup \
     ${systemd_unitdir}/systemd/systemd-vconsole-setup \
     ${systemd_unitdir}/systemd/system-generators/systemd-fstab-generator \
     ${systemd_unitdir}/systemd/system-generators/systemd-gpt-auto-generator \
@@ -274,7 +292,6 @@ FILES_${PN} = "\
     ${systemd_system_unitdir}/sockets.target.wants/systemd-udevd-kernel.socket \
     ${systemd_system_unitdir}/sockets.target.wants/systemd-journald.socket \
     ${systemd_system_unitdir}/sockets.target.wants/systemd-journald-audit.socket \
-    ${systemd_system_unitdir}/sockets.target.wants/systemd-journald-dev-log.socket \
     ${systemd_system_unitdir}/sysinit.target.wants/systemd-udevd.service \
     ${systemd_system_unitdir}/sysinit.target.wants/systemd-udev-trigger.service \
     ${systemd_system_unitdir}/sysinit.target.wants/kmod-static-nodes.service \

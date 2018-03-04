@@ -1,14 +1,14 @@
 DESCRIPTION = "Image for rootfs"
 
+NO_RECOMMENDATIONS = "1"
+
 PACKAGE_INSTALL = "\
-    base-files \
+    citadel-initramfs \
     base-passwd \
     busybox \
     kbd \
     keymaps \
     systemd-initrd \
-    systemd-initrd-analyze \
-    util-linux \
     linux-firmware-i915 \
     kernel-module-arc4 \
     kernel-module-ansi-cprng \
@@ -86,7 +86,6 @@ PACKAGE_INSTALL = "\
     kernel-module-soundcore \
     kernel-module-wmi \
     kernel-module-xhci-plat-hcd \
-    citadel-initramfs \
     liberation-fonts \
     plymouth \
 "

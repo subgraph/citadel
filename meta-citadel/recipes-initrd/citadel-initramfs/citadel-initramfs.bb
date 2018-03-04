@@ -4,11 +4,20 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SECTION = ""
 DEPENDS = ""
 
-SRC_URI = "file://initrd-release file://crypttab file://11-dm.rules"
+SRC_URI = "file://initrd-release file://crypttab file://11-dm.rules file://citadel-rootfs-mount.service"
 
 S = "${WORKDIR}"
 
+dirs755="/boot /dev /usr /usr/bin /usr/sbin /usr/lib /usr/share /etc /proc /run /var /sys /tmp"
+
+
 do_install() {
+    for d in ${dirs755}; do
+        install -m 0755 -d ${D}$d
+    done
+
+    install -d ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/citadel-rootfs-mount.service ${D}${systemd_system_unitdir}
     install -d ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/initrd-release ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/crypttab ${D}${sysconfdir}
@@ -18,13 +27,11 @@ do_install() {
     mknod -m 622 ${D}/dev/console c 5 1
 }
 
-FILES_${PN} += "/dev/console"
+FILES_${PN} += "/dev/console /boot /dev /usr /etc /proc /run /sys /tmp"
 
 pkg_postinst_${PN}() {
     ln -sf initrd-release $D${sysconfdir}/os-release
-    #ln -s ${systemd_unitdir}/systemd $D/init
     ln -sf ${systemd_system_unitdir}/initrd.target $D${systemd_system_unitdir}/default.target
-    rm -f $D${sysconfdir}/fstab
     > $D${sysconfdir}/fstab
 }
 
