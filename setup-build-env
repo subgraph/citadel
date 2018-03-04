@@ -13,6 +13,6 @@ if [ -z "$ZSH_NAME" ] && [ "$0" = "$THIS_SCRIPT" ]; then
     exit 1
 fi
 
-TEMPLATECONF=../meta-citadel-distro/conf
+TEMPLATECONF=../meta-citadel/conf
 . poky/oe-init-build-env
 
