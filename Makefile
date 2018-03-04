@@ -24,6 +24,9 @@ citadel-image: ## Build citadel-image with bitbake
 citadel-kernel: ## Build citadel-kernel with bitbake
 	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-kernel"
 
+bootloader: ## Build systemd-boot
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake systemd-boot"
+
 user-rootfs: ## Build user-rootfs tarball with debootstrap and configuration scripts
 	mkdir -p build/debootstrap
 	$(DOCKER_RUN_PRIV) sudo scripts/build-user-rootfs-stage-one | tee build/debootstrap/build-user-rootfs.log
