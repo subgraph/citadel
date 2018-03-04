@@ -43,7 +43,7 @@ cleanup_chroot() {
 
 generate_tarball() {
     printf "\n\n----- Generating rootfs tarball -----\n\n"
-    tar -C ${DBS_ROOT} -c --xattrs --xattrs-include=* -f ${DBS_BASE}/user-rootfs.tar .
+    tar -C ${DBS_ROOT} --numeric-owner -c --xattrs --xattrs-include=* -f ${DBS_BASE}/user-rootfs.tar .
     xz --force --threads=0 ${DBS_BASE}/user-rootfs.tar
     ls -al ${DBS_BASE}/user-rootfs.tar
     printf "\n\n"
