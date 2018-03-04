@@ -29,7 +29,7 @@ do_deploy_append() {
 }
 
 # Don't install kernel into images, see kernel.bbclass
-RDEPENDS_kernel-base = ""
+RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 
 #
 # https://github.com/96boards/meta-96boards/issues/81#issuecomment-311256044
