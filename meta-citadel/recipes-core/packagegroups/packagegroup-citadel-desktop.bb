@@ -78,4 +78,5 @@ RDEPENDS_${PN} = "\
     primary-user-appimg\
     dash-to-panel \
     desktopd \
+    iproute2 \
 "
