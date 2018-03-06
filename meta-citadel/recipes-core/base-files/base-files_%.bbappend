@@ -6,6 +6,9 @@ SRC_URI += "\
     file://environment.sh \
     file://fstab \
     file://99-grsec-debootstrap.conf \
+    file://90-citadel-sysctl.conf \
+    file://citadel-network.rules \
+    file://citadel-ifconfig.sh \
     file://00-storage-tmpfiles.conf \
     file://NetworkManager.conf \
     file://zram-swap.service \
@@ -19,11 +22,16 @@ volatiles = ""
 inherit systemd
 SYSTEMD_SERVICE_${PN} = "zram-swap.service"
 
+# for citadel-ifconfig.sh
+RDEPENDS_${PN} = "bash"
+
 do_install_append () {
     install -m 0755 -d ${D}/storage
     install -d ${D}${libdir}/sysctl.d
+    install -m 0755 -d ${D}${libexecdir}
     install -m 0755 -d ${D}${sysconfdir}/profile.d
     install -m 0755 -d ${D}${sysconfdir}/tmpfiles.d
+    install -m 0755 -d ${D}${sysconfdir}/udev/rules.d
     install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
@@ -40,6 +48,11 @@ do_install_append () {
     # disable some pax and grsecurity features so that debootstrap will work
     # this should be removed later
     install -m 0644 ${WORKDIR}/99-grsec-debootstrap.conf ${D}${libdir}/sysctl.d/
+
+    install -m 0644 ${WORKDIR}/90-citadel-sysctl.conf ${D}${libdir}/sysctl.d/
+
+    install -m 0644 ${WORKDIR}/citadel-network.rules ${D}${sysconfdir}/udev/rules.d/
+    install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
 
     ln -s /storage/citadel-state/resolv.conf ${D}${sysconfdir}/resolv.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/etc.conf

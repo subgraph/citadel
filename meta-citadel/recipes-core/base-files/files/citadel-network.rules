@@ -1,0 +1,11 @@
+#
+# udev rule which matches all network interfaces except loopback and veth host devices created by systemd-nspawn.
+# nspawn always names these interfaces with the prefix 'vb-' when they are created for a bridge-mode option. 
+#
+# The citadel-ifconfig.sh script:
+#
+#  1) configures vz-clear bridge with a fixed IP address 
+#  2) enables ip masquerading on every interface
+#  3) applies iptables filter rules on each external interface
+#
+ACTION=="add", SUBSYSTEM=="net", KERNEL!="lo|vb-*", RUN+="/usr/libexec/citadel-ifconfig.sh $name"

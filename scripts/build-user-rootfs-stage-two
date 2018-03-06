@@ -3,6 +3,9 @@
 
 PACKAGES="man manpages vim less xz-utils sudo tmux dbus libpam-systemd vifm openssh-client gnome-terminal packagekit-gtk3-module libcanberra-gtk3-module libpulse0 firefox fonts-roboto-hinted nautilus eog evince unzip"
 
+# appimg-files are stored here because we're already bind mounting the parent directory
+APPIMG_FILES="/var/cache/apt/archives/appimg-files"
+
 setup_locale() {
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
     locale-gen
@@ -67,6 +70,10 @@ post_install_packages() {
     # see 'enable-linger' in loginctl(1)
     mkdir /var/lib/systemd/linger
     touch /var/lib/systemd/linger/user
+
+    install -m 0755 ${APPIMG_FILES}/configure-host0.sh /usr/libexec
+    install -m 0644 ${APPIMG_FILES}/configure-host0.service /usr/lib/systemd/system
+    systemctl enable configure-host0.service
 }
 
 set -u
@@ -81,3 +88,4 @@ write_launch_script
 setup_etc
 create_user
 install_packages
+post_install_packages

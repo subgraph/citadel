@@ -1,5 +1,7 @@
 [Exec]
 Boot=true
+Environment=IFCONFIG_IP=172.17.0.2/24
+Environment=IFCONFIG_GW=172.17.0.1
 
 [Files]
 BindReadOnly=/usr/share/themes/Adapta
@@ -16,7 +18,10 @@ BindReadOnly=/storage/citadel-state/resolv.conf:/etc/resolv.conf
 #
 Bind=/dev/snd
 Bind=/dev/shm
-Bind=/run/user/1000/pulse:/run/user/host/pulse
+BindReadOnly=/run/user/1000/pulse:/run/user/host/pulse
+
+BindReadOnly=/tmp/.X11-unix
+BindReadOnly=/run/user/1000/wayland-0:/run/user/host/wayland-0
 
 #
 # Uncomment to enable kvm access in container
@@ -28,3 +33,5 @@ Bind=/run/user/1000/pulse:/run/user/host/pulse
 #
 #Bind=/dev/dri/renderD128
 
+[Network]
+Zone=clear
