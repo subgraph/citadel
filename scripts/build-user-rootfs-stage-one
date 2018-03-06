@@ -26,6 +26,9 @@ run_chroot_stage() {
     mount chproc ${DBS_ROOT}/proc -t proc
     mount chsys ${DBS_ROOT}/sys -t sysfs
 
+    mkdir -p ${CACHE_DIR}/appimg-files
+    cp ${SCRIPT_DIR}/appimg-files/* ${CACHE_DIR}/appimg-files/
+
     cp --preserve=mode ${SCRIPT_DIR}/build-user-rootfs-stage-two ${DBS_ROOT}/root/install.sh
 
     DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C chroot ${DBS_ROOT} /root/install.sh ${DEBIAN_RELEASE} ${DEBIAN_MIRROR}
