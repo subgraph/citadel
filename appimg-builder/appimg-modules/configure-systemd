@@ -1,0 +1,16 @@
+info "Adding configuration files to /etc/systemd"
+
+local userconfdir=/etc/systemd/user.conf.d
+local loginconfdir=/etc/systemd/logind.conf.d
+
+mkdir -p ${userconfdir} ${loginconfdir}
+
+cat > ${userconfdir}/50-display-env.conf << 'EOF'
+[Manager]
+DefaultEnvironment="DISPLAY=:0"
+EOF
+
+cat > ${loginconfdir}/50-no-kill-user-processes.conf << EOF
+[Login]
+KillUserProcesses=no
+EOF

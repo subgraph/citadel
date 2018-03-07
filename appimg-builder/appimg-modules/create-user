@@ -1,0 +1,6 @@
+info "Creating user account"
+
+useradd -s /bin/bash -m user
+echo "user:user" | chpasswd 
+usermod -aG sudo user
+echo "export DISPLAY=:0" >> /home/user/.bashrc

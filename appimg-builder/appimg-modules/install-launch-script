@@ -1,0 +1,2 @@
+info "Installing launch script to /usr/libexec/launch"
+install_file 0755 launch /usr/libexec

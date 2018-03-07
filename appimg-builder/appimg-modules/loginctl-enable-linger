@@ -1,0 +1,6 @@
+info "Setting enable-linger for user account"
+# Otherwise gnome-terminal won't work if nothing else has been launched
+# see 'enable-linger' in loginctl(1)
+local lingerdir="/var/lib/systemd/linger"
+mkdir -p ${lingerdir}
+touch ${lingerdir}/user

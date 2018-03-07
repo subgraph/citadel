@@ -1,0 +1,4 @@
+info "Disabling Install-Recommends in apt.conf"
+
+echo 'APT::Install-Recommends "0";' > /etc/apt/apt.conf.d/99no-install-recommends
+echo 'APT::Install-Suggests "0";'  >> /etc/apt/apt.conf.d/99no-install-recommends

@@ -1,0 +1,67 @@
+
+info "utility library loaded"
+SEARCH_PATH="/tmp/appimg-build;${APPIMG_BUILDER_BASE}"
+
+# Searches for modules and files in SEARCH_PATH directories
+#
+#   search_item module <module name>
+#   search_item file   <file name>
+#
+search_item() {
+    local IFS=";" subtype=${1} item=${2}
+    local subdir="appimg-${subtype}s"
+
+    for dir in ${SEARCH_PATH}; do
+        local fullpath=${dir}/${subdir}/${item}
+        if [[ -f ${fullpath} ]]; then
+            printf ${fullpath}
+            return
+        fi
+    done
+
+    fatal "Could not find ${subtype} named '${item}'. Bailing.."
+}
+
+#
+# Execute a module by name.  If a function exists with the
+# requested module name it will be executed, otherwise scripts 
+# with this name are searched for in SEARCH_PATH /appimg-modules
+# subdirectories.
+#
+
+module() {
+    if [[ $(type -t ${1}) == "function" ]]; then
+        local fname=${1}
+        ${fname} 
+    else
+        local modpath=$(search_item module ${1})
+        source ${modpath}
+    fi
+}
+
+#
+# See README for more information about this function
+#
+install_file() {
+
+    local mode=${1}
+
+    if [[ $# -eq 3 ]]; then
+        # Type (1)
+        # strip trailing / from ${3} if present
+        local target=${3%/}/${2}
+    elif [[ $# -eq 2 ]]; then
+        # Type (2)
+        # accept either /usr/bin/foo or usr/bin/foo
+        # add leading slash if necessary to construct absolute path
+        local target="/${2#/}"
+    else
+       fatal "Bad number of arguments $# to install_file()"
+    fi
+
+    # strip leading slash from ${2} if present
+    local srcpath=$(search_item file ${2#/})
+    local dstdir=$(dirname ${target})
+    /usr/bin/install -d ${dstdir}
+    /usr/bin/install -m ${mode} ${srcpath} ${target}
+}

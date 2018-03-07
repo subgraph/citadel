@@ -1,0 +1,5 @@
+info "Installing scripts to configure host0 network interface"
+
+install_file 0755 configure-host0.sh /usr/libexec
+install_file 0644 configure-host0.service /usr/lib/systemd/system
+systemctl -q enable configure-host0.service

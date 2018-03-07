@@ -1,0 +1,4 @@
+local hostname=${APPIMG_HOSTNAME:-"subgraph"}
+info "Setting hostname to '$hostname' in /etc/hosts and /etc/hostname"
+printf "127.0.0.1\t${hostname} localhost\n" > /etc/hosts
+printf "${hostname}\n" > /etc/hostname

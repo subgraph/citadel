@@ -1,0 +1,87 @@
+Application Image Builder
+=========================
+
+Application Images (or appimgs for short) are created with this builder
+framework. The build is controlled by a configuration file and this
+configuration file is actually a shell script that follows the conventions
+described in the Configuration File section of this document.
+
+Stage One
+---------
+
+The Stage One builder uses debootstrap to build a very minimal debian
+installation.  Then a chroot is set up and stage-two.sh is executed inside the
+chroot to perform most of the installation.
+
+Stage Two
+---------
+
+The stage-two.sh script mostly just orchestrates the execution of small
+fragments of shell script code that are called 'modules'.  The base framework
+modules can be found in the directory /usr/share/appimg-builder/appimg-modules.
+
+It imports the configuration file with the 'source' command after all the key
+variables and functions have been defined.  It's possible to override any of
+these variables and functions simply by defining another version with the same
+name in the configuration file, but you should almost never need to do this.
+
+Configuration File
+------------------
+
+- Variables
+
+PACKAGES can be set to a list of additional packages to add to the base set of
+packages.
+
+  PACKAGES="extremetuxracer biff anarchism" 
+
+PRE_INSTALL_MODULES can be set to a list of modules to run before the main
+package installation stage happens.  The contents will be appended to a
+pre-defined list of 'base' modules that run.
+
+  PRE_INSTALL_MODULES="my-cool-module another-module"
+
+If complete control over the modules to run is required, you can override the
+variable BASE_PRE_INSTALL_MODULES entirely rather than providing
+PRE_INSTALL_MODULES.  Other modules depend on 'utility-library' so it is usually
+required and should be the first module listed.
+
+  BASE_PRE_INSTALL_MODULES="utility-library configure-locale custom-create-user"
+
+POST_INSTALL_MODULES is a list of modules to execute after packages have been
+installed.  It works exactly the same way as PRE_INSTALL_MODULES and also has a
+corresponding 'base' variable that could be overidden if necessary.
+
+- Modules
+
+Modules can be functions that you define or they can be loaded from files on
+disk. To use files rather than functions a directory named 'appimg-modules'
+must exist as a subdirectory of the directory containing the configuration file.
+Any files you place in this directory will be found by name during the module
+execution stages.
+
+- Installing Files
+
+If you would like to have external files such as configuration files copied into
+the image, create 'appimg-files' as a subdirectory of the directory containing
+the configuration file.  You can then use the install_file command inside of a
+module to copy the files from this directory. You can either store the files to
+install in a flat directory or organize them into subdirectories mirroring the
+location in which they will be installed.  Depending on which option you use,
+the install_file command how two different modes.  In the examples below BASE
+refers to the directory in which your configuration file is located.
+
+   (1): install_file [mode] [file] [target directory]
+  
+   Example: Install BASE/appimg-files/my_config.conf 
+              to /etc/mydaemon/my_config.conf 
+  
+        install_file 0644 my_config.conf /etc/mydaemon
+     
+   (2): install_file [mode] [full path] 
+  
+   Example: Install BASE/appimg-files/etc/mydaemon/my_config.conf 
+              to /etc/mydaemon/my_config.conf
+  
+        install_file 0644 /etc/mydaemon/my_config.conf
+  

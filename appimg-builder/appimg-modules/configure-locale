@@ -1,0 +1,6 @@
+info "Setting up locale for en_US.UTF8"
+
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8 LC_COLLATE=C
+export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 LC_CTYPE=en_US.UTF-8

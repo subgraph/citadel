@@ -1,0 +1,8 @@
+info "Writing /etc/apt/sources.list"
+
+{
+    echo "deb ${DEBIAN_MIRROR} ${DEBIAN_RELEASE} main contrib non-free"
+    echo "deb ${DEBIAN_MIRROR}-security ${DEBIAN_RELEASE}/updates main contrib non-free"
+    echo "deb ${DEBIAN_MIRROR} unstable main"
+
+} > /etc/apt/sources.list

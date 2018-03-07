@@ -1,0 +1,9 @@
+info "Beginning package installation"
+
+apt-get update
+apt-get --assume-yes upgrade
+apt-get --assume-yes install ${PACKAGES}
+
+printf "\n\nInstalled Packages\n\n"
+dpkg -l
+printf "\n\n"
