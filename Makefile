@@ -1,9 +1,9 @@
-.PHONY: help docker-image docker-shell citadel-image citadel-kernel user-rootfs update-submodules
+.PHONY: help docker-image docker-shell citadel-image citadel-kernel user-rootfs update-submodules build-appimg install-build-deps
 
 BASE_DIR = $(shell pwd)
 BASE_BINDMOUNT = type=bind,source=$(BASE_DIR),target=/home/builder/citadel
-DOCKER_RUN = docker run -it --mount $(BASE_BINDMOUNT) citadel-builder  
-DOCKER_RUN_PRIV = docker run -it --privileged --mount $(BASE_BINDMOUNT) citadel-builder  
+DOCKER_RUN = docker run -it --mount $(BASE_BINDMOUNT) citadel-builder
+DOCKER_RUN_PRIV = docker run -it --privileged --mount $(BASE_BINDMOUNT) citadel-builder
 
 #
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -27,9 +27,11 @@ citadel-kernel: ## Build citadel-kernel with bitbake
 bootloader: ## Build systemd-boot
 	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake systemd-boot"
 
-user-rootfs: ## Build user-rootfs tarball with debootstrap and configuration scripts
-	mkdir -p build/debootstrap
-	$(DOCKER_RUN_PRIV) sudo scripts/build-user-rootfs-stage-one | tee build/debootstrap/build-user-rootfs.log
+build-appimg: ## Build an application image
+	$(DOCKER_RUN_PRIV) sudo APPIMG_BUILDER_BASE=${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg
 
 update-submodules: ## Retrieve or update submodule projects
 	git submodule update --init
+
+install-build-deps:
+	sudo apt install --no-install-recommends build-essential python bzip2 cpio chrpath diffstat file texinfo inkscape libgmp-dev libmpc-dev libelf-dev

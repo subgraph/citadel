@@ -141,7 +141,7 @@ install() {
     info "Installing base appimg tree"
     mkdir -p ${PRIMARY_ROOTFS}
     ln -s primary ${MNT}/appimg/default.appimg
-    tar -C ${PRIMARY_ROOTFS} -xf components/user-rootfs.tar.xz
+    tar -C ${PRIMARY_ROOTFS} -xf components/appimg-rootfs.tar.xz
 
     mkdir -p ${PRIMARY_HOME}
     cp components/howto.md ${PRIMARY_HOME}
@@ -174,5 +174,3 @@ install ${1}
 unmount_disk
 sync
 info "Install completed successfully"
-
-

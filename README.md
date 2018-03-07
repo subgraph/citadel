@@ -70,7 +70,7 @@ Before creating the installpack, some artifacts must exist in the build/images d
   * `make citadel-image`  Creates: `images/citadel-image-intel-corei7-64.ext2`
   * `make citadel-kernel` Creates: `images/bzImage`
   * `make bootloader`     Creates: `images/systemd-bootx64.efi`
-  * `make user-rootfs`    Creates: `debootstrap/user-rootfs.tar.xz`
+  * `make appimg-rootfs`  Creates: `appimg/appimg-rootfs.tar.xz`
 
 After all of those components have been build, you can run `scripts/create_install_pack` which will create a file in the current directory called `installpack.tar`.  
 

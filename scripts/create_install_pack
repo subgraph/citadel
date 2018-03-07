@@ -16,7 +16,7 @@ image_file() {
 EFIBOOT=$(image_file systemd-bootx64.efi)
 KERNEL=$(image_file bzImage)
 ROOTFS=$(image_file citadel-image-intel-corei7-64.ext2)
-USER_ROOTFS=$(image_file ../debootstrap/user-rootfs.tar.xz)
+APPIMG_ROOTFS=$(image_file ../appimg/appimg-rootfs.tar.xz)
 HOWTO=$(image_file ../../docs/howto.md)
 INSTALL_SH=$(image_file ../../scripts/install.sh)
 
@@ -51,7 +51,7 @@ rm -rf /tmp/installpack
 mkdir -p /tmp/installpack/components
 setup_boot
 cp ${ROOTFS} /tmp/installpack/components/citadel-image-rootfs.ext2
-cp ${USER_ROOTFS} /tmp/installpack/components/
+cp ${APPIMG_ROOTFS} /tmp/installpack/components/
 cp ${HOWTO} /tmp/installpack/components/
 cp ${INSTALL_SH} /tmp/installpack
 chmod +x /tmp/installpack/install.sh
