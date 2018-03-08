@@ -28,7 +28,7 @@ bootloader: ## Build systemd-boot
 	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake systemd-boot"
 
 build-appimg: ## Build an application image
-	$(DOCKER_RUN_PRIV) sudo APPIMG_BUILDER_BASE=${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg
+	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
 
 update-submodules: ## Retrieve or update submodule projects
 	git submodule update --init
