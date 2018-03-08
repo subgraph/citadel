@@ -2,9 +2,35 @@ Application Image Builder
 =========================
 
 Application Images (or appimgs for short) are created with this builder
-framework. The build is controlled by a configuration file and this
-configuration file is actually a shell script that follows the conventions
-described in the Configuration File section of this document.
+framework. The build is controlled by a configuration file which can customize
+the build process in various ways such as adding extra packages and specifying
+shell functions to be run at certain stages.
+
+The configuration file is really just a shell script but it should follow the 
+conventions described in the Configuration File section of this document.
+
+The builder bind mounts a package cache directory into /var/cache/apt of the 
+chroot so packages will only need to be downloaded once no matter how many times
+you repeat the build. As a nice consequence of this the cached packages don't have 
+to be removed from the final image because they are merely unmounted when the 
+process completes.
+
+Unless you disable it with a command line option, a tmpfs will be mounted on the
+directory the rootfs is built on.If you are tweaking a config and making repeated 
+builds this is not only a lot faster, but will also avoid hammering SSD drives with
+excessive writes (and write amplification).
+
+By default the application image builder is self-hosting and can always be
+run from inside images that it creates.  Building an image is as easy as:
+
+    mkdir work && cd work      : Make a directory to work in
+    appimg-builder --new       : writes a template file build.conf in current directory
+    vim build.conf             : (optionally) make some changes to the template
+    sudo appimg-build          : Build an application image
+
+If you want you can even skip the steps of creating and editing a config file and
+just run appimg-build in a work directory and it will build the default appimg we use 
+with Citadel.
 
 Stage One
 ---------
