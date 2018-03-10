@@ -1,6 +1,11 @@
 #!/bin/bash
 
 APPIMG_BUILDER_BASE="/usr/share/appimg-builder"
+
+#
+# If you're looking for the base lists of packages that are always installed
+# and modules that are always run, they're defined here in common.inc
+#
 source ${APPIMG_BUILDER_BASE}/common.inc
 
 if [ "$EUID" -ne 0 ]; then
