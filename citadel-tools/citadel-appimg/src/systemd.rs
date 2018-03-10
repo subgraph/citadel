@@ -100,7 +100,7 @@ Zone=clear
 pub const APPIMG_SERVICE_TEMPLATE: &str = r###"
 [Unit]
 Description=Application Image $APPIMG_NAME instance
-Wants=desktopd.service
+Wants=citadel-desktopd.service
 
 [Service]
 Environment=SYSTEMD_NSPAWN_SHARE_NS_IPC=1

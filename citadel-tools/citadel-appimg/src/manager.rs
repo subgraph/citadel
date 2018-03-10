@@ -14,6 +14,8 @@ lazy_static!{
     static ref APPIMG_RUN_PATH: PathBuf = PathBuf::from("/run/appimg");
 }
 
+const DESKTOPD_SERVICE: &str = "citadel-desktopd.service";
+
 
 pub struct ImageManager {
     images: HashMap<String, AppImg>,
@@ -79,19 +81,25 @@ impl ImageManager {
     }
 
     pub fn start_image(&mut self, name: &str) -> Result<()> {
+        // if current is not set, set it to this instance
+        let set_as_current = self.current.is_none();
+        if set_as_current {
+            self.set_current(name)?;
+        }
+
         match self.images.get(name) {
             Some(img) => {
                 img.start()?;
             },
             None => {
+                // XXX if set_as_current do something here to undo what set_current has done
                 warn!("Cannot start '{}'. Image does not exist");
                 return Ok(())
             },
         }
-        // if current is not set, set it to this one
-        if self.current.is_none() {
-            self.set_current(name)?;
-            systemd::systemctl_restart("desktopd");
+
+        if set_as_current {
+            systemd::systemctl_restart(DESKTOPD_SERVICE);
         }
         Ok(())
     }
@@ -109,14 +117,14 @@ impl ImageManager {
             None => return Ok(()),
         };
         if current == name {
-            systemd::systemctl_stop("desktopd");
+            systemd::systemctl_stop(DESKTOPD_SERVICE);
             let path = APPIMG_RUN_PATH.join("current.appimg");
             if path.exists() {
                 fs::remove_file(&path)?;
             }
             if let Some(img_name) = self.find_running_image_name() {
                 self.set_current(&img_name)?;
-                systemd::systemctl_start("desktopd");
+                systemd::systemctl_start(DESKTOPD_SERVICE);
             }
         }
         Ok(())

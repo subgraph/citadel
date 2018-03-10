@@ -56,9 +56,7 @@ crate://crates.io/winapi/0.3.4 \
 crate://crates.io/wincolor/0.1.5 \
 "
 
-inherit cargo systemd
-
-SYSTEMD_SERVICE_${PN} = "citadel-desktopd.service"
+inherit cargo
 
 do_install() {
     install -d ${D}${libexecdir}
@@ -70,6 +68,6 @@ do_install() {
     install -m 644 ${B}/conf/citadel-desktopd.service ${D}${systemd_system_unitdir}
 }
 
-FILES_${PN} += "${datadir}/citadel"
+FILES_${PN} += "${datadir}/citadel ${systemd_system_unitdir}"
 
 require citadel-tools.inc
