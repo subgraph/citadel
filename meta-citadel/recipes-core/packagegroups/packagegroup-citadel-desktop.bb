@@ -75,8 +75,10 @@ RDEPENDS_${PN} = "\
     e2fsprogs \
     dosfstools \
     btrfs-tools \
-    primary-user-appimg\
     dash-to-panel \
-    desktopd \
+    launch-default-appimg \
+    citadel-desktopd \
+    citadel-rootfs \
+    citadel-appimg \
     iproute2 \
 "

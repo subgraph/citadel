@@ -1,0 +1,8 @@
+[Unit]
+Description=Launch default appimg
+ConditionPathExists=!/run/appimg
+
+[Service]
+ExecStart=/usr/bin/citadel-appimg start
+Type=oneshot
+RemainAfterExit=yes

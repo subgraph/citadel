@@ -1,5 +1,5 @@
 [Unit]
-Description=Watch Just watching Run User
+Description=Watch for creation of /run/user/1000
 After=run-user-1000.mount
 Requires=run-user-1000.mount
 
