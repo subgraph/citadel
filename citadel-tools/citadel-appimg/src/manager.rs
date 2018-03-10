@@ -55,7 +55,6 @@ impl ImageManager {
         }
 
         let appimg = AppImg::new(name)?;
-        println!("adding: {}", appimg.name());
         self.images.insert(appimg.name().to_string(), appimg);
         Ok(())
     }
@@ -84,7 +83,7 @@ impl ImageManager {
         // if current is not set, set it to this instance
         let set_as_current = self.current.is_none();
         if set_as_current {
-            self.set_current(name)?;
+            self.set_current_target(name)?;
         }
 
         match self.images.get(name) {
@@ -123,7 +122,7 @@ impl ImageManager {
                 fs::remove_file(&path)?;
             }
             if let Some(img_name) = self.find_running_image_name() {
-                self.set_current(&img_name)?;
+                self.set_current_target(&img_name)?;
                 systemd::systemctl_start(DESKTOPD_SERVICE);
             }
         }
@@ -182,6 +181,32 @@ impl ImageManager {
     }
 
     pub fn set_current(&mut self, name: &str) -> Result<()> {
+        {
+            let img = match self.images.get(name) {
+                Some(img) => img,
+                None => {
+                    warn!("Cannot set {} as current, no image with that name exists", name);
+                    return Ok(());
+                },
+            };
+
+            if self.is_current(img) {
+                warn!("Image {} is already current image", name);
+                return Ok(());
+            }
+
+            if !img.is_running() {
+                img.start()?;
+            }
+        }
+        self.set_current_target(name)?;
+        systemd::systemctl_restart(DESKTOPD_SERVICE);
+        Ok(())
+    }
+
+
+
+    fn set_current_target(&mut self, name: &str) -> Result<()> {
         if !is_valid_name(name) {
             warn!("{} is not a valid image name", name);
             return Ok(())

@@ -44,6 +44,10 @@ fn main() {
                     .about("Set an application image as the default image to boot")
                     .arg(Arg::with_name("name").required(true)))
 
+        .subcommand(SubCommand::with_name("current")
+                    .about("Set an application image as 'current'")
+                    .arg(Arg::with_name("name").required(true)))
+
         .get_matches();
 
     let result = match matches.subcommand() {
@@ -51,6 +55,7 @@ fn main() {
         ("start", Some(m)) => start_cmd(m),
         ("stop", Some(m)) => stop_cmd(m),
         ("default", Some(m)) => default_cmd(m),
+        ("current", Some(m)) => current_cmd(m),
         _ => Ok(()),
     };
     if let Err(e) = result {
@@ -87,6 +92,17 @@ fn default_cmd(matches: &ArgMatches) -> Result<()> {
     let mut manager = ImageManager::load()?;
     if manager.image_exists(name) {
         manager.set_default(name)?;
+    } else {
+        warn!("No image '{}' exists", name);
+    }
+    Ok(())
+}
+
+fn current_cmd(matches: &ArgMatches) -> Result<()> {
+    let name = matches.value_of("name").unwrap();
+    let mut manager = ImageManager::load()?;
+    if manager.image_exists(name) {
+        manager.set_current(name)?;
     } else {
         warn!("No image '{}' exists", name);
     }
