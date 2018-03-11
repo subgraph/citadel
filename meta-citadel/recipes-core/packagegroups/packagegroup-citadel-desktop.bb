@@ -16,7 +16,8 @@ RDEPENDS_${PN} = "\
     caribou \
     networkmanager \
     network-manager-applet \
-    clutter-1.0 \
+    networkmanager-nmtui \
+	clutter-1.0 \
     gnome-desktop \
     gnome-bluetooth \
     gnome-control-center \
@@ -81,4 +82,10 @@ RDEPENDS_${PN} = "\
     citadel-rootfs \
     citadel-appimg \
     iproute2 \
+	sgmenu \
+	sgstatus \
+	wlc \
+	sway \
+	xcb-util-xrm \
+	rofi \
 "

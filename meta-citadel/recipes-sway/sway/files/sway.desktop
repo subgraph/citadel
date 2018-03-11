@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Sway
+Comment=SirCmpwn's Wayland window manager
+Exec=sway
+TryExec=sway
+Type=Application
