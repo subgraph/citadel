@@ -72,9 +72,9 @@ bindsym $mod+Shift+d exec $sgmenu
 bindsym $mod+9 exec $lockscreen
 
 # volume
-bindsym X86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym X86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym X86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
@@ -210,7 +210,7 @@ bindsym $mod+r mode "resize"
 # Borders:
 #
 default_border pixel 1
-default_floating_boarder normal
+default_floating_border normal
 
 #
 # Gaps:
@@ -222,7 +222,6 @@ smart_gaps on
 #
 # Startup Commands:
 #
-systemctl --user restart pulseaudio.service
 exec /usr/bin/start-pulseaudio-x11
 exec /usr/libexec/gsd-power
 exec /usr/libexec/gsd-sound
