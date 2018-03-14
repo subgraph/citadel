@@ -11,7 +11,7 @@ ALTERNATIVE_${PN}_remove = "resolv-conf"
 GROUPADD_PARAM_${PN} += "; -r kvm"
 PACKAGECONFIG = "\
     efi ldconfig pam usrmerge rfkill backlight binfmt hostnamed ima localed logind machined myhostname \
-    nss polkit randomseed seccomp timedated utmp vconsole \
+    nss polkit randomseed seccomp timedated utmp vconsole timesyncd \
 "
 
 do_install_append() {

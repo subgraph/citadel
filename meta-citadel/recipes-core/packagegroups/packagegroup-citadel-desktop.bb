@@ -82,10 +82,11 @@ RDEPENDS_${PN} = "\
     citadel-rootfs \
     citadel-appimg \
     iproute2 \
-	sgmenu \
-	sgstatus \
-	wlc \
-	sway \
-	xcb-util-xrm \
-	rofi \
+    util-linux-hwclock \
+    sgmenu \
+    sgstatus \
+    wlc \
+    sway \
+    xcb-util-xrm \
+    rofi \
 "
