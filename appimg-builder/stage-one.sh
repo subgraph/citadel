@@ -152,6 +152,7 @@ while [[ $# -gt 0 ]]; do
     key=${1}
     case $key in
         -d)
+            mkdir -p "${2}"
             WORKDIR="$(realpath ${2})"
             shift
             shift
