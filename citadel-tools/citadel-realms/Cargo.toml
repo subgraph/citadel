@@ -1,0 +1,15 @@
+[package]
+name = "citadel-realms"
+version = "0.1.0"
+authors = ["Bruce Leidl <bruce@subgraph.com>"]
+homepage = "http://github.com/subgraph/citadel"
+
+[dependencies]
+libc = "0.2"
+clap = "2.30.0"
+failure = "0.1.1"
+toml = "0.4.5"
+serde_derive = "1.0.27"
+serde = "1.0.27"
+termcolor = "0.3"
+walkdir = "2"
