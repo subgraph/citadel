@@ -12,6 +12,7 @@ SRC_URI += "\
     file://00-storage-tmpfiles.conf \
     file://NetworkManager.conf \
     file://zram-swap.service \
+    file://share/dot.vimrc \
 "
 
 dirs1777_remove = "${localstatedir}/volatile/tmp"
@@ -27,6 +28,7 @@ RDEPENDS_${PN} = "bash"
 
 do_install_append () {
     install -m 0755 -d ${D}/storage
+    install -m 0755 -d ${D}/realms
     install -d ${D}${libdir}/sysctl.d
     install -m 0755 -d ${D}${libexecdir}
     install -m 0755 -d ${D}${sysconfdir}/profile.d
@@ -53,6 +55,8 @@ do_install_append () {
 
     install -m 0644 ${WORKDIR}/citadel-network.rules ${D}${sysconfdir}/udev/rules.d/
     install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
+
+    install -m 0755 ${WORKDIR}/share/dot.vimrc ${D}${sysconfdir}/skel/.vimrc
 
     ln -s /storage/citadel-state/resolv.conf ${D}${sysconfdir}/resolv.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/etc.conf
