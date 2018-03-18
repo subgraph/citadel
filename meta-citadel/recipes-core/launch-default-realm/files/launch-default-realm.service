@@ -1,0 +1,8 @@
+[Unit]
+Description=Launch default realm
+ConditionPathExists=!/run/realms
+
+[Service]
+ExecStart=/usr/bin/realms start
+Type=oneshot
+RemainAfterExit=yes

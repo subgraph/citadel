@@ -1,6 +1,0 @@
-[Unit]
-Description=Watch run-user service
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/systemctl --no-block start launch-default-appimg.path
