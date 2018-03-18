@@ -34,4 +34,7 @@ update-submodules: ## Retrieve or update submodule projects
 	git submodule update --init
 
 install-build-deps:
-	sudo apt install --no-install-recommends build-essential python bzip2 cpio chrpath diffstat file texinfo inkscape libgmp-dev libmpc-dev libelf-dev
+	sudo apt install --no-install-recommends build-essential python bzip2 cpio chrpath diffstat file texinfo inkscape libgmp-dev libmpc-dev libelf-dev gawk
+
+clean-citadel-tools:
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake -ccleansstate citadel-rootfs && bitbake -ccleansstate citadel-realms && bitbake -ccleansstate citadel-desktopd"
