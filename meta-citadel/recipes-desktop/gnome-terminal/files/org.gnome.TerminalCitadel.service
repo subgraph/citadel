@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.gnome.TerminalCitadel
+SystemdService=gnome-terminal-citadel.service
+Exec=/usr/libexec/gnome-terminal-server --class=org.gnome.TerminalCitadel --app-id org.gnome.TerminalCitadel

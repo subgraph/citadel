@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Citadel
+Keywords=shell;prompt;command;commandline;cmd;
+Exec=gnome-terminal --app-id org.gnome.TerminalCitadel --title "Citadel"
+Icon=utilities-root-terminal
+Type=Application
+StartupNotify=true
+X-GNOME-SingleWindow=false

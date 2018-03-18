@@ -1,0 +1,7 @@
+[Unit]
+Description=GNOME Terminal Server for Citadel
+[Service]
+KillMode=process
+Type=dbus
+BusName=org.gnome.TerminalCitadel
+ExecStart=/usr/libexec/gnome-terminal-server --class=org.gnome.TerminalCitadel --app-id org.gnome.TerminalCitadel
