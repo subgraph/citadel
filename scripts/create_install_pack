@@ -56,4 +56,15 @@ cp ${HOWTO} /tmp/installpack/components/
 cp ${INSTALL_SH} /tmp/installpack
 chmod +x /tmp/installpack/install.sh
 
+(
+echo "Date  : $(date)"
+echo "Git   : $(git rev-parse HEAD)"
+pushd /tmp/installpack > /dev/null
+echo
+echo "    $(sha256sum components/citadel-image-rootfs.ext2)"
+echo "    $(sha256sum components/appimg-rootfs.tar.xz)"
+popd > /dev/null
+) > /tmp/installpack/build.info
+
 tar -C /tmp -cvf installpack.tar installpack
+#rm -rf /tmp/installpack
