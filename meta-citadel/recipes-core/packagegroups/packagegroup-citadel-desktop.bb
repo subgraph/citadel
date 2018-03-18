@@ -25,6 +25,7 @@ RDEPENDS_${PN} = "\
     gnome-backgrounds \
     gnome-tweak-tool \
     gnome-terminal \
+    gnome-usage \
     libgnome-desktop \
     libxkbcommon \
     xkeyboard-config \
@@ -64,9 +65,7 @@ RDEPENDS_${PN} = "\
     paper-icon-theme \
     ttf-roboto \
     citadel-desktop-gsettings \
-    nautilus \
     systemd-analyze \
-    debootstrap \
     wget \
     sed \
     binutils \
@@ -77,10 +76,10 @@ RDEPENDS_${PN} = "\
     dosfstools \
     btrfs-tools \
     dash-to-panel \
-    launch-default-appimg \
+    launch-default-realm \
     citadel-desktopd \
     citadel-rootfs \
-    citadel-appimg \
+    citadel-realms \
     iproute2 \
     util-linux-hwclock \
     sgmenu \

@@ -72,5 +72,7 @@ do_install() {
     install -m 644 ${B}/conf/citadel-rootfs.conf ${D}${datadir}/citadel
 }
 
+FILES_${PN} += "${datadir}/citadel"
+
 inherit cargo
 require citadel-tools.inc

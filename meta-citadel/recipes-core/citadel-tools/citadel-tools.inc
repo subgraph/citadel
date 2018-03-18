@@ -12,5 +12,5 @@ do_unpack_src() {
     rm -rf ${WORKDIR}$/${PN}/target
 }
 # don't use cached task
-#do_unpack_src[nostamp] = "1"
+# do_unpack_src[nostamp] = "1"
 addtask unpack_src after do_unpack before do_patch
