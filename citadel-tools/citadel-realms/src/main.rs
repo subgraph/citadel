@@ -51,7 +51,7 @@ fn main() {
     let app = App::new("citadel-realms")
         .about("Subgraph Citadel realm management")
         .after_help("'realms help <command>' to display help for an individual subcommand\n")
-        .global_settings(&[ColoredHelp, DisableVersion, DeriveDisplayOrder, AllowMissingPositional, VersionlessSubcommands ])
+        .global_settings(&[ColoredHelp, DisableVersion, DeriveDisplayOrder, VersionlessSubcommands ])
         .arg(Arg::with_name("help").long("help").hidden(true))
         .arg(Arg::with_name("quiet")
              .long("quiet")
@@ -167,8 +167,11 @@ fn main() {
         ("terminal", Some(m)) => do_terminal(m),
         ("new", Some(m)) => do_new(m),
         ("remove", Some(m)) => do_remove(m),
-        ("base-update", _) => do_base_update(),
-        _ =>  do_list(),
+        ("update-appimg", _) => do_update_appimg(),
+        _ =>  {
+            let _ = do_list();
+            exit(0);
+        },
     };
 
     if let Err(e) = result {
@@ -297,7 +300,7 @@ fn do_remove(matches: &ArgMatches) -> Result<()> {
     Ok(())
 }
 
-fn do_base_update() -> Result<()> {
+fn do_update_appimg() -> Result<()> {
     require_root()?;
     let manager = RealmManager::load()?;
     manager.base_appimg_update()
