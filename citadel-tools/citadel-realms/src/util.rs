@@ -48,10 +48,7 @@ pub fn is_valid_realm_name(name: &str) -> bool {
         name.chars().all(is_alphanum_or_dash)
 }
 
-pub fn mkdir_chown(path: &Path, uid: u32, gid: u32) -> io::Result<()> {
-    if !path.exists() {
-        fs::create_dir(path)?;
-    }
+pub fn chown(path: &Path, uid: u32, gid: u32) -> io::Result<()> {
     let cstr = CString::new(path.as_os_str().as_bytes())?;
     unsafe {
         if libc::chown(cstr.as_ptr(), uid, gid) == -1 {
@@ -61,15 +58,29 @@ pub fn mkdir_chown(path: &Path, uid: u32, gid: u32) -> io::Result<()> {
     Ok(())
 }
 
+fn copy_path(from: &Path, to: &Path) -> Result<()> {
+    if to.exists() {
+        bail!("destination path {} already exists which is not expected", to.display());
+    }
+
+    let meta = from.metadata()?;
+
+    if from.is_dir() {
+        fs::create_dir(to)?;
+    } else {
+        fs::copy(&from, &to)?;
+    }
+
+    chown(to, meta.uid(), meta.gid())?;
+    Ok(())
+
+}
 pub fn copy_tree(from_base: &Path, to_base: &Path) -> Result<()> {
     for entry in WalkDir::new(from_base) {
         let path = entry?.path().to_owned();
         let to = to_base.join(path.strip_prefix(from_base)?);
-        if path.is_dir() {
-            let meta = path.metadata()?;
-            mkdir_chown(&to, meta.uid(), meta.gid())?;
-        } else {
-            fs::copy(&path, &to)
+        if &to != to_base {
+            copy_path(&path, &to)
                 .map_err(|e| format_err!("failed to copy {} to {}: {}", path.display(), to.display(), e))?;
         }
     }

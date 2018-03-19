@@ -166,7 +166,8 @@ impl Realm {
 
     fn create_home_directory(&self) -> Result<()> {
         let home = self.base_path().join("home");
-        mkdir_chown(&home, 1000, 1000)?;
+        fs::create_dir(&home)?;
+        chown(&home, 1000, 1000)?;
         let skel = PathBuf::from(REALMS_BASE_PATH).join("skel");
         if skel.exists() {
             info!("Populating realm home directory with files from {}", skel.display());
