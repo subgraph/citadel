@@ -28,6 +28,21 @@ do_deploy_append() {
     ln -sf bzImage-initramfs${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOYDIR}/bzImage
 }
 
+#
+# Replaces function with same name in kernel.bbclass since that implementation
+# doesn't pass destination argument to lz4 in which case the decompressed output
+# just disappears into thin air it seems.
+#
+copy_initramfs() {
+    echo "copy_initramfs override"
+    mkdir -p ${B}/usr
+    rm -f ${B}/usr/${INITRAMFS_IMAGE_NAME}.cpio
+    cp ${DEPLOY_DIR_IMAGE}/${INITRAMFS_IMAGE_NAME}.cpio.lz4 ${B}/usr/.
+    lz4 -df ${B}/usr/${INITRAMFS_IMAGE_NAME}.cpio.lz4 ${B}/usr/${INITRAMFS_IMAGE_NAME}.cpio
+    ls -al ${B}/usr
+    echo "Finished copy of initramfs into ./usr"
+}
+
 # Don't install kernel into images, see kernel.bbclass
 RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 
@@ -37,7 +52,7 @@ RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 #
 # coreutils for /usr/bin/seq which pax size overflow gcc plugin uses
 
-DEPENDS += "openssl-native coreutils-native"
+DEPENDS += "openssl-native coreutils-native lz4-native"
 HOST_EXTRACFLAGS += "-I${STAGING_INCDIR_NATIVE}"
 
 COMPATIBLE_MACHINE = "(intel-corei7-64)"

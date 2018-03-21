@@ -91,8 +91,6 @@ PACKAGE_INSTALL = "\
 "
 
 SYSTEMD_DEFAULT_TARGET = "initrd.target"
-#IMAGE_FEATURES = ""
-#IMAGE_FEATURES_append = " empty-root-password"
 export IMAGE_BASENAME = "citadel-initramfs-image"
 IMAGE_LINGUAS = ""
 
@@ -100,6 +98,7 @@ LICENSE = "MIT"
 
 INITRAMFS_MAXSIZE = "512000"
 
+INITRAMFS_FSTYPES = "cpio.lz4"
 IMAGE_FSTYPES = "${INITRAMFS_FSTYPES}"
 inherit core-image
 
