@@ -1,0 +1,310 @@
+From e771fb2af8b8e12640f01390d0695f9338142ee5 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Thu, 22 Mar 2018 19:50:28 -0400
+Subject: [PATCH] Make goa cups and user accounts optional
+
+There is also a path leak fix
+---
+ meson.build                            | 13 +++++++++++++
+ meson_options.txt                      |  4 ++++
+ panels/background/bg-pictures-source.c | 20 ++++++++++++++++++++
+ panels/background/meson.build          | 15 +++++++++++----
+ panels/meson.build                     | 15 ++++++++++++---
+ shell/cc-panel-loader.c                |  6 ++++++
+ 6 files changed, 66 insertions(+), 7 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 2d0d45e..a61de4a 100644
+--- a/meson.build
++++ b/meson.build
+@@ -97,6 +97,13 @@ libgd = subproject(
+ )
+ libgd_dep = libgd.get_variable('libgd_dep')
+ 
++enable_goa = get_option('online_accounts')
++enable_cups = get_option('cups')
++enable_user_accounts = get_option('user_accounts')
++config_h.set('WITH_GOA', enable_goa, description: 'Define to enable support for Gnome Online Accounts')
++config_h.set('WITH_CUPS', enable_goa, description: 'Define to enable support for CUPS')
++config_h.set('WITH_USER_ACCOUNTS', enable_user_accounts, description: 'Define to enable user accounts panel')
++
+ goa_req_version = '>= 3.25.3'
+ pulse_req_version = '>= 2.0'
+ 
+@@ -108,7 +115,9 @@ gio_dep = dependency('gio-2.0')
+ glib_dep = dependency('glib-2.0', version: '>= 2.53.0')
+ gnome_desktop_dep = dependency('gnome-desktop-3.0', version: '>= 3.27.90')
+ gnome_settings_dep = dependency('gnome-settings-daemon', version: '>= 3.25.90')
++if enable_goa
+ goa_dep = dependency('goa-1.0', version: goa_req_version)
++endif
+ gsettings_desktop_dep = dependency('gsettings-desktop-schemas', version: '>= 3.27.2')
+ libxml_dep = dependency('libxml-2.0')
+ polkit_gobject_dep = dependency('polkit-gobject-1', version: '>= 0.103')
+@@ -129,6 +138,8 @@ common_deps = [
+   dependency('gtk+-3.0', version: '>= 3.22.20')
+ ]
+ 
++if enable_cups
++
+ # Check for CUPS 1.4 or newer
+ cups_dep = dependency('cups', version : '>= 1.4', required: false)
+ assert(cups_dep.found(), 'CUPS 1.4 or newer not found')
+@@ -149,6 +160,8 @@ foreach header: check_headers
+   assert(cc.has_header(header[1], args: cups_cflags), 'CUPS headers not found: ' + header[1])
+ endforeach
+ 
++endif
++
+ # Optional dependency for the user accounts panel
+ enable_cheese = get_option('cheese')
+ if enable_cheese
+diff --git a/meson_options.txt b/meson_options.txt
+index 7498af4..d5e2548 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -3,3 +3,7 @@ option('documentation', type: 'boolean', value: false, description: 'build docum
+ option('gnome_session_libexecdir', type: 'string', value: '', description: 'Directory for gnome-session\'s libexecdir')
+ option('ibus', type: 'boolean', value: true, description: 'build with IBus support')
+ option('wayland', type: 'boolean', value: true, description: 'build with Wayland support')
++option('staging_dir', type: 'string', description: 'set staging directory for cross-compile')
++option('online_accounts', type: 'boolean', value: false, description: 'build with support for gnome-online-accounts')
++option('cups', type: 'boolean', value: false, description: 'build with support for CUPS')
++option('user_accounts', type: 'boolean', value: false, description: 'build with support for user accounts panel')
+diff --git a/panels/background/bg-pictures-source.c b/panels/background/bg-pictures-source.c
+index a37682d..e17b0e1 100644
+--- a/panels/background/bg-pictures-source.c
++++ b/panels/background/bg-pictures-source.c
+@@ -23,13 +23,17 @@
+ 
+ #include "bg-pictures-source.h"
+ 
++#ifdef WITH_GOA
+ #include "cc-background-grilo-miner.h"
++#endif
+ #include "cc-background-item.h"
+ 
+ #include <string.h>
+ #include <cairo-gobject.h>
+ #include <gio/gio.h>
++#ifdef WITH_GOA
+ #include <grilo.h>
++#endif
+ #include <libgnome-desktop/gnome-desktop-thumbnail.h>
+ #include <gdesktop-enums.h>
+ 
+@@ -43,7 +47,9 @@ struct _BgPicturesSource
+ 
+   GCancellable *cancellable;
+ 
++#ifdef WITH_GOA
+   CcBackgroundGriloMiner *grl_miner;
++#endif
+ 
+   GnomeDesktopThumbnailFactory *thumb_factory;
+ 
+@@ -85,7 +91,9 @@ bg_pictures_source_dispose (GObject *object)
+       g_clear_object (&source->cancellable);
+     }
+ 
++#ifdef WITH_GOA
+   g_clear_object (&source->grl_miner);
++#endif
+   g_clear_object (&source->thumb_factory);
+ 
+   G_OBJECT_CLASS (bg_pictures_source_parent_class)->dispose (object);
+@@ -460,7 +468,9 @@ add_single_file (BgPicturesSource     *bg_source,
+   gboolean retval = FALSE;
+   g_autoptr(GFile) pictures_dir = NULL;
+   g_autoptr(GFile) cache_dir = NULL;
++#ifdef WITH_GOA
+   GrlMedia *media;
++#endif
+ 
+   /* find png and jpeg files */
+   if (!content_type)
+@@ -516,13 +526,16 @@ add_single_file (BgPicturesSource     *bg_source,
+ 
+  read_file:
+ 
++#ifdef WITH_GOA
+   media = g_object_get_data (G_OBJECT (file), "grl-media");
+   if (media == NULL)
+     {
++#endif
+       g_object_set_data_full (G_OBJECT (file), "item", g_object_ref (item), g_object_unref);
+       g_file_read_async (file, G_PRIORITY_DEFAULT,
+                          bg_source->cancellable,
+                          picture_opened_for_read, bg_source);
++#ifdef WITH_GOA
+     }
+   else
+     {
+@@ -560,6 +573,7 @@ add_single_file (BgPicturesSource     *bg_source,
+                          picture_copied_for_read,
+                          bg_source);
+     }
++#endif
+ 
+   retval = TRUE;
+ 
+@@ -590,6 +604,7 @@ add_single_file_from_info (BgPicturesSource     *bg_source,
+   return add_single_file (bg_source, file, content_type, mtime, ret_row_ref);
+ }
+ 
++#ifdef WITH_GOA
+ static gboolean
+ add_single_file_from_media (BgPicturesSource *bg_source,
+                             GFile            *file,
+@@ -614,6 +629,7 @@ add_single_file_from_media (BgPicturesSource *bg_source,
+ 
+   return add_single_file (bg_source, file, content_type, (guint64) mtime_unix, NULL);
+ }
++#endif
+ 
+ gboolean
+ bg_pictures_source_add (BgPicturesSource     *bg_source,
+@@ -930,6 +946,7 @@ monitor_path (BgPicturesSource *self,
+   return monitor;
+ }
+ 
++#ifdef WITH_GOA
+ static void
+ media_found_cb (BgPicturesSource *self, GrlMedia *media)
+ {
+@@ -941,6 +958,7 @@ media_found_cb (BgPicturesSource *self, GrlMedia *media)
+   g_object_set_data_full (G_OBJECT (file), "grl-media", g_object_ref (media), g_object_unref);
+   add_single_file_from_media (self, file, media);
+ }
++#endif
+ 
+ static void
+ bg_pictures_source_init (BgPicturesSource *self)
+@@ -964,9 +982,11 @@ bg_pictures_source_init (BgPicturesSource *self)
+   cache_path = bg_pictures_source_get_cache_path ();
+   self->cache_dir_monitor = monitor_path (self, cache_path);
+ 
++#ifdef WITH_GOA
+   self->grl_miner = cc_background_grilo_miner_new ();
+   g_signal_connect_swapped (self->grl_miner, "media-found", G_CALLBACK (media_found_cb), self);
+   cc_background_grilo_miner_start (self->grl_miner);
++#endif
+ 
+   self->thumb_factory =
+     gnome_desktop_thumbnail_factory_new (GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE);
+diff --git a/panels/background/meson.build b/panels/background/meson.build
+index bb34b69..0db3dae 100644
+--- a/panels/background/meson.build
++++ b/panels/background/meson.build
+@@ -34,9 +34,11 @@ install_data(
+ 
+ common_sources = []
+ 
++staging = get_option('staging_dir')
++
+ enums = 'gdesktop-enums-types'
+ enums_header = files(
+-  gsettings_desktop_dep.get_pkgconfig_variable('prefix') + '/include/gsettings-desktop-schemas/gdesktop-enums.h',
++  staging + gsettings_desktop_dep.get_pkgconfig_variable('prefix') + '/include/gsettings-desktop-schemas/gdesktop-enums.h',
+   'cc-background-item.h'
+ )
+ 
+@@ -75,20 +77,25 @@ sources = common_sources + files(
+   'bg-source.c',
+   'bg-wallpapers-source.c',
+   'cc-background-chooser-dialog.c',
+-  'cc-background-grilo-miner.c',
+   'cc-background-item.c',
+   'cc-background-xml.c'
+ )
+ 
++if enable_goa
++sources += files('cc-background-grilo-miner.c')
++endif
++
+ deps = common_deps + [
+   gdk_pixbuf_dep,
+   gnome_desktop_dep,
+-  goa_dep,
+   libxml_dep,
+   dependency('cairo-gobject'),
+-  dependency('grilo-0.3', version: '>= 0.3.0')
+ ]
+ 
++if enable_goa
++deps += [ goa_dep, dependency('grilo-0.3', version: '>= 0.3.0') ]
++endif
++
+ cflags += [
+   '-DGNOMELOCALEDIR="@0@"'.format(control_center_localedir),
+   '-DDATADIR="@0@"'.format(control_center_datadir),
+diff --git a/panels/meson.build b/panels/meson.build
+index d671c47..a823bc8 100644
+--- a/panels/meson.build
++++ b/panels/meson.build
+@@ -9,16 +9,13 @@ panels = [
+   'keyboard',
+   'mouse',
+   'notifications',
+-  'online-accounts',
+   'power',
+-  'printers',
+   'privacy',
+   'region',
+   'search',
+   'sharing',
+   'sound',
+   'universal-access',
+-  'user-accounts'
+ ]
+ 
+ if host_is_linux
+@@ -32,6 +29,18 @@ if host_is_linux_not_s390
+   ]
+ endif
+ 
++if enable_goa
++  panels += ['online-accounts']
++endif
++
++if enable_cups
++  panels += ['printers']
++endif
++
++if enable_user_accounts
++  panels += ['user-accounts']
++endif
++
+ panels_list = []
+ panels_libs = []
+ foreach cappletname: panels
+diff --git a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
+index 675833c..da96263 100644
+--- a/shell/cc-panel-loader.c
++++ b/shell/cc-panel-loader.c
+@@ -91,16 +91,22 @@ static struct {
+   PANEL_TYPE("wifi",             cc_wifi_panel_get_type         ),
+ #endif
+   PANEL_TYPE("notifications",    cc_notifications_panel_get_type),
++#ifdef WITH_GOA
+   PANEL_TYPE("online-accounts",  cc_goa_panel_get_type          ),
++#endif
+   PANEL_TYPE("power",            cc_power_panel_get_type        ),
++#ifdef WITH_CUPS
+   PANEL_TYPE("printers",         cc_printers_panel_get_type     ),
++#endif
+   PANEL_TYPE("privacy",          cc_privacy_panel_get_type      ),
+   PANEL_TYPE("region",           cc_region_panel_get_type       ),
+   PANEL_TYPE("search",           cc_search_panel_get_type       ),
+   PANEL_TYPE("sharing",          cc_sharing_panel_get_type      ),
+   PANEL_TYPE("sound",            cc_sound_panel_get_type        ),
+   PANEL_TYPE("universal-access", cc_ua_panel_get_type           ),
++#ifdef WITH_USER_ACCOUNTS
+   PANEL_TYPE("user-accounts",    cc_user_panel_get_type         ),
++#endif
+ #ifdef BUILD_WACOM
+   PANEL_TYPE("wacom",            cc_wacom_panel_get_type        ),
+ #endif
+-- 
+2.16.2
+
