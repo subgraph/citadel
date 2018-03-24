@@ -1,0 +1,32 @@
+From 6f22047a0c97c06d8d4069a7dbecaa567065a00b Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Wed, 21 Mar 2018 15:19:09 -0400
+Subject: [PATCH] Use pkgconfig to find libgcrypt
+
+---
+ configure.ac | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 06dfc0c..c11526f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -193,14 +193,7 @@ AC_DEFINE_UNQUOTED([GPG_EXECUTABLE], ["$GNUPG"], [Path to gpg executable.])
+ #
+ 
+ GCRYPT_LIBVER=1
+-
+-AM_PATH_LIBGCRYPT($GCRYPT_LIBVER:$GCRYPT_VERSION,,
+-	AC_MSG_ERROR([[
+-***
+-*** libgcrypt was not found. You may want to get it from
+-*** ftp://ftp.gnupg.org/gcrypt/libgcrypt/
+-***
+-]]))
++PKG_CHECK_MODULES(LIBGCRYPT, libgcrypt)
+ libgcrypt=yes
+ AC_DEFINE_UNQUOTED(LIBGCRYPT_VERSION, "$GCRYPT_VERSION", [Version of GCRYPT we expect])
+ 
+-- 
+2.16.2
+
