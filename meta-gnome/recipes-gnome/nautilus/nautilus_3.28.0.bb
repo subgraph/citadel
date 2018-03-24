@@ -8,22 +8,20 @@ LIC_FILES_CHKSUM = "file://LICENSE;md5=d32239bcb673463ab874e80d47fae504 \
 GNOMEBASEBUILDCLASS = "meson"
 inherit gnomebase gobject-introspection gettext
 
-#SRC_URI = "https://download.gnome.org/sources/nautilus/3.26/nautilus-${PV}.tar.xz 
-
-SRC_URI += "file://0001-meson-find-libm-correctly.patch"
-SRC_URI[archive.md5sum] = "1b1d05e4d734e2e0710275849e83b85e"
-SRC_URI[archive.sha256sum] = "a02b30ef9033f6f92fbc5e29abaceeb58ce6a600ed9fa5a4697ba82901d07924"
+SRC_URI += "file://0001-find-libm-correctly.patch"
+SRC_URI[archive.md5sum] = "b929e5c132cdb6e3cbdf216967e7baf0"
+SRC_URI[archive.sha256sum] = "b60035352903d792553e5cb2624dcbad927dd6121594a1dfdb7860c5e53bf620"
 
 
 FILES_${PN} += "\
     ${datadir}/glib-2.0/schemas \
     ${datadir}/gnome-shell/search-providers/nautilus-search-provider.ini \
-    ${datadir}/appdata/org.gnome.Nautilus.appdata.xml \
+    ${datadir}/metainfo/org.gnome.Nautilus.appdata.xml \
     ${datadir}/icons/hicolor/ \
     ${datadir}/dbus-1/services \
 "
 
-DEPENDS += "gtk+3 glib-2.0 pango gnome-autoar libxml2 gnome-desktop tracker"
+DEPENDS += "gtk+3 glib-2.0 pango gnome-autoar libxml2 gnome-desktop tracker gexiv2"
 # This probably belongs in meson.bbclass
 #
 # 1) write out a wrapper script that can execute target binaries
