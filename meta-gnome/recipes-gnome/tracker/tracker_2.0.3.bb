@@ -12,8 +12,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=506ab4920510c723c01689e212f41404 \
 SRC_URI = "http://ftp.gnome.org/pub/gnome/sources/tracker/2.0/tracker-${PV}.tar.xz \
            file://0001-assume-sqlite-built-threadsafe-and-with-fts5.patch \
            "
-SRC_URI[md5sum] = "25d8c102a2cdc63e434a2bbbdf9f7d3d"
-SRC_URI[sha256sum] = "ece71a56c29151a76fc1b6e43c15dd1b657b37162dc948fa2487faf5ddb47fda"
+SRC_URI[md5sum] = "8fe16374c5a7e50cd7166e204a6371cd"
+SRC_URI[sha256sum] = "5a2fb274c128ec67a920944937b5147ceaf5db16fef6691ea22c4cb841e20580"
 
 DEPENDS = "intltool-native libunistring sqlite3 dbus upower networkmanager bash-completion glib-2.0-native libsoup-2.4 libxml2 json-glib"
 
