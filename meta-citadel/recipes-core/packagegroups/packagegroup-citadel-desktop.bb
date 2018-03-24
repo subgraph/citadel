@@ -1,6 +1,10 @@
 
 inherit packagegroup
 
+CITADEL_POWERTOP = ""
+# append only if citadel-powertop override is set
+CITADEL_POWERTOP_append_citadel-powertop= "powertop"
+
 RDEPENDS_${PN} = "\
     atk \
     at-spi2-atk \
@@ -17,7 +21,7 @@ RDEPENDS_${PN} = "\
     networkmanager \
     network-manager-applet \
     networkmanager-nmtui \
-	clutter-1.0 \
+    clutter-1.0 \
     gnome-desktop \
     gnome-bluetooth \
     gnome-control-center \
@@ -88,4 +92,5 @@ RDEPENDS_${PN} = "\
     sway \
     xcb-util-xrm \
     rofi \
+    ${CITADEL_POWERTOP} \
 "

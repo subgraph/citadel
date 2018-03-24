@@ -4,6 +4,11 @@ LICENSE = "GPLv2"
 
 inherit kernel 
 
+# if OVERRIDES contains citadel-powertop, then find defconfig in citadel-powertop dirctory
+# This config disables CONFIG_GRKERNSEC_KMEM and enables CONFIG_DEBUG_FS so that
+# powertop will work
+FILESEXTRAPATHS_prepend_citadel-powertop = "${FILE_DIRNAME}/citadel-powertop:"
+LINUX_VERSION_EXTENSION_append_citadel-powertop = "-powertop"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 LINUX_VERSION ?= "${PV}"

@@ -198,3 +198,9 @@ PACKAGECONFIG_append_pn-nativesdk-qemu = " sdl"
 # this doesn't mean anything to you.
 CONF_VERSION = "1"
 INHERIT+="toaster buildhistory"
+
+#
+# Enable to build a custom kernel with options set so that powertop can be used, and
+# will also build citadel-image with powertop package installed
+#
+# DISTROOVERRIDES = "citadel-powertop"
