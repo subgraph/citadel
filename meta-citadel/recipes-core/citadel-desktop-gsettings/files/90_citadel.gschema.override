@@ -3,10 +3,12 @@ natural-scroll=true
 tap-to-click=true
 
 [org.gnome.desktop.background]
-picture-uri='file:///usr/share/backgrounds/gnome/Waterfalls.jpg'
+picture-uri='file:///usr/share/backgrounds/gnome/symbolics-2.jpg'
 
 [org.gnome.desktop.screensaver]
-picture-uri='file:///usr/share/backgrounds/gnome/Dark_Ivy.jpg'
+primary-color='#023c88'
+picture-uti='file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'
+
 
 [org.gnome.desktop.wm.preferences]
 theme='Adapta'
@@ -29,6 +31,13 @@ user-theme-name='Adapta'
 
 [org.gnome.settings-daemon.plugins.xsettings]
 antialiasing='rgba'
+
+#
+# https://github.com/GNOME/gnome-settings-daemon/commit/2fdb48fa3333638cee889b8bb80dc1d2b65aaa4a
+#
+[org.gnome.settings-daemon.plugins.power]
+sleep-inactive-ac-timeout=0
+
 
 [org.gnome.desktop.input-sources]
 xkb-options=['ctrl:nocaps']
