@@ -16,5 +16,5 @@ FILES_${PN} += "\
 
 inherit gettext gnome
 
-EXTRA_OECONF = "--disable-doc"
+EXTRA_OECONF = "--disable-doc --disable-ssh-agent"
 
