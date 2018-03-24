@@ -22,7 +22,7 @@ FILES_${PN} += "\
 
 DEPENDS = "libx11 wayland intltool-native libnotify iso-codes dbus dconf libxkbcommon glib-2.0 gtk+3 gobject-introspection gconf glib-2.0-native"
 
-inherit gettext pythonnative pkgconfig gconf autotools gobject-introspection
+inherit gettext pythonnative pkgconfig gconf autotools gobject-introspection vala
 
 EXTRA_OECONF = "--disable-gtk2 --disable-tests --enable-wayland --disable-emoji-dict --disable-python-library"
 
