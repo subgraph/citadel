@@ -60,6 +60,7 @@ RDEPENDS_${PN} = "\
     colord-plugins \
     gnome-session \
     gnome-shell \
+    nautilus \
     gdm \
     plymouth \
     shared-mime-info \
@@ -92,5 +93,8 @@ RDEPENDS_${PN} = "\
     sway \
     xcb-util-xrm \
     rofi \
+    findutils \
+    lsof \
+    strace \
     ${CITADEL_POWERTOP} \
 "
