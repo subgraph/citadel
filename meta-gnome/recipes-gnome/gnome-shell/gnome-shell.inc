@@ -7,13 +7,13 @@ def gnome_verdir(v):
     return oe.utils.trim_version(v, 2)
 
 GNOMEBN ?= "${BPN}"
-SRC_URI = "${GNOME_MIRROR}/${GNOMEBN}/${@gnome_verdir("${PV}")}/${GNOMEBN}-${PV}.tar.xz;name=archive"
-
-SRC_URI += "file://0001-do-no-build-calendar-server.patch \
+SRC_URI = "${GNOME_MIRROR}/${GNOMEBN}/${@gnome_verdir("${PV}")}/${GNOMEBN}-${PV}.tar.xz;name=archive \
+           file://0001-do-no-build-calendar-server.patch \
            file://0001-do-not-use-python-path-from-build-environment.patch \
-"
+           file://0001-javascript-invalid-access-fixes.patch \
+           "
 
-DEPENDS = "glib-2.0-native systemd libcanberra gtk+3 glib-2.0 libxml2 libcroco mutter libsoup-2.4 gsettings-desktop-schemas gcr atk polkit startup-notification libx11 gnome-bluetooth libsecret networkmanager gjs mozjs52 network-manager-applet pulseaudio libxml2-native paxctl-native"
+DEPENDS = "glib-2.0-native systemd libcanberra gtk+3 glib-2.0 libxml2 libcroco mutter libsoup-2.4 gsettings-desktop-schemas gcr atk polkit startup-notification libx11 gnome-bluetooth libsecret networkmanager gjs mozjs52 network-manager-applet pulseaudio libxml2-native paxctl-native ibus xmlto-native sassc-native"
 
 RDEPENDS_${PN} = "xserver-xorg-xwayland cantarell-fonts gnome-theme-adwaita gnome-theme-adwaita-dark gnome-backgrounds gnome-control-center gnome-session adwaita-icon-theme dconf"
 
@@ -53,4 +53,4 @@ do_install_append() {
     paxctl -cm ${D}${bindir}/gnome-shell
 }
 
-EXTRA_OEMESON = "--buildtype=release -Denable-browser-plugin=false -Denable-man=false -Denable-systemd=yes -Denable-networkmanager=yes"
+EXTRA_OEMESON = "--buildtype=release -Dbrowser_plugin=false -Dman=false -Dsystemd=true -Dnetworkmanager=true"
