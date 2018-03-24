@@ -3,8 +3,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
                     file://COPYING.LIB;md5=4fbd65380cdd255951079008b364516c"
 
 SRC_URI = "https://www.freedesktop.org/software/ModemManager/ModemManager-${PV}.tar.xz"
-SRC_URI[md5sum] = "67160b94c0eda90ebf95d1b620229ca1"
-SRC_URI[sha256sum] = "bc74326fa69ae8012f806e235f3d296144922669b952d4d4987dd0af645d5f68"
+SRC_URI[md5sum] = "d21c280220ee647e62eeb4e1df642fe3"
+SRC_URI[sha256sum] = "eefb7615c2c7ebc994abfc2782bfa9e798643a633362b40db96f7f61706a6283"
 
 S = "${WORKDIR}/ModemManager-${PV}"
 
@@ -23,5 +23,5 @@ SYSTEMD_SERVICE_${PN} = "ModemManager.service"
 inherit pkgconfig gettext autotools systemd
 
 # --with-udev-base-dir set for usr merge
-EXTRA_OECONF = "--disable-introspection --disable-vala --without-mbim --without-qmi --with-udev-base-dir=/usr/lib"
+EXTRA_OECONF = "--disable-introspection --disable-vala --without-mbim --without-qmi --with-udev-base-dir=/usr/lib --enable-more-warnings=no"
 
