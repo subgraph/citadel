@@ -13,14 +13,14 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=3bf50002aefd002f49e7bb854063f7e7"
 
 inherit gnomebase gtk-doc ptest-gnome upstream-version-is-even gobject-introspection
 
-FILESEXTRAPATHS_prepend := "${COREBASE}/meta/recipes-graphics/pango/pango:"
+#FILESEXTRAPATHS_prepend := "${COREBASE}/meta/recipes-graphics/pango/pango:"
 
-SRC_URI += "file://run-ptest \
-            file://0001-Drop-introspection-macros-from-acinclude.m4.patch \
-            file://0001-Enforce-recreation-of-docs-pango.types-it-is-build-c.patch \
-"
+#SRC_URI += "file://run-ptest \
+#            file://0001-Drop-introspection-macros-from-acinclude.m4.patch \
+#            file://0001-Enforce-recreation-of-docs-pango.types-it-is-build-c.patch \
+#"
 
-DEPENDS = "glib-2.0 glib-2.0-native fontconfig freetype virtual/libiconv cairo harfbuzz"
+DEPENDS = "glib-2.0 glib-2.0-native fontconfig freetype virtual/libiconv cairo harfbuzz fribidi"
 
 PACKAGECONFIG ??= "${@bb.utils.filter('DISTRO_FEATURES', 'x11', d)}"
 PACKAGECONFIG[x11] = "--with-xft,--without-xft,virtual/libx11 libxft"
