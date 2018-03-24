@@ -25,5 +25,3 @@ ROOT_PASSWORD ?= "citadel"
 
 inherit core-image
 
-WKS_FILE="citadel-image-minimal.wks"
-
