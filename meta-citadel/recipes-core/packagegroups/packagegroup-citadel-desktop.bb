@@ -73,7 +73,6 @@ RDEPENDS_${PN} = "\
     systemd-analyze \
     wget \
     sed \
-    binutils \
     xz \
     openssh-ssh \
     cryptsetup \
