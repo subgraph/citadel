@@ -3,7 +3,10 @@
 PREFERRED_VERSION_atk = "2.28.1"
 PREFERRED_VERSION_at-spi2-atk = "2.26.2"
 PREFERRED_VERSION_at-spi2-core = "2.28.0"
+#PREFERRED_VERSION_dconf = "0.27.1"
 PREFERRED_VERSION_dconf = "0.27.1"
+# 0.27.1 was moved to meson and rpath is now broken for /usr/bin/dconf
+PREFERRED_VERSION_dconf-native = "0.26.1"
 PREFERRED_VERSION_gcr = "3.28.0"
 PREFERRED_VERSION_gdm = "3.27.92"
 PREFERRED_VERSION_geocode-glib = "3.25.4.1"
