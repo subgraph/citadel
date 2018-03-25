@@ -26,7 +26,7 @@ RDEPENDS_${PN} = "\
     gnome-control-center \
     gnome-settings-daemon \
     gnome-backgrounds \
-    gnome-tweak-tool \
+    gnome-tweaks \
     gnome-terminal \
     gnome-usage \
     libgnome-desktop \
