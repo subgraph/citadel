@@ -20,7 +20,6 @@ RDEPENDS_${PN} = "\
     caribou \
     networkmanager \
     network-manager-applet \
-    networkmanager-nmtui \
     clutter-1.0 \
     gnome-desktop \
     gnome-bluetooth \
