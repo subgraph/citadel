@@ -8,10 +8,10 @@ inherit cargo
 # how to get sgstatus could be as easy as but default to a git checkout:
 # SRC_URI += "crate://crates.io/sgstatus/0.1.0"
 SRC_URI += "git://github.com/subgraph/sgstatus;protocol=https"
-SRCREV = "e166f472f58dbbe615e7d83032fadaf00a4b71be"
+SRCREV = "a39d5627de38507458fd4f6a5f624ae5faaf797c"
 S = "${WORKDIR}/git"
 CARGO_SRC_DIR=""
-PV_append = ".AUTOINC+e166f472f5"
+PV_append = ".AUTOINC+a39d5627de"
 
 # please note if you have entries that do not begin with crate://
 # you must change them to how that package can be fetched

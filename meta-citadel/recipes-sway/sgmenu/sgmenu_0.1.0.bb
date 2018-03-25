@@ -8,10 +8,10 @@ inherit cargo
 # how to get sgmenu could be as easy as but default to a git checkout:
 # SRC_URI += "crate://crates.io/sgmenu/0.1.0"
 SRC_URI += "git://github.com/subgraph/sgmenu;protocol=https"
-SRCREV = "67b2105944771207b8735305bed9226136711467"
+SRCREV = "00a379f414095946a5ccad177d609df8f8cf05cc"
 S = "${WORKDIR}/git"
 CARGO_SRC_DIR=""
-PV_append = ".AUTOINC+67b2105944"
+PV_append = ".AUTOINC+00a379f414"
 
 # please note if you have entries that do not begin with crate://
 # you must change them to how that package can be fetched

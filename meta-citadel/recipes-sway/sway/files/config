@@ -16,9 +16,9 @@ set $up k
 set $right l
 
 # Your preferred terminal emulator - script command to appease pty requirement of machinectl
-set $term /usr/bin/sgmenu -c '/run/appimg/run-in-image gnome-terminal'
+set $term /usr/bin/sgmenu -c '/usr/bin/realms run -- gnome-terminal'
 set $citadelterm gnome-terminal
-set $filemanager /usr/bin/sgmenu -c '/run/appimg/run-in-image nautilus'
+set $filemanager /usr/bin/sgmenu -c '/usr/bin/realms run -- nautilus'
 set $lockscreen swaylock --scaling fill -i /usr/share/backgrounds/gnome/Dark_Ivy.jpg
 
 # Your preferred application launcher
@@ -27,7 +27,7 @@ set $menu /usr/bin/sgmenu -d
 ### Output configuration
 #
 # Default wallpaper 
-output * bg /usr/share/backgrounds/gnome/Waterfalls.jpg fill
+output * bg /usr/share/backgrounds/gnome/Flowerbed.jpg fill
 
 #
 # Example configuration:
@@ -222,6 +222,7 @@ smart_gaps on
 #
 # Startup Commands:
 #
+exec systemctl --user restart pulseaudio.service
 exec /usr/bin/start-pulseaudio-x11
 exec /usr/libexec/gsd-power
 exec /usr/libexec/gsd-sound
@@ -240,7 +241,7 @@ bar {
     }
     status_command /usr/libexec/sgstatus
 
-	icon_theme Paper
+    icon_theme Paper
 }
 
 include /etc/sway/config.d/*
