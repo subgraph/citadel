@@ -1,7 +1,17 @@
 #
 # Base set of packages, should not include anything needed only on desktop
 #
+
 inherit packagegroup
+
+BASH_COMPLETION = "\
+    bash-completion \
+    iproute2-bash-completion \
+    glib-2.0-bash-completion \
+    pulseaudio-bash-completion \
+    systemd-bash-completion \
+    util-linux-bash-completion \
+"
 
 RDEPENDS_${PN} = "\
     base-files \
@@ -19,16 +29,14 @@ RDEPENDS_${PN} = "\
     which \
     parted \
     bash \
-    bash-completion \
+    ${BASH_COMPLETION} \
     grep \
     procps \
     psmisc-extras \
     tar \
     pciutils \
     sysfsutils \
-    polkit \
     wpa-supplicant \
-    networkmanager \
     kernel-modules \
     packagegroup-firmware \
     vim \
@@ -56,9 +64,4 @@ RDEPENDS_${PN} = "\
     e2fsprogs \
     dosfstools \
     libpam \
-    iproute2-bash-completion \
-    glib-2.0-bash-completion \
-    pulseaudio-bash-completion \
-    systemd-bash-completion \
-    util-linux-bash-completion \
 "

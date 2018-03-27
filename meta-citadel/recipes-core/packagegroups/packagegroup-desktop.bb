@@ -1,7 +1,7 @@
-
 #
 # Packages common to any desktop environment
 #
+
 inherit packagegroup
 
 CITADEL_POWERTOP = ""
@@ -23,6 +23,7 @@ RDEPENDS_${PN} = "\
     iso-codes \
     libgudev \
     networkmanager \
+    polkit \
     network-manager-applet \
     clutter-1.0 \
     libxkbcommon \
