@@ -3,11 +3,11 @@ natural-scroll=true
 tap-to-click=true
 
 [org.gnome.desktop.background]
-picture-uri='file:///usr/share/backgrounds/gnome/symbolics-2.jpg'
+picture-uri='file:///usr/share/backgrounds/gnome/Icescape.jpg'
 
 [org.gnome.desktop.screensaver]
 primary-color='#023c88'
-picture-uti='file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'
+picture-uri='file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'
 
 
 [org.gnome.desktop.wm.preferences]
