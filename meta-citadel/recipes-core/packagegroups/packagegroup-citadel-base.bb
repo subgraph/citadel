@@ -39,4 +39,24 @@ RDEPENDS_${PN} = "\
     tzdata-posix \
     glibc-charmap-utf-8 \
     lvm2 \
+    findutils \
+    lsof \
+    strace \
+    iproute2 \
+    util-linux-hwclock \
+    btrfs-tools \
+    systemd-analyze \
+    wget \
+    sed \
+    xz \
+    openssh-ssh \
+    cryptsetup \
+    e2fsprogs \
+    dosfstools \
+    libpam \
+    iproute2-bash-completion \
+    glib-2.0-bash-completion \
+    pulseaudio-bash-completion \
+    systemd-bash-completion \
+    util-linux-bash-completion \
 "

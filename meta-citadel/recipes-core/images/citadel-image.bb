@@ -12,7 +12,7 @@ ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; symlink_lib64; setup_v
 IMAGE_FSTYPES = "ext2"
 
 IMAGE_INSTALL += "\
-    packagegroup-citadel-desktop \
+    packagegroup-citadel \
 "
 
 set_blank_user_password() {
