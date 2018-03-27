@@ -14,6 +14,7 @@ BASH_COMPLETION = "\
 "
 
 RDEPENDS_${PN} = "\
+    citadel-config \
     base-files \
     base-passwd \
     systemd \
