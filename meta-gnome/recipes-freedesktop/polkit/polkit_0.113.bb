@@ -23,11 +23,10 @@ PAM_SRC_URI = "file://polkit-1_pam.patch"
 SRC_URI = "git://anongit.freedesktop.org/git/polkit.git;protocol=https \
     ${@bb.utils.contains('DISTRO_FEATURES', 'pam', '${PAM_SRC_URI}', '', d)}"
 SRCREV="32e9a69c335324a53a2c0ba4e0b513fb044be0fd"
-#SRCREV="29ba7afba1b79a325183a71966f35926dfdf506e"
 
 S = "${WORKDIR}/git"
 
-EXTRA_OECONF = "--with-os-type=moblin --disable-man-pages"
+EXTRA_OECONF = "--with-os-type=moblin --disable-man-pages --enable-examples=no"
 
 do_compile_prepend () {
     export GIR_EXTRA_LIBS_PATH="${B}/src/polkit/.libs"
@@ -35,6 +34,7 @@ do_compile_prepend () {
 
 do_install_append() {
     paxctl -cmr ${D}${libdir}/polkit-1/polkitd
+    rm ${D}${sysconfdir}/polkit-1/rules.d/50-default.rules
 }
 
 PACKAGES =+ "${PN}-examples"
