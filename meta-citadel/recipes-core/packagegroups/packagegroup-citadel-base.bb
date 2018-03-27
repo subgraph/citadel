@@ -1,4 +1,6 @@
-
+#
+# Base set of packages, should not include anything needed only on desktop
+#
 inherit packagegroup
 
 RDEPENDS_${PN} = "\

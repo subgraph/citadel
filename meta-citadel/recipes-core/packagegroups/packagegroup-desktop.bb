@@ -1,4 +1,7 @@
 
+#
+# Packages common to any desktop environment
+#
 inherit packagegroup
 
 CITADEL_POWERTOP = ""
