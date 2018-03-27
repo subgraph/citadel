@@ -13,6 +13,7 @@ SRC_URI += "\
     file://NetworkManager.conf \
     file://zram-swap.service \
     file://share/dot.vimrc \
+    file://polkit/citadel.rules \
 "
 
 dirs1777_remove = "${localstatedir}/volatile/tmp"
@@ -35,6 +36,7 @@ do_install_append () {
     install -m 0755 -d ${D}${sysconfdir}/tmpfiles.d
     install -m 0755 -d ${D}${sysconfdir}/udev/rules.d
     install -m 0755 -d ${D}${sysconfdir}/NetworkManager
+    install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
 
@@ -57,6 +59,8 @@ do_install_append () {
     install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
 
     install -m 0755 ${WORKDIR}/share/dot.vimrc ${D}${sysconfdir}/skel/.vimrc
+
+    install -m 0755 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 
     ln -s /storage/citadel-state/resolv.conf ${D}${sysconfdir}/resolv.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/etc.conf
