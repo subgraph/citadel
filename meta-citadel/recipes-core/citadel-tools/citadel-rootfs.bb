@@ -64,6 +64,8 @@ crate://crates.io/winapi/0.2.8 \
 crate://crates.io/winapi/0.3.4 \
 "
 
+inherit cargo
+
 do_install() {
     install -d ${D}${bindir}
     install -d ${D}${datadir}/citadel
@@ -74,5 +76,4 @@ do_install() {
 
 FILES_${PN} += "${datadir}/citadel"
 
-inherit cargo
 require citadel-tools.inc
