@@ -8,4 +8,7 @@ volatiles = ""
 
 do_install_append () {
     rm ${D}${sysconfdir}/fstab
+    rm ${D}${sysconfdir}/skel/.bashrc
+    rm ${D}${sysconfdir}/skel/.profile
+
 }

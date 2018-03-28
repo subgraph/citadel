@@ -24,6 +24,8 @@ SRC_URI = "\
     file://citadel-ifconfig.sh \
     file://00-storage-tmpfiles.conf \
     file://NetworkManager.conf \
+    file://share/dot.bashrc \
+    file://share/dot.profile \
     file://share/dot.vimrc \
     file://polkit/citadel.rules \
     file://systemd/zram-swap.service \
@@ -78,6 +80,8 @@ do_install() {
     install -m 0644 ${WORKDIR}/citadel-network.rules ${D}${sysconfdir}/udev/rules.d/
     install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
 
+    install -m 0755 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
+    install -m 0755 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
     install -m 0755 ${WORKDIR}/share/dot.vimrc ${D}${sysconfdir}/skel/.vimrc
 
     install -m 0755 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
