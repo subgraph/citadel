@@ -42,7 +42,6 @@ RDEPENDS_${PN} = "\
     packagegroup-firmware \
     vim \
     vifm \
-    citadel-user \
     tzdata \
     tzdata-americas \
     tzdata-asia \

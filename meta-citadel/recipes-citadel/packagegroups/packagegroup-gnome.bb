@@ -20,7 +20,6 @@ RDEPENDS_${PN} = "\
     gjs \
     caribou \
     gnome-keyring \
-    citadel-desktop-gsettings \
     gnome-session \
     gnome-shell \
     adwaita-icon-theme \
@@ -30,5 +29,6 @@ RDEPENDS_${PN} = "\
     adwaita-icon-theme-cursors \
     hicolor-icon-theme \
     dash-to-panel \
+    citadel-config-gnome \
 "
 

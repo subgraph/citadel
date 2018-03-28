@@ -1,12 +1,18 @@
-# Copyright (C) 2018 Bruce Leidl <bruce@subgraph.com>
-# Released under the MIT license (see COPYING.MIT for the terms)
-
 DESCRIPTION = ""
 HOMEPAGE = ""
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 SECTION = ""
 DEPENDS = ""
+
+S = "${WORKDIR}"
+
+DEFAULT_REALM_UNITS = "\
+    file://systemd/launch-default-realm.path \
+    file://systemd/launch-default-realm.service \
+    file://systemd/watch-run-user.path \
+    file://systemd/watch-run-user.service \
+"
 
 SRC_URI = "\
     file://locale.conf \
@@ -18,16 +24,22 @@ SRC_URI = "\
     file://citadel-ifconfig.sh \
     file://00-storage-tmpfiles.conf \
     file://NetworkManager.conf \
-    file://zram-swap.service \
     file://share/dot.vimrc \
     file://polkit/citadel.rules \
+    file://systemd/zram-swap.service \
+    ${DEFAULT_REALM_UNITS} \
 "
+
+USERADD_PACKAGES = "${PN}"
+USERADD_PARAM_${PN} = "-m -u 1000 -s /bin/bash citadel"
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
 
 # for citadel-ifconfig.sh
 RDEPENDS_${PN} = "bash"
 
-inherit systemd
-SYSTEMD_SERVICE_${PN} = "zram-swap.service"
+inherit allarch systemd useradd
+
+SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path"
 
 do_install() {
     install -m 0755 -d ${D}/storage
@@ -50,7 +62,12 @@ do_install() {
     install -m 0644 ${WORKDIR}/NetworkManager.conf ${D}${sysconfdir}/NetworkManager
 
     install -d ${D}${systemd_system_unitdir}
-    install -m 644 ${WORKDIR}/zram-swap.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
+
+    install -m 644 ${WORKDIR}/systemd/watch-run-user.path ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/watch-run-user.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/launch-default-realm.path ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/launch-default-realm.service ${D}${systemd_system_unitdir}
 
     # disable some pax and grsecurity features so that debootstrap will work
     # this should be removed later
