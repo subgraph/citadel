@@ -1,7 +1,11 @@
 [Unit]
 Description=Mount citadel rootfs
 
+ConditionPathExists=/dev/mapper/citadel-rootfsA
+ConditionPathExists=/dev/mapper/citadel-rootfsB
+ConditionPathExists=/dev/mapper/citadel-storage
+
 [Service]
 Type=oneshot
-RemainAfterExit=no
+RemainAfterExit=yes
 ExecStart=/bin/sh -c 'echo "hello world"'

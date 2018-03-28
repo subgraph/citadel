@@ -23,8 +23,12 @@ do_install() {
     done
 
     install -d ${D}${systemd_system_unitdir}
-    #install -m 644 ${WORKDIR}/citadel-rootfs-mount.path ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/citadel-rootfs-mount.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.service ${D}${systemd_system_unitdir}
+
+    install -d ${D}${systemd_system_unitdir}/sysinit.target.wants
+    ln -s ../citadel-rootfs-mount.path ${D}${systemd_system_unitdir}/sysinit.target.wants/citadel-rootfs-mount.path
+
     install -d ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/initrd-release ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/crypttab ${D}${sysconfdir}
