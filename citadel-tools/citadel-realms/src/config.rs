@@ -14,8 +14,8 @@ fn default_zone() -> String {
 
 #[derive (Deserialize,Clone)]
 pub struct RealmConfig {
-    #[serde(default = "default_true", rename="add-shared-dir")]
-    add_shared_dir: bool,
+    #[serde(default = "default_true", rename="use-shared-dir")]
+    use_shared_dir: bool,
 
     #[serde(default, rename="use-ephemeral-home")]
     use_ephemeral_home: bool,
@@ -55,7 +55,7 @@ impl RealmConfig {
 
     pub fn default() -> RealmConfig {
         RealmConfig {
-            add_shared_dir: true,
+            use_shared_dir: true,
             use_ephemeral_home: false,
             use_sound: true,
             use_x11: true,
@@ -76,7 +76,7 @@ impl RealmConfig {
     }
 
     pub fn shared_dir(&self) -> bool {
-        self.add_shared_dir
+        self.use_shared_dir
     }
 
     pub fn emphemeral_home(&self) -> bool {
