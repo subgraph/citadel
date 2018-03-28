@@ -104,3 +104,9 @@ inherit core-image
 
 IMAGE_ROOTFS_SIZE = "8192"
 IMAGE_ROOTFS_EXTRA_SPACE = "0"
+
+ROOTFS_POSTPROCESS_COMMAND += "remove_blk_availability; "
+
+remove_blk_availability() {
+    rm ${IMAGE_ROOTFS}${systemd_system_unitdir}/blk-availability.service
+}
