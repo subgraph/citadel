@@ -14,13 +14,26 @@ DEFAULT_REALM_UNITS = "\
     file://systemd/watch-run-user.service \
 "
 
+MODPROBE_CONFIG = "\
+    file://modprobe.d/audio_powersave.conf \
+    file://modprobe.d/wifi_powersave.conf \
+"
+
+SYSCTL_CONFIG = "\
+    file://sysctl/99-grsec-debootstrap.conf \
+    file://sysctl/90-citadel-sysctl.conf \
+"
+
+UDEV_RULES = "\
+    file://udev/citadel-network.rules \
+    file://udev/pci-pm.rules \
+    file://udev/scsi-alpm.rules \
+"
+
 SRC_URI = "\
     file://locale.conf \
     file://environment.sh \
     file://fstab \
-    file://99-grsec-debootstrap.conf \
-    file://90-citadel-sysctl.conf \
-    file://citadel-network.rules \
     file://citadel-ifconfig.sh \
     file://00-storage-tmpfiles.conf \
     file://NetworkManager.conf \
@@ -30,6 +43,9 @@ SRC_URI = "\
     file://polkit/citadel.rules \
     file://systemd/zram-swap.service \
     ${DEFAULT_REALM_UNITS} \
+    ${MODPROBE_CONFIG} \
+    ${SYSCTL_CONFIG} \
+    ${UDEV_RULES} \
 "
 
 USERADD_PACKAGES = "${PN}"
@@ -54,6 +70,7 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/udev/rules.d
     install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
+    install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
 
@@ -73,18 +90,24 @@ do_install() {
 
     # disable some pax and grsecurity features so that debootstrap will work
     # this should be removed later
-    install -m 0644 ${WORKDIR}/99-grsec-debootstrap.conf ${D}${libdir}/sysctl.d/
+    install -m 0644 ${WORKDIR}/sysctl/99-grsec-debootstrap.conf ${D}${libdir}/sysctl.d/
 
-    install -m 0644 ${WORKDIR}/90-citadel-sysctl.conf ${D}${libdir}/sysctl.d/
+    install -m 0644 ${WORKDIR}/sysctl/90-citadel-sysctl.conf ${D}${libdir}/sysctl.d/
 
-    install -m 0644 ${WORKDIR}/citadel-network.rules ${D}${sysconfdir}/udev/rules.d/
+    install -m 0644 ${WORKDIR}/udev/citadel-network.rules ${D}${sysconfdir}/udev/rules.d/
     install -m 0755 ${WORKDIR}/citadel-ifconfig.sh ${D}${libexecdir}
 
-    install -m 0755 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
-    install -m 0755 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
-    install -m 0755 ${WORKDIR}/share/dot.vimrc ${D}${sysconfdir}/skel/.vimrc
+    install -m 0644 ${WORKDIR}/udev/pci-pm.rules ${D}${sysconfdir}/udev/rules.d/
+    install -m 0644 ${WORKDIR}/udev/scsi-alpm.rules ${D}${sysconfdir}/udev/rules.d/
 
-    install -m 0755 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
+    install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
+    install -m 0644 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
+    install -m 0644 ${WORKDIR}/share/dot.vimrc ${D}${sysconfdir}/skel/.vimrc
+
+    install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
+
+    install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
+    install -m 0644 ${WORKDIR}/modprobe.d/wifi_powersave.conf ${D}${sysconfdir}/modprobe.d/
 
     ln -s /storage/citadel-state/resolv.conf ${D}${sysconfdir}/resolv.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/etc.conf
