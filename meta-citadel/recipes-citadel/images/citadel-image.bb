@@ -40,10 +40,10 @@ setup_var() {
     mv ${IMAGE_ROOTFS}/var/run ${IMAGE_ROOTFS}/usr/share/factory/var
     mv ${IMAGE_ROOTFS}/var/lock ${IMAGE_ROOTFS}/usr/share/factory/var
 
+    cp ${IMAGE_ROOTFS}/etc/skel/.??* ${IMAGE_ROOTFS}/home/citadel
+    cp ${IMAGE_ROOTFS}/etc/skel/.??* ${IMAGE_ROOTFS}/home/root
+    rm -rf ${IMAGE_ROOTFS}/etc/skel
     mv ${IMAGE_ROOTFS}/home/citadel ${IMAGE_ROOTFS}/usr/share/factory/home
-    cp ${IMAGE_ROOTFS}/etc/skel/.bashrc ${IMAGE_ROOTFS}/home/root
-    cp ${IMAGE_ROOTFS}/etc/skel/.profile ${IMAGE_ROOTFS}/home/root
-    cp ${IMAGE_ROOTFS}/etc/skel/.vimrc ${IMAGE_ROOTFS}/home/root
     mv ${IMAGE_ROOTFS}/home/root ${IMAGE_ROOTFS}/usr/share/factory/home
 
     rm ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
