@@ -5,6 +5,11 @@ BASE_BINDMOUNT = type=bind,source=$(BASE_DIR),target=/home/builder/citadel
 DOCKER_RUN = docker run -it --mount $(BASE_BINDMOUNT) citadel-builder
 DOCKER_RUN_PRIV = docker run -it --privileged --mount $(BASE_BINDMOUNT) citadel-builder
 
+ifdef REALM_NAME
+undefine DOCKER_RUN
+undefine DOCKER_RUN_PRIV
+endif
+
 #
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 # 
