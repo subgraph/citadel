@@ -26,6 +26,7 @@ do_install_append() {
     echo "d gdm gdm 755 ${localstatedir}/run/gdm/greeter none" > ${D}${sysconfdir}/default/volatiles/99_gdm
     rm -rf ${D}/run/gdm
     rm ${D}${sysconfdir}/gdm/custom.conf
+    rm ${D}${libdir}/udev/rules.d/61-gdm.rules
     install -m 644 ${WORKDIR}/gdm.conf ${D}${sysconfdir}/gdm/custom.conf
 }
 
