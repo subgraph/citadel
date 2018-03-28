@@ -16,7 +16,6 @@ DEFAULT_REALM_UNITS = "\
 
 MODPROBE_CONFIG = "\
     file://modprobe.d/audio_powersave.conf \
-    file://modprobe.d/wifi_powersave.conf \
 "
 
 SYSCTL_CONFIG = "\
@@ -107,7 +106,6 @@ do_install() {
     install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 
     install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
-    install -m 0644 ${WORKDIR}/modprobe.d/wifi_powersave.conf ${D}${sysconfdir}/modprobe.d/
 
     ln -s /storage/citadel-state/resolv.conf ${D}${sysconfdir}/resolv.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/etc.conf
