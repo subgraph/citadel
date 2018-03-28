@@ -1,5 +1,5 @@
 [package]
-name = "citadel-rootfs"
+name = "citadel-update"
 version = "0.1.0"
 authors = ["Bruce Leidl <bruce@subgraph.com>"]
 homepage = "https://github.com/subgraph/citadel"

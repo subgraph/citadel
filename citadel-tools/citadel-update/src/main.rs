@@ -83,8 +83,8 @@ fn main() {
         _ => {},
     };
 
-    let mut app = App::new("citadel-rootfs")
-        .about("Subgraph Citadel rootfs partition management")
+    let mut app = App::new("citadel-update")
+        .about("Subgraph Citadel update and rootfs management")
         .settings(&[ArgRequiredElseHelp, ColoredHelp, DisableHelpSubcommand, DisableVersion, DeriveDisplayOrder])
         .arg(Arg::with_name("v")
              .help("Verbose output")

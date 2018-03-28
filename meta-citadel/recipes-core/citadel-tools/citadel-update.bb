@@ -1,4 +1,4 @@
-SUMMARY = "citadel-rootfs"
+SUMMARY = "citadel-update"
 
 SRC_URI = "\
 crate://crates.io/ansi_term/0.10.2 \
@@ -70,8 +70,8 @@ do_install() {
     install -d ${D}${bindir}
     install -d ${D}${datadir}/citadel
 
-    install -m 755 ${B}/target/${CARGO_TARGET_SUBDIR}/citadel-rootfs ${D}${bindir}
-    install -m 644 ${B}/conf/citadel-rootfs.conf ${D}${datadir}/citadel
+    install -m 755 ${B}/target/${CARGO_TARGET_SUBDIR}/citadel-update ${D}${bindir}
+    install -m 644 ${B}/conf/citadel-update.conf ${D}${datadir}/citadel
 }
 
 FILES_${PN} += "${datadir}/citadel"
