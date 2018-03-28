@@ -3,6 +3,5 @@ Description=Mount citadel rootfs
 
 [Service]
 Type=oneshot
-RemainAfterExit=yes
-
+RemainAfterExit=no
 ExecStart=/bin/sh -c 'echo "hello world"'

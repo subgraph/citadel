@@ -4,7 +4,13 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 SECTION = ""
 DEPENDS = ""
 
-SRC_URI = "file://initrd-release file://crypttab file://11-dm.rules file://citadel-rootfs-mount.service"
+SRC_URI = "\
+    file://initrd-release \
+    file://crypttab \
+    file://11-dm.rules \
+    file://citadel-rootfs-mount.path \
+    file://citadel-rootfs-mount.service \
+"
 
 S = "${WORKDIR}"
 
@@ -17,6 +23,7 @@ do_install() {
     done
 
     install -d ${D}${systemd_system_unitdir}
+    #install -m 644 ${WORKDIR}/citadel-rootfs-mount.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.service ${D}${systemd_system_unitdir}
     install -d ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/initrd-release ${D}${sysconfdir}

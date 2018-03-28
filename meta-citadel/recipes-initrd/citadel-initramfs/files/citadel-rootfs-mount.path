@@ -1,0 +1,8 @@
+[Unit]
+Description=Watch for new entries in /dev/mapper
+
+[Path]
+PathChanged=/dev/mapper
+
+[Install]
+WantedBy=initrd-root-fs.target
