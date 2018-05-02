@@ -11,8 +11,8 @@ SRC_URI = "https://github.com/swaywm/sway/archive/${PV}.tar.gz \
 		   file://config \
 		   "
 
-SRC_URI[md5sum] = "ea770561a77ad3d6138f44673d491250"
-SRC_URI[sha256sum] = "b4305581587b1072f5cb61387230aaf731ea9ea0d01fdf198856a757e2195149"
+SRC_URI[md5sum] = "b89e6ea3a786eacac825a91ff4545491"
+SRC_URI[sha256sum] = "05526e3038d2a5490a64bd816f1f04d2a6c214ddc6182835312b273b40b737ae"
 
 DEPENDS = "dbus cairo pango wlc libinput libxkbcommon wayland wayland-native libpam libcap json-c libpcre gdk-pixbuf"
 
