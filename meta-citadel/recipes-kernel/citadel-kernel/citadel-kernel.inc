@@ -24,6 +24,7 @@ SRC_URI += " \
     file://ignore-sysroot-for-plugin-build.patch \
     file://0114-smpboot-reuse-timer-calibration.patch \
     file://0116-Initialize-ata-before-graphics.patch \
+    file://0117-WireGuard.patch \
     file://0001-libata-Add-new-med_power_with_dipm-link_power_manage.patch \
     "
 
