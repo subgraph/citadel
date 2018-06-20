@@ -64,4 +64,6 @@ RDEPENDS_${PN} = "\
     e2fsprogs \
     dosfstools \
     libpam \
+    wireguard-tools \
+    resolvconf \
 "
