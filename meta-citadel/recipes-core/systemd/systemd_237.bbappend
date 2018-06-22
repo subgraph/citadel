@@ -1,6 +1,4 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
-# https://github.com/systemd/systemd/issues/6375
-SRC_URI += "file://0001-dont-process-the-same-method-call-twice-in-logind.patch"
 
 RDEPENDS_${PN}_remove = "systemd-serialgetty"
 RDEPENDS_${PN}_remove = "volatile-binds"
