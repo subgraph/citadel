@@ -16,8 +16,8 @@ SRC_URI = "${GNOME_MIRROR}/glib/${SHRT_VER}/glib-${PV}.tar.xz \
            "
 
 SRC_URI_append_class-native = " file://relocate-modules.patch"
-SRC_URI[md5sum] = "f2b59392f2fb514bbe7791dda0c36da5"
-SRC_URI[sha256sum] = "ecef6e17e97b8d9150d0e8a4b3edee1ac37331213b8a2a87a083deea408a0fc7"
+SRC_URI[md5sum] = "988af38524804ea1ae6bc9a2bad181ff"
+SRC_URI[sha256sum] = "40ef3f44f2c651c7a31aedee44259809b6f03d3d20be44545cd7d177221c0b8d"
 
 
 
