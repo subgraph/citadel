@@ -15,6 +15,9 @@ DEPENDS_remove = "base-files"
 
 SRC_URI = "git://github.com/systemd/systemd.git;protocol=git"
 
+SRC_URI += "file://0032-memfd.patch \
+            file://libmount.patch \
+"
 S = "${WORKDIR}/git"
 
 USERADD_PACKAGES = "${PN}"
