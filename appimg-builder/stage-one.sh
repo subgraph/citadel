@@ -36,7 +36,6 @@ run_debootstrap() {
 
     debootstrap --verbose --merged-usr --variant=minbase \
         --include=systemd-sysv,locales \
-        --exclude=sysv-rc,initscripts,startpar,lsb-base,insserv \
         ${DEBIAN_RELEASE} ${ROOTFS} ${DEBIAN_MIRROR}
 }
 
