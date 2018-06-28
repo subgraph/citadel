@@ -19,7 +19,7 @@ set $right l
 set $term /usr/bin/sgmenu -c '/usr/bin/realms run -- gnome-terminal'
 set $citadelterm gnome-terminal
 set $filemanager /usr/bin/sgmenu -c '/usr/bin/realms run -- nautilus'
-set $lockscreen swaylock --scaling fill -i /usr/share/backgrounds/gnome/Dark_Ivy.jpg
+set $lockscreen swaylock --scaling fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
 
 # Your preferred application launcher
 set $menu /usr/bin/sgmenu -d
@@ -27,7 +27,7 @@ set $menu /usr/bin/sgmenu -d
 ### Output configuration
 #
 # Default wallpaper 
-output * bg /usr/share/backgrounds/gnome/Flowerbed.jpg fill
+output * bg /usr/share/backgrounds/gnome/adwaita-night.jpg fill
 
 #
 # Example configuration:
