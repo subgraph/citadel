@@ -8,6 +8,13 @@ do_compile_prepend () {
     cd ${S}/tools
 }
 
+do_unpack () {
+    tar -xvf ${DL_DIR}/WireGuard-0.0.20180613.tar.xz -C ${WORKDIR}/
+    # Remove symlink pointing to non-existent file as this causes the
+    # reproducible_build .bbclass to fail
+    rm ${WORKDIR}/WireGuard-0.0.20180613/src/tools/wg-quick/wg
+}
+
 do_install () {
     cd ${S}/tools
     oe_runmake DESTDIR="${D}" PREFIX="${prefix}" SYSCONFDIR="${sysconfdir}" \
