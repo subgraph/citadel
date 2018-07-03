@@ -82,4 +82,29 @@ You can then unpack this tarball somewhere and run a script inside of it called 
 
 The install.sh script redirects all output from the commands it runs to a file install.log in the current directory.  If the last line of output does not say "Install completed successfully" then something failed.  Look in install.log for information about what went wrong.  The script itself does not print any output when it fails, it will just stop at one of the steps and it appears as if everything worked since there is no error output.
 
+# Reproducible builds
+
+Citadel is configured to reproducibly build artifacts. At this stage, we are 
+not yet at 100% reprodubility. We have included a script to track the gaps
+in reproducibility. 
+
+This requires performing two independent builds of Citadel (preferably on the 
+same host, doing this on different hosts is an exercise left up to the user).
+
+The first build is the test build and the second build is the control build.
+To compare the two, run the `repro_gaps.sh` script in the `scripts` directory
+of this repo. 
+
+By default, it will produce a summary table showing how many packages have been
+built reproducibly across the test and control builds. For example:
+```
+$ ./repro_gaps.sh /home/user/src/citadel /home/user/src/citadel-control
+```
+
+To generate a list of the packages that were not reproducible, the script
+can be run with the `--output` option:
+```
+$ ./repro_gaps.sh /home/user/src/citadel /home/user/src/citadel-control --output gaps.txt
+```
+
 
