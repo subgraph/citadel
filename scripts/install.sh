@@ -132,21 +132,34 @@ install() {
     info "Unmounting EFI system partition"
     umount ${1}1
 
+    local PRIMARY_APPIMG="${MNT}/appimg"
     local PRIMARY_HOME="${MNT}/user-data/primary-home"
-    local PRIMARY_ROOTFS="${MNT}/appimg/primary/rootfs"
+    local PRIMARY_REALM="${MNT}/realms/realm-main"
 
     info "Mounting storage partition"
     mount /dev/mapper/citadel-storage ${MNT}
 
+    mkdir -p ${PRIMARY_APPIMG}
+    info "Creating new btrfs subvolume for base appimg"
+    btrfs subvolume create ${MNT}/appimg/base.appimg
+
     info "Installing base appimg tree"
-    mkdir -p ${PRIMARY_ROOTFS}
-    ln -s primary ${MNT}/appimg/default.appimg
-    tar -C ${PRIMARY_ROOTFS} -xf components/appimg-rootfs.tar.xz
+    tar -C ${PRIMARY_APPIMG}/base.appimg -xf components/appimg-rootfs.tar.xz
 
     mkdir -p ${PRIMARY_HOME}
     cp components/howto.md ${PRIMARY_HOME}
-    cp ${PRIMARY_ROOTFS}/home/user/{.bashrc,.profile} ${PRIMARY_HOME}
+    cp ${PRIMARY_APPIMG}/base.appimg/home/user/{.bashrc,.profile} ${PRIMARY_HOME}
     chown -R 1000:1000 ${PRIMARY_HOME}
+
+    info "Creating main realm"
+    mkdir -p ${PRIMARY_REALM}
+    btrfs subvolume snapshot ${PRIMARY_APPIMG}/base.appimg ${PRIMARY_REALM}/rootfs
+    ln -s realm-main ${MNT}/realms/default.realm
+    ln -s /storage/user-data/primary-home ${PRIMARY_REALM}/home
+
+    info "Creating shared directory"
+    mkdir ${MNT}/realms/Shared
+    chown 1000:1000 ${MNT}/realms/Shared
 
     info "Unmounting storage partition"
     umount /dev/mapper/citadel-storage
