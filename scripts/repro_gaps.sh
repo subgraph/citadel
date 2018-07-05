@@ -62,6 +62,16 @@ if [ "$TEST_PATH" = "$CONTROL_PATH" ]; then
     exit 1
 fi
 
+TEST_COMMIT_ID=$(git --git-dir=${TEST_PATH}/.git rev-parse HEAD)
+CONTROL_COMMIT_ID=$(git --git-dir=${CONTROL_PATH}/.git rev-parse HEAD)
+SAME_REVISION=false
+
+if [ "$TEST_COMMIT_ID" = "$CONTROL_COMMIT_ID" ]; then
+    SAME_REVISION=true
+else
+    echo "Test and control commit IDs are different"
+fi
+
 shift 2
 
 OUTPUT=false
@@ -86,6 +96,11 @@ echo "Comparing reproducibility gaps for ${#NUM_FILES[@]} .debs - ${DATE}"
 if [ ! "$OUTPUT" = false ]; then
     echo "Logging unreproducible packages to ${OUTPUT}"
     echo "Unreproducible packages - ${DATE}" > ${OUTPUT}
+    if [ "$SAME_REVISION" = true ]; then
+        echo "Commit ID: ${TEST_COMMIT_ID}" >> ${OUTPUT}
+    else
+        echo "Test Commit ID: ${TEST_COMMIT_ID} - Control Commit ID: ${CONTROL_COMMIT_ID}" >> ${OUTPUT}
+    fi
 fi
 echo "Test Path: ${TEST_PATH}/${DEPLOY_PATH}"
 echo "Control Path: ${CONTROL_PATH}/${DEPLOY_PATH}"
