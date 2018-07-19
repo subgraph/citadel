@@ -4,8 +4,11 @@ inherit packagegroup
 RDEPENDS_${PN} = "\
     sgmenu \
     sgstatus \
-    wlc \
+    wlroots \
     sway \
     xcb-util-xrm \
     rofi \
+    grim \
+    slurp \
 "
+

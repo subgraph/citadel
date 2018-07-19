@@ -19,7 +19,7 @@ set $right l
 set $term /usr/bin/sgmenu -c '/usr/bin/realms run -- gnome-terminal'
 set $citadelterm gnome-terminal
 set $filemanager /usr/bin/sgmenu -c '/usr/bin/realms run -- nautilus'
-set $lockscreen swaylock --scaling fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
+set $lockscreen swaylock --scaling=fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
 
 # Your preferred application launcher
 set $menu /usr/bin/sgmenu -d
@@ -239,9 +239,10 @@ bar {
         background #00000000
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
-    status_command /usr/libexec/sgstatus
-
-    icon_theme Paper
+    # Disabling until tray works in Sway 1.0
+    #status_command /usr/libexec/sgstatus
+    # Disabling until tray works in Sway 1.0
+    #icon_theme Paper
 }
 
 include /etc/sway/config.d/*
