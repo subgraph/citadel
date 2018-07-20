@@ -20,6 +20,8 @@ set $term /usr/bin/sgmenu -c '/usr/bin/realms run -- gnome-terminal'
 set $citadelterm gnome-terminal
 set $filemanager /usr/bin/sgmenu -c '/usr/bin/realms run -- nautilus'
 set $lockscreen swaylock --scaling=fill -i /usr/share/backgrounds/gnome/adwaita-morning.jpg
+set $screenshot grim /home/citadel/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
+set $screenshot_region slurp | grim -g - /home/citadel/`date +'%Y-%m-%d-%H%M%S_screenshot.png'`
 
 # Your preferred application launcher
 set $menu /usr/bin/sgmenu -d
@@ -75,6 +77,10 @@ bindsym $mod+9 exec $lockscreen
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+# screenshots
+bindsym $mod+Print exec $screenshot
+bindsym $mod+Shift+Print exec $screenshot_region
 
 # Drag floating windows by holding down $mod and left mouse button.
 # Resize them with right mouse button + $mod.
