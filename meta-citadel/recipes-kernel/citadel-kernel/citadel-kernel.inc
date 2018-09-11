@@ -25,6 +25,9 @@ SRC_URI += " \
     file://0114-smpboot-reuse-timer-calibration.patch \
     file://0116-Initialize-ata-before-graphics.patch \
     file://0117-WireGuard.patch \
+    file://0118-More-gcc8-plugin-fixes.patch \
+    file://0119-do-not-alias-select-params.patch \
+    file://0120-Fix-gcc8-wrestrict-error.patch \
     file://0001-libata-Add-new-med_power_with_dipm-link_power_manage.patch \
     "
 

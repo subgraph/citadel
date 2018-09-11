@@ -1,0 +1,804 @@
+From d1e2a107d2046cd27b061d20881d3b49c24c561a Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Tue, 11 Sep 2018 19:49:49 +0000
+Subject: [PATCH 1/1] More gcc-8 plugin fixes
+
+---
+ scripts/gcc-plugins/checker_plugin.c          | 44 ++++++-------
+ scripts/gcc-plugins/constify_plugin.c         | 20 +++++-
+ scripts/gcc-plugins/gcc-common.h              | 66 +++++++++++++++----
+ scripts/gcc-plugins/initify_plugin.c          | 23 +++++--
+ scripts/gcc-plugins/latent_entropy_plugin.c   |  9 ++-
+ scripts/gcc-plugins/randomize_layout_plugin.c | 42 ++++++++++--
+ .../gcc-plugins/rap_plugin/rap_fptr_pass.c    |  2 +-
+ scripts/gcc-plugins/rap_plugin/rap_plugin.c   | 11 +++-
+ scripts/gcc-plugins/rap_plugin/rap_ret_pass.c |  4 +-
+ .../intentional_overflow.c                    | 45 ++++++++++---
+ .../remove_unnecessary_dup.c                  |  8 +--
+ .../size_overflow_plugin.c                    | 22 +++++--
+ .../size_overflow_transform_core.c            | 38 +++++++----
+ scripts/gcc-plugins/stackleak_plugin.c        | 15 ++++-
+ scripts/gcc-plugins/structleak_plugin.c       |  9 ++-
+ 15 files changed, 273 insertions(+), 85 deletions(-)
+
+diff --git a/scripts/gcc-plugins/checker_plugin.c b/scripts/gcc-plugins/checker_plugin.c
+index c16753c34967..624a376f6f76 100644
+--- a/scripts/gcc-plugins/checker_plugin.c
++++ b/scripts/gcc-plugins/checker_plugin.c
+@@ -19,11 +19,11 @@
+ #include "gcc-common.h"
+ 
+ extern void c_register_addr_space (const char *str, addr_space_t as);
+-extern enum machine_mode default_addr_space_pointer_mode (addr_space_t);
+-extern enum machine_mode default_addr_space_address_mode (addr_space_t);
+-extern bool default_addr_space_valid_pointer_mode(enum machine_mode mode, addr_space_t as);
+-extern bool default_addr_space_legitimate_address_p(enum machine_mode mode, rtx mem, bool strict, addr_space_t as);
+-extern rtx default_addr_space_legitimize_address(rtx x, rtx oldx, enum machine_mode mode, addr_space_t as);
++extern SCALAR_INT_MODE default_addr_space_pointer_mode (addr_space_t);
++extern SCALAR_INT_MODE default_addr_space_address_mode (addr_space_t);
++extern bool default_addr_space_valid_pointer_mode(SCALAR_INT_MODE mode, addr_space_t as);
++extern bool default_addr_space_legitimate_address_p(MACHINE_MODE mode, rtx mem, bool strict, addr_space_t as);
++extern rtx default_addr_space_legitimize_address(rtx x, rtx oldx, MACHINE_MODE mode, addr_space_t as);
+ 
+ __visible int plugin_is_GPL_compatible;
+ 
+@@ -44,27 +44,27 @@ static struct plugin_info checker_plugin_info = {
+ #define ADDR_SPACE_RCU			0
+ #define ADDR_SPACE_FORCE_RCU		0
+ 
+-static enum machine_mode checker_addr_space_pointer_mode(addr_space_t addrspace)
++static SCALAR_INT_MODE checker_addr_space_pointer_mode(addr_space_t addrspace)
+ {
+ 	return default_addr_space_pointer_mode(ADDR_SPACE_GENERIC);
+ }
+ 
+-static enum machine_mode checker_addr_space_address_mode(addr_space_t addrspace)
++static SCALAR_INT_MODE checker_addr_space_address_mode(addr_space_t addrspace)
+ {
+ 	return default_addr_space_address_mode(ADDR_SPACE_GENERIC);
+ }
+ 
+-static bool checker_addr_space_valid_pointer_mode(enum machine_mode mode, addr_space_t as)
++static bool checker_addr_space_valid_pointer_mode(SCALAR_INT_MODE mode, addr_space_t as)
+ {
+ 	return default_addr_space_valid_pointer_mode(mode, as);
+ }
+ 
+-static bool checker_addr_space_legitimate_address_p(enum machine_mode mode, rtx mem, bool strict, addr_space_t as)
++static bool checker_addr_space_legitimate_address_p(MACHINE_MODE mode, rtx mem, bool strict, addr_space_t as)
+ {
+ 	return default_addr_space_legitimate_address_p(mode, mem, strict, ADDR_SPACE_GENERIC);
+ }
+ 
+-static rtx checker_addr_space_legitimize_address(rtx x, rtx oldx, enum machine_mode mode, addr_space_t as)
++static rtx checker_addr_space_legitimize_address(rtx x, rtx oldx, MACHINE_MODE mode, addr_space_t as)
+ {
+ 	return default_addr_space_legitimize_address(x, oldx, mode, as);
+ }
+@@ -173,21 +173,19 @@ static tree handle_context_attribute(tree *node, tree name, tree args, int flags
+ 	return NULL_TREE;
+ }
+ 
+-static struct attribute_spec context_attr = {
+-	.name			= "context",
+-	.min_length		= 2,
+-	.max_length		= 3,
+-	.decl_required		= true,
+-	.type_required		= false,
+-	.function_type_required	= false,
+-	.handler		= handle_context_attribute,
+-#if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity	= true
+-#endif
+-};
++static struct attribute_spec context_attr = { };
+ 
+ static void register_attributes(void *event_data, void *data)
+ {
++	attr.name			= "context";
++	context_attr.min_length		= 2;
++	context_attr.max_length		= 3;
++	context_attr.decl_required	= true;
++	context_attr.handler		= handle_context_attribute;
++#if BUILDING_GCC_VERSION >= 4007
++	context_attr.affects_type_identity	= true;
++#endif
++
+ 	register_attribute(&context_attr);
+ }
+ 
+@@ -280,7 +278,7 @@ static basic_block verify_context_before(gimple_stmt_iterator *gsi, tree context
+ 	cond_bb = e->src;
+ 	join_bb = e->dest;
+ 	e->flags = EDGE_FALSE_VALUE;
+-	e->probability = REG_BR_PROB_BASE;
++	e->probability = probability(REG_BR_PROB_BASE);
+ 
+ 	true_bb = create_empty_bb(EXIT_BLOCK_PTR_FOR_FN(cfun)->prev_bb);
+ 	make_edge(cond_bb, true_bb, EDGE_TRUE_VALUE);
+diff --git a/scripts/gcc-plugins/constify_plugin.c b/scripts/gcc-plugins/constify_plugin.c
+index 42f22097fb16..54680c573b48 100644
+--- a/scripts/gcc-plugins/constify_plugin.c
++++ b/scripts/gcc-plugins/constify_plugin.c
+@@ -307,10 +307,17 @@ static struct attribute_spec no_const_attr = {
+ 	.decl_required		= false,
+ 	.type_required		= false,
+ 	.function_type_required	= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity	= true,
+ 	.handler		= handle_no_const_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
++	.handler		= handle_no_const_attribute,
+ 	.affects_type_identity	= true
+-#endif
++#else
++	.handler		= handle_no_const_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static struct attribute_spec do_const_attr = {
+@@ -320,10 +327,17 @@ static struct attribute_spec do_const_attr = {
+ 	.decl_required		= false,
+ 	.type_required		= false,
+ 	.function_type_required	= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity	= true,
+ 	.handler		= handle_do_const_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity	= true
+-#endif
++	.handler		= handle_do_const_attribute,
++	.affects_type_identity	= true,
++#else 
++	.handler		= handle_do_const_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void *event_data, void *data)
+diff --git a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
+index 8099dd1793ca..00a203f88a43 100644
+--- a/scripts/gcc-plugins/gcc-common.h
++++ b/scripts/gcc-plugins/gcc-common.h
+@@ -104,6 +104,10 @@
+ #include "predict.h"
+ #include "ipa-utils.h"
+ 
++#if BUILDING_GCC_VERSION >= 8000
++#include "stringpool.h"
++#endif
++
+ #if BUILDING_GCC_VERSION >= 4009
+ #include "attribs.h"
+ #include "varasm.h"
+@@ -430,13 +434,6 @@ static inline struct cgraph_node *cgraph_alias_target(struct cgraph_node *n)
+ }
+ #endif
+ 
+-#if BUILDING_GCC_VERSION >= 4007 && BUILDING_GCC_VERSION <= 4009
+-#define cgraph_create_edge(caller, callee, call_stmt, count, freq, nest) \
+-	cgraph_create_edge((caller), (callee), (call_stmt), (count), (freq))
+-#define cgraph_create_edge_including_clones(caller, callee, old_call_stmt, call_stmt, count, freq, nest, reason) \
+-	cgraph_create_edge_including_clones((caller), (callee), (old_call_stmt), (call_stmt), (count), (freq), (reason))
+-#endif
+-
+ #if BUILDING_GCC_VERSION <= 4008
+ #define ENTRY_BLOCK_PTR_FOR_FN(FN)	ENTRY_BLOCK_PTR_FOR_FUNCTION(FN)
+ #define EXIT_BLOCK_PTR_FOR_FN(FN)	EXIT_BLOCK_PTR_FOR_FUNCTION(FN)
+@@ -785,10 +782,23 @@ static inline const char *get_decl_section_name(const_tree decl)
+ #define varpool_get_node(decl) varpool_node::get(decl)
+ #define dump_varpool_node(file, node) (node)->dump(file)
+ 
+-#define cgraph_create_edge(caller, callee, call_stmt, count, freq, nest) \
+-	(caller)->create_edge((callee), (call_stmt), (count), (freq))
+-#define cgraph_create_edge_including_clones(caller, callee, old_call_stmt, call_stmt, count, freq, nest, reason) \
+-	(caller)->create_edge_including_clones((callee), (old_call_stmt), (call_stmt), (count), (freq), (reason))
++#if BUILDING_GCC_VERSION >= 8000
++#define cgraph_create_edge(caller, callee, call_stmt, count, freq) \
++	(caller)->create_edge((callee), (call_stmt), (count))
++
++#define cgraph_create_edge_including_clones(caller, callee, \
++		old_call_stmt, call_stmt, count, freq, reason)  \
++	(caller)->create_edge_including_clones((callee),    \
++        (old_call_stmt), (call_stmt), (count), (reason))
++#else
++#define cgraph_create_edge(caller, callee, call_stmt, count, freq) \
++    (caller)->create_edge((callee), (call_stmt), (count), (freq))
++
++#define cgraph_create_edge_including_clones(caller, callee,	\
++        old_call_stmt, call_stmt, count, freq, reason)	\
++    (caller)->create_edge_including_clones((callee),	\
++            (old_call_stmt), (call_stmt), (count), (freq), (reason))
++#endif
+ 
+ typedef struct cgraph_node *cgraph_node_ptr;
+ typedef struct cgraph_edge *cgraph_edge_p;
+@@ -1025,4 +1035,38 @@ static inline void debug_gimple_stmt(const_gimple s)
+ 	get_inner_reference(exp, pbitsize, pbitpos, poffset, pmode, punsignedp, preversep, pvolatilep)
+ #endif
+ 
++#if BUILDING_GCC_VERSION < 8000
++#define E_HImode HImode
++#define E_SImode SImode
++#define E_DImode DImode
++#define E_TImode TImode
++#define E_QImode QImode
++#endif
++
++#if BUILDING_GCC_VERSION < 5000
++#define SCALAR_INT_MODE	enum machine_mode
++#define MACHINE_MODE	enum machine_mode
++#elif BUILDING_GCC_VERSION < 8000
++#define SCALAR_INT_MODE	machine_mode
++#define MACHINE_MODE	machine_mode
++#else
++#define SCALAR_INT_MODE	scalar_int_mode
++#define MACHINE_MODE	machine_mode
+ #endif
++
++#if BUILDING_GCC_VERSION >= 8000
++#define empty_string	""	
++
++static inline profile_probability probability(int prob)
++{
++	return profile_probability::from_reg_br_prob_base(prob);
++}
++#else
++static inline int probability(int prob)
++{
++	return prob;
++}
++#endif	
++
++#endif
++
+diff --git a/scripts/gcc-plugins/initify_plugin.c b/scripts/gcc-plugins/initify_plugin.c
+index 1c8d204f9cd3..2185a85d1081 100644
+--- a/scripts/gcc-plugins/initify_plugin.c
++++ b/scripts/gcc-plugins/initify_plugin.c
+@@ -359,10 +359,17 @@ static struct attribute_spec nocapture_attr = {
+ 	.decl_required			= true,
+ 	.type_required			= false,
+ 	.function_type_required		= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity		= false,
+ 	.handler			= handle_nocapture_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity		= false
+-#endif
++	.handler			= handle_nocapture_attribute,
++	.affects_type_identity		= false,
++#else
++	.handler			= handle_nocapture_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static struct attribute_spec unverified_nocapture_attr = {
+@@ -373,9 +380,17 @@ static struct attribute_spec unverified_nocapture_attr = {
+ 	.type_required			= false,
+ 	.function_type_required		= false,
+ 	.handler			= handle_unverified_nocapture_attribute,
++#if BUILDING_GCC_VERSION >= 8000
++#else
++	.affects_type_identity		= false,
++	.handler			= handle_unverified_nocapture_attribute,
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity		= false
+-#endif
++	.handler			= handle_unverified_nocapture_attribute,
++	.affects_type_identity		= false,
++#else
++	.handler			= handle_unverified_nocapture_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void __unused *event_data, void __unused *data)
+diff --git a/scripts/gcc-plugins/latent_entropy_plugin.c b/scripts/gcc-plugins/latent_entropy_plugin.c
+index 1de194b63cdd..27f2a8a333b9 100644
+--- a/scripts/gcc-plugins/latent_entropy_plugin.c
++++ b/scripts/gcc-plugins/latent_entropy_plugin.c
+@@ -250,10 +250,17 @@ static struct attribute_spec latent_entropy_attr = {
+ 	.decl_required			= true,
+ 	.type_required			= false,
+ 	.function_type_required		= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity		= false,
+ 	.handler			= handle_latent_entropy_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
++	.handler			= handle_latent_entropy_attribute,
+ 	.affects_type_identity		= false
+-#endif
++#else
++	.handler			= handle_latent_entropy_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void *event_data __unused, void *data __unused)
+diff --git a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-plugins/randomize_layout_plugin.c
+index bbb2c3612b1d..937b852a6cf8 100644
+--- a/scripts/gcc-plugins/randomize_layout_plugin.c
++++ b/scripts/gcc-plugins/randomize_layout_plugin.c
+@@ -568,10 +568,17 @@ static struct attribute_spec randomize_layout_attr = {
+ 	// need type declaration
+ 	.type_required	= true,
+ 	.function_type_required = false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity  = true,
+ 	.handler		= handle_randomize_layout_attr,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
++	.handler		= handle_randomize_layout_attr,
+ 	.affects_type_identity  = true
+-#endif
++#else 
++	.handler		= handle_randomize_layout_attr,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static struct attribute_spec no_randomize_layout_attr = {
+@@ -583,10 +590,17 @@ static struct attribute_spec no_randomize_layout_attr = {
+ 	// need type declaration
+ 	.type_required	= true,
+ 	.function_type_required = false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity  = true,
+ 	.handler		= handle_randomize_layout_attr,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity  = true
+-#endif
++	.handler		= handle_randomize_layout_attr,
++	.affects_type_identity  = true,
++#else
++	.handler		= handle_randomize_layout_attr,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static struct attribute_spec randomize_considered_attr = {
+@@ -598,10 +612,17 @@ static struct attribute_spec randomize_considered_attr = {
+ 	// need type declaration
+ 	.type_required	= true,
+ 	.function_type_required = false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity  = false,
+ 	.handler		= handle_randomize_considered_attr,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity  = false
+-#endif
++	.handler		= handle_randomize_considered_attr,
++	.affects_type_identity  = false,
++#else
++	.handler		= handle_randomize_considered_attr,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static struct attribute_spec randomize_performed_attr = {
+@@ -613,10 +634,17 @@ static struct attribute_spec randomize_performed_attr = {
+ 	// need type declaration
+ 	.type_required	= true,
+ 	.function_type_required = false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity  = false,
+ 	.handler		= handle_randomize_performed_attr,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity  = false
+-#endif
++	.handler		= handle_randomize_performed_attr,
++	.affects_type_identity  = false,
++#else
++	.handler		= handle_randomize_performed_attr,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void *event_data, void *data)
+diff --git a/scripts/gcc-plugins/rap_plugin/rap_fptr_pass.c b/scripts/gcc-plugins/rap_plugin/rap_fptr_pass.c
+index d7dba8b4caa6..3db7283e6ee9 100644
+--- a/scripts/gcc-plugins/rap_plugin/rap_fptr_pass.c
++++ b/scripts/gcc-plugins/rap_plugin/rap_fptr_pass.c
+@@ -137,7 +137,7 @@ static void rap_instrument_fptr(gimple_stmt_iterator *gsi)
+ 	cond_bb = e->src;
+ 	join_bb = e->dest;
+ 	e->flags = EDGE_FALSE_VALUE;
+-	e->probability = REG_BR_PROB_BASE;
++	e->probability = probability(REG_BR_PROB_BASE);
+ 
+ 	true_bb = create_empty_bb(EXIT_BLOCK_PTR_FOR_FN(cfun)->prev_bb);
+ 	make_edge(cond_bb, true_bb, EDGE_TRUE_VALUE | EDGE_PRESERVE);
+diff --git a/scripts/gcc-plugins/rap_plugin/rap_plugin.c b/scripts/gcc-plugins/rap_plugin/rap_plugin.c
+index 713073ebe0ed..56c05aea8d6f 100644
+--- a/scripts/gcc-plugins/rap_plugin/rap_plugin.c
++++ b/scripts/gcc-plugins/rap_plugin/rap_plugin.c
+@@ -581,10 +581,17 @@ static struct attribute_spec rap_hash_attr = {
+ 	.decl_required		= false,
+ 	.type_required		= true,
+ 	.function_type_required	= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity	= true,
+ 	.handler		= handle_rap_hash_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity	= true
+-#endif
++	.handler		= handle_rap_hash_attribute,
++	.affects_type_identity	= true,
++#else
++	.handler		= handle_rap_hash_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void *event_data __unused, void *data __unused)
+diff --git a/scripts/gcc-plugins/rap_plugin/rap_ret_pass.c b/scripts/gcc-plugins/rap_plugin/rap_ret_pass.c
+index 3575980c3d8e..e463134a256e 100644
+--- a/scripts/gcc-plugins/rap_plugin/rap_ret_pass.c
++++ b/scripts/gcc-plugins/rap_plugin/rap_ret_pass.c
+@@ -109,7 +109,7 @@ static void check_retaddr(gimple_stmt_iterator *gsi, tree new_retaddr)
+ 	cond_bb = e->src;
+ 	join_bb = e->dest;
+ 	e->flags = EDGE_FALSE_VALUE;
+-	e->probability = REG_BR_PROB_BASE;
++	e->probability = probability(REG_BR_PROB_BASE);
+ 
+ 	true_bb = create_empty_bb(join_bb);
+ 	make_edge(cond_bb, true_bb, EDGE_TRUE_VALUE | EDGE_PRESERVE);
+@@ -342,9 +342,11 @@ static unsigned int rap_mark_retloc_execute(void)
+ 
+ 		emit_label_before(label1, insn);
+ 		LABEL_NUSES(label1)++;
++#if BUILDING_GCC_VERSION >= 4007 && BUILDING_GCC_VERSION < 8000
+ 		do {
+ 			insn = NEXT_INSN(insn);
+ 		} while (GET_CODE(insn) == NOTE && NOTE_KIND(insn) == NOTE_INSN_CALL_ARG_LOCATION);
++#endif
+ 		emit_label_before(label2, insn);
+ 		LABEL_NUSES(label2)++;
+ 	}
+diff --git a/scripts/gcc-plugins/size_overflow_plugin/intentional_overflow.c b/scripts/gcc-plugins/size_overflow_plugin/intentional_overflow.c
+index 26899bd89cf7..789bb9ed6465 100644
+--- a/scripts/gcc-plugins/size_overflow_plugin/intentional_overflow.c
++++ b/scripts/gcc-plugins/size_overflow_plugin/intentional_overflow.c
+@@ -535,16 +535,16 @@ static bool is_lt_signed_type_max(const_tree rhs)
+ 		return true;
+ 
+ 	switch (TYPE_MODE(type)) {
+-	case QImode:
++	case E_QImode:
+ 		new_type = intQI_type_node;
+ 		break;
+-	case HImode:
++	case E_HImode:
+ 		new_type = intHI_type_node;
+ 		break;
+-	case SImode:
++	case E_SImode:
+ 		new_type = intSI_type_node;
+ 		break;
+-	case DImode:
++	case E_DImode:
+ 		new_type = intDI_type_node;
+ 		break;
+ 	default:
+@@ -628,6 +628,33 @@ tree handle_intentional_overflow(interesting_stmts_t expand_from, bool check_ove
+ 	return create_assign(expand_from->visited, stmt, lhs, AFTER_STMT);
+ }
+ 
++static bool compare_bitsize_le(machine_mode arg1, machine_mode arg2)
++{
++#if BUILDING_GCC_VERSION >= 8000
++	return maybe_le(GET_MODE_BITSIZE(arg1), GET_MODE_BITSIZE(arg2));
++#else
++	return (GET_MODE_BITSIZE(arg1) <= GET_MODE_BITSIZE(arg2));
++#endif
++}
++
++static bool compare_bitsize_ge(machine_mode arg1, machine_mode arg2)
++{
++#if BUILDING_GCC_VERSION >= 8000
++	return maybe_ne(GET_MODE_BITSIZE(arg1), GET_MODE_BITSIZE(arg2));
++#else
++	return (GET_MODE_BITSIZE(arg1) != GET_MODE_BITSIZE(arg2));
++#endif
++}
++
++static bool compare_bitsize_ne(machine_mode arg1, machine_mode arg2)
++{
++#if BUILDING_GCC_VERSION >= 8000
++	return maybe_ne(GET_MODE_BITSIZE(arg1), GET_MODE_BITSIZE(arg2));
++#else
++	return (GET_MODE_BITSIZE(arg1) != GET_MODE_BITSIZE(arg2));
++#endif
++}
++
+ static bool is_subtraction_special(struct visited *visited, const gassign *stmt)
+ {
+ 	gimple rhs1_def_stmt, rhs2_def_stmt;
+@@ -657,9 +684,9 @@ static bool is_subtraction_special(struct visited *visited, const gassign *stmt)
+ 	rhs2_def_stmt_rhs1_mode = TYPE_MODE(TREE_TYPE(rhs2_def_stmt_rhs1));
+ 	rhs1_def_stmt_lhs_mode = TYPE_MODE(TREE_TYPE(rhs1_def_stmt_lhs));
+ 	rhs2_def_stmt_lhs_mode = TYPE_MODE(TREE_TYPE(rhs2_def_stmt_lhs));
+-	if (GET_MODE_BITSIZE(rhs1_def_stmt_rhs1_mode) <= GET_MODE_BITSIZE(rhs1_def_stmt_lhs_mode))
++	if (compare_bitsize_le(rhs1_def_stmt_rhs1_mode, rhs1_def_stmt_lhs_mode))
+ 		return false;
+-	if (GET_MODE_BITSIZE(rhs2_def_stmt_rhs1_mode) <= GET_MODE_BITSIZE(rhs2_def_stmt_lhs_mode))
++	if (compare_bitsize_le(rhs2_def_stmt_rhs1_mode, rhs2_def_stmt_lhs_mode))
+ 		return false;
+ 
+ 	pointer_set_insert(visited->no_cast_check, rhs1_def_stmt);
+@@ -922,7 +949,7 @@ void unsigned_signed_cast_intentional_overflow(struct visited *visited, gassign
+ 
+ 	if (!(TYPE_UNSIGNED(rhs_type) && !TYPE_UNSIGNED(lhs_type)))
+ 		return;
+-	if (GET_MODE_BITSIZE(TYPE_MODE(rhs_type)) != GET_MODE_BITSIZE(TYPE_MODE(lhs_type)))
++	if (compare_bitsize_ne(TYPE_MODE(rhs_type), TYPE_MODE(lhs_type)))
+ 		return;
+ 	use_num = uses_num(rhs);
+ 	if (use_num != 1)
+@@ -971,7 +998,7 @@ static bool is_short_cast_neg(const_tree rhs)
+ 		return false;
+ 
+ 	cast_rhs = gimple_assign_rhs1(cast_stmt);
+-	if (GET_MODE_BITSIZE(TYPE_MODE(TREE_TYPE(cast_rhs))) >= GET_MODE_BITSIZE(TYPE_MODE(TREE_TYPE(rhs))))
++	if (compare_bitsize_ge(TYPE_MODE(TREE_TYPE(cast_rhs)), TYPE_MODE(TREE_TYPE(rhs))))
+ 		return false;
+ 
+ 	neg_cast_stmt = get_def_stmt(cast_rhs);
+@@ -1013,7 +1040,7 @@ bool neg_short_add_intentional_overflow(gassign *unary_stmt)
+ 	if (!cast_stmt || !gimple_assign_cast_p(cast_stmt))
+ 		return false;
+ 	cast_rhs = gimple_assign_rhs1(cast_stmt);
+-	if (GET_MODE_BITSIZE(TYPE_MODE(TREE_TYPE(cast_rhs))) <= GET_MODE_BITSIZE(TYPE_MODE(TREE_TYPE(rhs1))))
++	if (compare_bitsize_le(TYPE_MODE(TREE_TYPE(cast_rhs)), TYPE_MODE(TREE_TYPE(rhs1))))
+ 		return false;
+ 
+ 	// one or two plus expressions
+diff --git a/scripts/gcc-plugins/size_overflow_plugin/remove_unnecessary_dup.c b/scripts/gcc-plugins/size_overflow_plugin/remove_unnecessary_dup.c
+index 5c268627352e..3c74ee921093 100644
+--- a/scripts/gcc-plugins/size_overflow_plugin/remove_unnecessary_dup.c
++++ b/scripts/gcc-plugins/size_overflow_plugin/remove_unnecessary_dup.c
+@@ -76,16 +76,16 @@ static tree get_proper_unsigned_half_type(const_tree node)
+ 
+ 	type = TREE_TYPE(node);
+ 	switch (TYPE_MODE(type)) {
+-	case HImode:
++	case E_HImode:
+ 		new_type = unsigned_intQI_type_node;
+ 		break;
+-	case SImode:
++	case E_SImode:
+ 		new_type = unsigned_intHI_type_node;
+ 		break;
+-	case DImode:
++	case E_DImode:
+ 		new_type = unsigned_intSI_type_node;
+ 		break;
+-	case TImode:
++	case E_TImode:
+ 		new_type = unsigned_intDI_type_node;
+ 		break;
+ 	default:
+diff --git a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c
+index f2571bfd15d5..00fea0e28640 100644
+--- a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c
++++ b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c
+@@ -133,10 +133,17 @@ static struct attribute_spec size_overflow_attr = {
+ 	.decl_required			= true,
+ 	.type_required			= false,
+ 	.function_type_required		= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity		= false,
+ 	.handler			= handle_size_overflow_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity		= false
+-#endif
++	.handler			= handle_size_overflow_attribute,
++	.affects_type_identity		= false,
++#else
++	.handler			= handle_size_overflow_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static struct attribute_spec intentional_overflow_attr = {
+@@ -146,10 +153,17 @@ static struct attribute_spec intentional_overflow_attr = {
+ 	.decl_required			= true,
+ 	.type_required			= false,
+ 	.function_type_required		= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity		= false,
+ 	.handler			= handle_intentional_overflow_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
+-	.affects_type_identity		= false
+-#endif
++	.handler			= handle_intentional_overflow_attribute,
++	.affects_type_identity		= false,
++#else
++	.handler			= handle_intentional_overflow_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void __unused *event_data, void __unused *data)
+diff --git a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_transform_core.c b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_transform_core.c
+index 7b24aea403dc..530df0b53451 100644
+--- a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_transform_core.c
++++ b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_transform_core.c
+@@ -37,20 +37,20 @@ tree get_size_overflow_type(struct visited *visited, const_gimple stmt, const_tr
+ 		return TREE_TYPE(node);
+ 
+ 	switch (TYPE_MODE(type)) {
+-	case QImode:
+-	case HImode:
++	case E_QImode:
++	case E_HImode:
+ 		new_type = size_overflow_type_SI;
+ 		break;
+-	case SImode:
++	case E_SImode:
+ 		new_type = size_overflow_type_DI;
+ 		break;
+-	case DImode:
++	case E_DImode:
+ 		if (LONG_TYPE_SIZE == GET_MODE_BITSIZE(SImode))
+ 			new_type = TYPE_UNSIGNED(type) ? unsigned_intDI_type_node : intDI_type_node;
+ 		else
+ 			new_type = size_overflow_type_TI;
+ 		break;
+-	case TImode:
++	case E_TImode:
+ 		gcc_assert(!TYPE_UNSIGNED(type));
+ 		new_type = size_overflow_type_TI;
+ 		break;
+@@ -487,7 +487,7 @@ static void insert_cond_result(interesting_stmts_t expand_from, basic_block bb_t
+ 	gcc_assert(report_node);
+ 	frequency = compute_call_stmt_bb_frequency(current_function_decl, bb_true);
+ 
+-	edge = cgraph_create_edge(get_cnode(current_function_decl), report_node, func_stmt, bb_true->count, frequency, bb_true->loop_depth);
++	edge = cgraph_create_edge(get_cnode(current_function_decl), report_node, func_stmt, bb_true->count, frequency);
+ 	gcc_assert(edge != NULL);
+ }
+ 
+@@ -507,7 +507,7 @@ static void insert_check_size_overflow(interesting_stmts_t expand_from, gimple s
+ 	cond_bb = e->src;
+ 	join_bb = e->dest;
+ 	e->flags = EDGE_FALSE_VALUE;
+-	e->probability = REG_BR_PROB_BASE;
++	e->probability = probability(REG_BR_PROB_BASE);
+ 
+ 	bb_true = create_empty_bb(cond_bb);
+ 	make_edge(cond_bb, bb_true, EDGE_TRUE_VALUE);
+@@ -631,6 +631,24 @@ static bool handle_unsigned_neg_or_bit_not(interesting_stmts_t expand_from, cons
+ 	return true;
+ }
+ 
++static bool compare_bitsize_gt(machine_mode arg1, machine_mode arg2)
++{
++#if BUILDING_GCC_VERSION >= 8000
++	return maybe_gt(GET_MODE_BITSIZE(arg1), GET_MODE_BITSIZE(arg2));
++#else
++	return (GET_MODE_BITSIZE(arg1) > GET_MODE_BITSIZE(arg2));
++#endif
++}
++
++static bool compare_bitsize_eq(machine_mode arg1, machine_mode arg2)
++{
++#if BUILDING_GCC_VERSION >= 8000
++	return maybe_eq(GET_MODE_BITSIZE(arg1), GET_MODE_BITSIZE(arg2));
++#else
++	return (GET_MODE_BITSIZE(arg1) == GET_MODE_BITSIZE(arg2));
++#endif
++}
++
+ static tree create_cast_overflow_check(interesting_stmts_t expand_from, tree new_rhs1, gassign *stmt)
+ {
+ 	bool cast_lhs, cast_rhs;
+@@ -640,8 +658,6 @@ static tree create_cast_overflow_check(interesting_stmts_t expand_from, tree new
+ 	const_tree rhs_type = TREE_TYPE(rhs);
+ 	enum machine_mode lhs_mode = TYPE_MODE(lhs_type);
+ 	enum machine_mode rhs_mode = TYPE_MODE(rhs_type);
+-	unsigned int lhs_size = GET_MODE_BITSIZE(lhs_mode);
+-	unsigned int rhs_size = GET_MODE_BITSIZE(rhs_mode);
+ 
+ 	static bool check_lhs[3][4] = {
+ 		// ss    su     us     uu
+@@ -670,10 +686,10 @@ static tree create_cast_overflow_check(interesting_stmts_t expand_from, tree new
+ 	if (rhs_mode == SImode && !TYPE_UNSIGNED(rhs_type) && (lhs_mode == HImode || lhs_mode == QImode))
+ 		return create_assign(expand_from->visited, stmt, lhs, AFTER_STMT);
+ 
+-	if (lhs_size > rhs_size) {
++	if (compare_bitsize_gt(lhs_mode, rhs_mode)) {
+ 		cast_lhs = check_lhs[0][TYPE_UNSIGNED(rhs_type) + 2 * TYPE_UNSIGNED(lhs_type)];
+ 		cast_rhs = check_rhs[0][TYPE_UNSIGNED(rhs_type) + 2 * TYPE_UNSIGNED(lhs_type)];
+-	} else if (lhs_size == rhs_size) {
++	} else if (compare_bitsize_eq(lhs_mode, rhs_mode)) {
+ 		cast_lhs = check_lhs[1][TYPE_UNSIGNED(rhs_type) + 2 * TYPE_UNSIGNED(lhs_type)];
+ 		cast_rhs = check_rhs[1][TYPE_UNSIGNED(rhs_type) + 2 * TYPE_UNSIGNED(lhs_type)];
+ 	} else {
+diff --git a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackleak_plugin.c
+index f0fdd5e28fdc..3e1710e11121 100644
+--- a/scripts/gcc-plugins/stackleak_plugin.c
++++ b/scripts/gcc-plugins/stackleak_plugin.c
+@@ -55,7 +55,7 @@ static void stackleak_check_alloca(gimple_stmt_iterator *gsi)
+ 	node = cgraph_get_create_node(check_function_decl);
+ 	gcc_assert(node);
+ 	frequency = compute_call_stmt_bb_frequency(current_function_decl, bb);
+-	cgraph_create_edge(cgraph_get_node(current_function_decl), node, check_alloca, bb->count, frequency, bb->loop_depth);
++	cgraph_create_edge(cgraph_get_node(current_function_decl), node, track_stack, bb->count, frequency);
+ }
+ 
+ static void stackleak_add_instrumentation(gimple_stmt_iterator *gsi, bool after)
+@@ -156,6 +156,15 @@ static unsigned int stackleak_tree_instrument_execute(void)
+ 	return 0;
+ }
+ 
++static bool large_stack_frame(void)
++{
++#if BUILDING_GCC_VERSION >= 8000
++	return maybe_ge(get_frame_size(), track_frame_size);
++#else
++	return (get_frame_size() >= track_frame_size);
++#endif
++}
++
+ static unsigned int stackleak_final_execute(void)
+ {
+ 	rtx_insn *insn, *next;
+@@ -164,7 +173,7 @@ static unsigned int stackleak_final_execute(void)
+ 		return 0;
+ 
+ 	// keep calls only if function frame is big enough
+-	if (get_frame_size() >= track_frame_size)
++	if (large_stack_frame())
+ 		return 0;
+ 
+ 	// 1. find pax_track_stack calls
+@@ -190,7 +199,7 @@ static unsigned int stackleak_final_execute(void)
+ //		warning(0, "track_frame_size: %d %ld %d", cfun->calls_alloca, get_frame_size(), track_frame_size);
+ 		// 2. delete call
+ 		delete_insn_and_edges(insn);
+-#if BUILDING_GCC_VERSION >= 4007
++#if BUILDING_GCC_VERSION >= 4007 && BUILDING_GCC_VERSION < 8000
+ 		if (GET_CODE(next) == NOTE && NOTE_KIND(next) == NOTE_INSN_CALL_ARG_LOCATION) {
+ 			insn = next;
+ 			next = NEXT_INSN(insn);
+diff --git a/scripts/gcc-plugins/structleak_plugin.c b/scripts/gcc-plugins/structleak_plugin.c
+index d5609abdeb08..bf0e66142411 100644
+--- a/scripts/gcc-plugins/structleak_plugin.c
++++ b/scripts/gcc-plugins/structleak_plugin.c
+@@ -55,10 +55,17 @@ static struct attribute_spec user_attr = {
+ 	.decl_required		= false,
+ 	.type_required		= false,
+ 	.function_type_required	= false,
++#if BUILDING_GCC_VERSION >= 8000
++	.affects_type_identity	= true,
+ 	.handler		= handle_user_attribute,
++#else
+ #if BUILDING_GCC_VERSION >= 4007
++	.handler		= handle_user_attribute,
+ 	.affects_type_identity	= true
+-#endif
++#else
++	.handler			= handle_user_attribute,
++#endif /* >= 4007 */
++#endif /* >= 8000 */
+ };
+ 
+ static void register_attributes(void *event_data __unused, void *data __unused)
+-- 
+2.18.0
+
