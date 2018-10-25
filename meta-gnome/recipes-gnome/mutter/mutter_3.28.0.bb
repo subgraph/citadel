@@ -7,6 +7,7 @@ SRC_URI_append = "\
     file://0001-remove-check-for-zenity.patch \
     file://0002-avoid-unnecessary-relayouts-in-cluttertext.patch \
     file://startup-notification.patch \
+    file://get_client_pid.patch \
 "
 
 DEPENDS = "libxrandr libsm libx11 libxi glib-2.0 wayland-protocols libwacom mesa gtk+3 pango cairo gsettings-desktop-schemas xcomposite upower gnome-desktop libxkbfile json-glib wayland-native xinerama zenity libinput libcanberra"
