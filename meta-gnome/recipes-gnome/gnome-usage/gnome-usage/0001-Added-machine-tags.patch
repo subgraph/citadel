@@ -1,0 +1,184 @@
+From ab11e8e689c29ecff810dc339b5119b69626306f Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph.com>
+Date: Tue, 31 Jul 2018 10:50:29 -0400
+Subject: [PATCH] Added machine tags for processes running in nspawn containers
+
+---
+ data/interface/adwaita.css |  5 ++++
+ data/ui/process-row.ui     | 23 ++++++++++++++++-
+ src/process-row.vala       | 53 ++++++++++++++++++++++++++++++++++++++
+ src/utils.vala             |  5 ++++
+ 4 files changed, 85 insertions(+), 1 deletion(-)
+
+diff --git a/data/interface/adwaita.css b/data/interface/adwaita.css
+index 2bd261c..55d1856 100644
+--- a/data/interface/adwaita.css
++++ b/data/interface/adwaita.css
+@@ -173,3 +173,8 @@ box.storage {
+ .tag.tag-user {
+     background: alpha(@theme_fg_color, 0.4);
+ }
++
++.tag.tag-machine {
++    background-color: blue;
++}
++
+diff --git a/data/ui/process-row.ui b/data/ui/process-row.ui
+index ab19f7c..48fdf8c 100644
+--- a/data/ui/process-row.ui
++++ b/data/ui/process-row.ui
+@@ -57,6 +57,27 @@
+                 <property name="position">3</property>
+               </packing>
+             </child>
++            <child>
++              <object class="GtkBox" id="machine_tag_box">
++                <property name="visible">False</property>
++                <property name="can_focus">False</property>
++                <property name="margin_right">10</property>
++                <style>
++                  <class name="tag"/>
++                </style>
++                <child>
++                  <object class="GtkLabel" id="machine_tag_label">
++                    <property name="visible">True</property>
++                  </object>
++                </child>
++              </object>
++              <packing>
++                <property name="expand">False</property>
++                <property name="fill">True</property>
++                <property name="pack_type">end</property>
++                <property name="position">3</property>
++              </packing>
++            </child>
+             <child>
+               <object class="GtkBox" id="user_tag_box">
+                 <property name="visible">False</property>
+@@ -75,7 +96,7 @@
+                 <property name="expand">False</property>
+                 <property name="fill">True</property>
+                 <property name="pack_type">end</property>
+-                <property name="position">3</property>
++                <property name="position">4</property>
+               </packing>
+             </child>
+           </object>
+diff --git a/src/process-row.vala b/src/process-row.vala
+index f657c12..2bbf583 100644
+--- a/src/process-row.vala
++++ b/src/process-row.vala
+@@ -37,11 +37,19 @@ namespace Usage
+         [GtkChild]
+         private Gtk.Label user_tag_label;
+ 
++        [GtkChild]
++        private Gtk.Box machine_tag_box;
++
++        [GtkChild]
++        private Gtk.Label machine_tag_label;
++
+         [GtkChild]
+         private Gtk.Label load_label;
+ 
+         private Fdo.AccountsUser user;
+ 
++        private string machine_name;
++
+         public Process process { get; private set; }
+         public bool max_usage { get; private set; }
+         public bool group {
+@@ -56,6 +64,10 @@ namespace Usage
+         private const string CSS_TAG_USER = "tag-user";
+         private const string CSS_TAG_ROOT = "tag-root";
+         private const string CSS_TAG_SYSTEM = "tag-system";
++        private const string CSS_TAG_MACHINE = "tag-machine";
++
++        private const int DBUS_ERROR_SERVICE_UNKNOWN = 2;
++        private const int BUS_ERROR_NO_MACHINE_FOR_PID = 36;
+ 
+         public ProcessRow(Process process, ProcessListBoxType type, bool opened = false)
+         {
+@@ -66,6 +78,7 @@ namespace Usage
+             update();
+ 
+             load_user_account();
++            load_machine_name();
+         }
+ 
+         private async void load_user_account() {
+@@ -94,10 +107,29 @@ namespace Usage
+                 icon.gicon = app_icon;
+         }
+ 
++        private async void load_machine_name() {
++            try {
++                Fdo.Machine1 machine = yield Bus.get_proxy (BusType.SYSTEM,
++                                                            "org.freedesktop.machine1",
++                                                            "/org/freedesktop/machine1");
++                var machine_path = yield machine.GetMachineByPID ((uint32)process.pid);
++                var machine_items = machine_path.split("/");
++                if (machine_items.length > 0) 
++                    this.machine_name = machine_items[machine_items.length - 1];
++                update_machine_tag();
++            } catch (Error e) {
++                if (e.code == BUS_ERROR_NO_MACHINE_FOR_PID) 
++                    debug ("No PID for machine: %s", e.message);
++                else
++                    warning ("Unable to obtain machine name: %s", e.message);
++            }
++        }
++
+         private void update()
+         {
+             update_load_label();
+             update_user_tag();
++            update_machine_tag();
+             check_max_usage();
+             set_styles();
+ 
+@@ -161,6 +193,27 @@ namespace Usage
+             user_tag_label.label = user.UserName;
+             user_tag_box.visible = !is_logged_in();
+         }
++        
++        private void update_machine_tag()
++        {
++            if (machine_name == null)
++                return;
++            remove_machine_tag();
++            create_machine_tag();
++        }
++
++        private void remove_machine_tag()
++        {
++            machine_tag_box.visible = false;
++            machine_tag_box.get_style_context().remove_class(CSS_TAG_MACHINE);
++        }
++
++        private void create_machine_tag()
++        {
++            machine_tag_box.get_style_context().add_class(CSS_TAG_MACHINE);
++            machine_tag_label.label = machine_name;
++            machine_tag_box.visible = true;
++        }
+ 
+         private bool is_logged_in(){
+             return user.UserName == GLib.Environment.get_user_name();
+diff --git a/src/utils.vala b/src/utils.vala
+index 21c0f83..2f96a35 100644
+--- a/src/utils.vala
++++ b/src/utils.vala
+@@ -100,4 +100,9 @@ namespace Usage
+         public abstract string UserName { owned get; }
+         public abstract uint64 Uid { get; }
+     }
++    
++    [DBus (name = "org.freedesktop.machine1.Manager")]
++    public interface Fdo.Machine1 : Object {
++        public abstract async string GetMachineByPID (uint32 id) throws IOError;
++    }
+ }
+-- 
+2.18.0
+
