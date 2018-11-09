@@ -228,6 +228,7 @@ smart_gaps on
 #
 # Startup Commands:
 #
+exec /usr/libexec/polkit-gnome-authentication-agent-1
 exec systemctl --user restart pulseaudio.service
 exec /usr/bin/start-pulseaudio-x11
 exec /usr/libexec/gsd-power

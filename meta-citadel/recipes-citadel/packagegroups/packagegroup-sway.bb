@@ -10,5 +10,6 @@ RDEPENDS_${PN} = "\
     rofi \
     grim \
     slurp \
+    polkit-gnome \
 "
 

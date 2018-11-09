@@ -17,7 +17,7 @@ EXTRA_OECONF = "\
     --disable-static \
 "
 
-DEPENDS += "gtk+3"
+DEPENDS += "gtk+3 glib-2.0-native"
 
 inherit autotools gtk-doc pkgconfig
 
