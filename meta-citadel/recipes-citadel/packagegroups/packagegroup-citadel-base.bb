@@ -66,4 +66,5 @@ RDEPENDS_${PN} = "\
     libpam \
     wireguard-tools \
     resolvconf \
+    udisks2 \
 "
