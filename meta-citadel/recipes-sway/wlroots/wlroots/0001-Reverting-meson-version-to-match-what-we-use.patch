@@ -1,0 +1,22 @@
+From f5fe7f06fd90fb4472a55f708d5ed56dbc7312eb Mon Sep 17 00:00:00 2001
+From: David McKinney <mckinney@subgraph>
+Date: Sat, 10 Nov 2018 23:16:24 +0000
+Subject: [PATCH] Reverting meson version to match what we use
+
+---
+ meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson.build b/meson.build
+index 9517168a..f75c9816 100644
+--- a/meson.build
++++ b/meson.build
+@@ -3,7 +3,7 @@ project(
+ 	'c',
+ 	version: '0.1.0',
+ 	license: 'MIT',
+-	meson_version: '>=0.48.0',
++	meson_version: '>=0.47.1',
+ 	default_options: [
+ 		'c_std=c11',
+ 		'warning_level=2',

@@ -5,13 +5,15 @@ inherit meson pkgconfig
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=7578fad101710ea2d289ff5411f1b818"
 
-SRC_URI = "gitsm://github.com/swaywm/wlroots"
-PV = "0.1+git${SRCPV}"
+SRC_URI = "gitsm://github.com/swaywm/wlroots \
+           file://0001-Reverting-meson-version-to-match-what-we-use.patch \
+           "
+PV = "0.1.0+git${SRCPV}"
 PR = "r0"
 
 UPSTREAM_CHECK_COMMITS = "1"
 
-SRCREV = "2a58d4467f83c5660bbee6733a73cc1ed92ca478"
+SRCREV = "be6210cf8216c08a91e085dac0ec11d0e34fb217"
 
 S = "${WORKDIR}/git"
 
