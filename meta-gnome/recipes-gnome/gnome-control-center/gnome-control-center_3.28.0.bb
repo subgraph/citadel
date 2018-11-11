@@ -31,7 +31,9 @@ DEPENDS = "pulseaudio colord-gtk networkmanager ibus colord gnome-desktop gnome-
 #      EXTRA_OEMESON += "-Duser_accounts=true"
 #      DEPENDS += "accountsservice krb5"
 #
-SRC_URI += "file://0001-Make-goa-cups-and-user-accounts-optional.patch" 
+SRC_URI += "file://0001-Make-goa-cups-and-user-accounts-optional.patch \
+            file://0001-build-Fix-USER_DIR_MODE-value-in-config.h.patch \
+            " 
 
 FILES_${PN} += "\
     ${datadir}/bash-completion \
