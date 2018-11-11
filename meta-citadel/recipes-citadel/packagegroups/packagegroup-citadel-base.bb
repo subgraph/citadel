@@ -42,6 +42,7 @@ RDEPENDS_${PN} = "\
     packagegroup-firmware \
     vim \
     vifm \
+    nano \
     tzdata \
     tzdata-americas \
     tzdata-asia \
