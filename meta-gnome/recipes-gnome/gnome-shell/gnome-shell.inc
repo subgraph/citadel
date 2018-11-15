@@ -11,6 +11,7 @@ SRC_URI = "${GNOME_MIRROR}/${GNOMEBN}/${@gnome_verdir("${PV}")}/${GNOMEBN}-${PV}
            file://0001-do-no-build-calendar-server.patch \
            file://0001-do-not-use-python-path-from-build-environment.patch \
            file://0001-javascript-invalid-access-fixes.patch \
+           file://0001-Disabled-calendar-events-from-user-session.patch \
            "
 
 DEPENDS = "glib-2.0-native systemd libcanberra gtk+3 glib-2.0 libxml2 libcroco mutter libsoup-2.4 gsettings-desktop-schemas gcr atk polkit startup-notification libx11 gnome-bluetooth libsecret networkmanager gjs mozjs52 network-manager-applet pulseaudio libxml2-native paxctl-native ibus xmlto-native sassc-native"
