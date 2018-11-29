@@ -68,4 +68,7 @@ RDEPENDS_${PN} = "\
     wireguard-tools \
     resolvconf \
     udisks2 \
+    efivar \
+    efibootmgr \
+    iw \
 "
