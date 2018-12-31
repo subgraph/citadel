@@ -18,6 +18,8 @@ RDEPENDS_${PN} = "\
     base-files \
     base-passwd \
     systemd \
+    syslinux \
+    syslinux-extlinux \
     keymaps \
     kbd \
     console-tools \
@@ -29,6 +31,7 @@ RDEPENDS_${PN} = "\
     iputils \
     which \
     parted \
+    hdparm \
     bash \
     ${BASH_COMPLETION} \
     grep \
@@ -38,8 +41,6 @@ RDEPENDS_${PN} = "\
     pciutils \
     sysfsutils \
     wpa-supplicant \
-    kernel-modules \
-    packagegroup-firmware \
     vim \
     vifm \
     nano \
@@ -55,6 +56,8 @@ RDEPENDS_${PN} = "\
     strace \
     iproute2 \
     util-linux-hwclock \
+    util-linux-blkid \
+    util-linux-fstrim \
     btrfs-tools \
     systemd-analyze \
     wget \

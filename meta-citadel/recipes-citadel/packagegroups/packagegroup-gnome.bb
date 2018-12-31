@@ -10,7 +10,6 @@ RDEPENDS_${PN} = "\
     gnome-bluetooth \
     gnome-control-center \
     gnome-settings-daemon \
-    gnome-backgrounds \
     gnome-tweaks \
     gnome-terminal \
     gnome-usage \
@@ -22,11 +21,6 @@ RDEPENDS_${PN} = "\
     gnome-keyring \
     gnome-session \
     gnome-shell \
-    adwaita-icon-theme \
-    adwaita-icon-theme-hires \
-    adwaita-icon-theme-symbolic \
-    adwaita-icon-theme-symbolic-hires \
-    adwaita-icon-theme-cursors \
     hicolor-icon-theme \
     dash-to-panel \
     citadel-config-gnome \

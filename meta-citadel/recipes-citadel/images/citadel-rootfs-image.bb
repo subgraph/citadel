@@ -4,16 +4,18 @@ LICENSE = "MIT"
 
 SYSTEMD_DEFAULT_TARGET = "graphical.target"
 
-require citadel-image-base.bb
-
-ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; symlink_lib64; setup_var; "
-
-#IMAGE_FSTYPES += "ext2"
-IMAGE_FSTYPES = "ext2"
+ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; write_etc_citadel_channel; symlink_lib64; setup_var; "
 
 IMAGE_INSTALL += "\
+    packagegroup-citadel-base \
     packagegroup-citadel \
 "
+
+CITADEL_IMAGE_VERSION = "${CITADEL_IMAGE_VERSION_rootfs}"
+CITADEL_IMAGE_TYPE = "rootfs"
+
+require citadel-image.inc
+inherit citadel-image
 
 set_blank_user_password() {
     sed -i 's%^citadel:!:%citadel::%' ${IMAGE_ROOTFS}/etc/shadow
@@ -22,6 +24,10 @@ set_blank_user_password() {
 set_citadel_user_password() {
     # crypt("citadel", "aa")
     sed -i 's%^citadel:!:%citadel:aadg8rGtZzOY6:%' ${IMAGE_ROOTFS}/etc/shadow
+}
+
+write_etc_citadel_channel() {
+    echo "${CITADEL_IMAGE_CHANNEL} ${CITADEL_IMAGE_VERSION_rootfs}" > ${IMAGE_ROOTFS}/etc/citadel-channel
 }
 
 setup_var() {
@@ -47,7 +53,7 @@ setup_var() {
     mv ${IMAGE_ROOTFS}/home/root ${IMAGE_ROOTFS}/usr/share/factory/home
 
     rm ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
-    ln -sf ../themes/Adapta-Nokto/gnome-shell/gnome-shell-theme.gresource ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
+    ln -sf /opt/share/themes/Adapta/gnome-shell/gnome-shell-theme.gresource ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
 
     # do_rootfs() will fail otherwise
     ln -sf ../usr/share/factory/var/lib ${IMAGE_ROOTFS}/var/lib
