@@ -1,5 +1,0 @@
-[Unit]
-Description=Desktop Integration Manager
-
-[Service]
-ExecStart=/usr/libexec/citadel-desktopd /usr/share/citadel/citadel-desktopd.conf
