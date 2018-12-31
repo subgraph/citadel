@@ -1,4 +1,3 @@
-/dev/root                           /             auto       defaults                    1  1
 /dev/mapper/citadel-storage         /storage      auto       defaults,nossd,noatime,commit=120 0  0
 /storage/citadel-state/var          /var          none       bind                        0  0
 /storage/realms                     /realms       none       bind                        0  0

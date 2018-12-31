@@ -41,6 +41,7 @@ SRC_URI = "\
     file://share/dot.vimrc \
     file://polkit/citadel.rules \
     file://systemd/zram-swap.service \
+    file://citadel/citadel-image.conf \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
@@ -70,6 +71,7 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
+    install -m 0755 -d ${D}${datadir}/citadel
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
 
@@ -107,9 +109,31 @@ do_install() {
 
     install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
 
+    install -m 0644 ${S}/citadel/citadel-image.conf ${D}${datadir}/citadel
+
+    # This probably belongs in lvm2 recipe
+    install -d ${D}${systemd_system_unitdir}/sysinit.target.wants
+    ln -s ../lvm2-lvmetad.socket ${D}${systemd_system_unitdir}/sysinit.target.wants/lvm2-lvmetad.socket
+
     ln -s /storage/citadel-state/resolv.conf ${D}${sysconfdir}/resolv.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/etc.conf
     ln -s /dev/null ${D}${sysconfdir}/tmpfiles.d/home.conf
+
+    install -d ${D}${datadir}/themes
+    install -d ${D}${datadir}/icons
+    install -d ${D}${libdir}/modules
+    install -d ${D}${libdir}/firmware
+    install -d ${D}${datadir}/backgrounds
+    install -d ${D}/opt/share
+
+    ln -sf /opt/share/themes/Adapta ${D}/usr/share/themes/Adapta
+    ln -sf /opt/share/themes/Adapta-Eta ${D}/usr/share/themes/Adapta-Eta
+    ln -sf /opt/share/themes/Adapta-Nokto ${D}/usr/share/themes/Adapta-Nokto
+    ln -sf /opt/share/themes/Adapta-Nokto-Eta ${D}/usr/share/themes/Adapta-Nokto-Eta
+    ln -sf /opt/share/icons/Paper ${D}/usr/share/icons/Paper
+    ln -sf /opt/share/icons/Adwaita ${D}/usr/share/icons/Adwaita
+    ln -sf /opt/share/backgrounds/gnome ${D}/usr/share/backgrounds/gnome
+    ln -sf /opt/share/gnome-background-properties ${D}/usr/share/gnome-background-properties
 }
 
 FILES_${PN} = "/"
