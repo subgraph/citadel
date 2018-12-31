@@ -22,6 +22,7 @@ setup_rootfs() {
     if [[ ${USE_TMPFS} -eq 1 ]]; then
         mount -t tmpfs rootfs-tmp ${ROOTFS}
     fi
+    chmod 0755 ${ROOTFS}
 }
 
 run_debootstrap() {
