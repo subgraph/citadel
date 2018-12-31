@@ -16,7 +16,7 @@ SRC_URI = "${GNOME_MIRROR}/${GNOMEBN}/${@gnome_verdir("${PV}")}/${GNOMEBN}-${PV}
 
 DEPENDS = "glib-2.0-native systemd libcanberra gtk+3 glib-2.0 libxml2 libcroco mutter libsoup-2.4 gsettings-desktop-schemas gcr atk polkit startup-notification libx11 gnome-bluetooth libsecret networkmanager gjs mozjs52 network-manager-applet pulseaudio libxml2-native paxctl-native ibus xmlto-native sassc-native"
 
-RDEPENDS_${PN} = "xserver-xorg-xwayland cantarell-fonts gnome-theme-adwaita gnome-theme-adwaita-dark gnome-backgrounds gnome-control-center gnome-session adwaita-icon-theme dconf"
+RDEPENDS_${PN} = "xserver-xorg-xwayland cantarell-fonts gnome-theme-adwaita gnome-theme-adwaita-dark gnome-control-center gnome-session dconf"
 
 FILES_${PN} += "\
     ${datadir}/dbus-1 \
