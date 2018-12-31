@@ -1,4 +1,4 @@
-SUMMARY = "citadel-realms"
+include citadel-tools.inc
 
 SRC_URI += " \
 crate://crates.io/ansi_term/0.11.0 \
@@ -27,8 +27,8 @@ crate://crates.io/syn/0.11.11 \
 crate://crates.io/syn/0.12.14 \
 crate://crates.io/synom/0.11.3 \
 crate://crates.io/synstructure/0.6.1 \
-crate://crates.io/termion/1.5.1 \
 crate://crates.io/termcolor/0.3.5 \
+crate://crates.io/termion/1.5.1 \
 crate://crates.io/textwrap/0.9.0 \
 crate://crates.io/toml/0.4.5 \
 crate://crates.io/unicode-width/0.1.4 \
@@ -49,4 +49,3 @@ do_install() {
     install -m 755 -T ${B}/target/${CARGO_TARGET_SUBDIR}/citadel-realms ${D}${bindir}/realms
 }
 
-require citadel-tools.inc

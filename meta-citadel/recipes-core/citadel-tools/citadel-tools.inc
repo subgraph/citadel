@@ -1,16 +1,64 @@
+SUMMARY = "${PN}"
 HOMEPAGE = "http://github.com/subgraph/citadel"
 LICENSE = "CLOSED"
 LIC_FILES_CHKSUM="" 
 
+inherit cargo
+
+#
+# Update this when changes are pushed to github
+#
+SRCREV = "d2f07c01bf08900105715e6008f8cca517c21069"
+
+GIT_URI = "git://github.com/subgraph/citadel-tools.git;protocol=https"
+
+#
+# To make development more convenient citadel-tools recipes support
+# building from a checked out tree on the filesystem. If the variable
+# CITADEL_TOOLS_PATH is set (preferably in build/conf/local.conf) then
+# bitbake will not check out the source files from git but instead will
+# copy the directory this variable contains.
+#
+
+#
+#
+# By default: 
+#
+#     S = "${WORKDIR}/git/${BPN}", 
+#
+# if CITADEL_TOOLS_PATH is set:
+#
+#     S = ${WORKDIR}${CITADEL_TOOLS_PATH}/${BPN}
+#
+S = "${WORKDIR}${@source_path(d)}/${BPN}"
+
+#
+# By default:
+#
+#     SRC_URI += ${GIT_URI}
+#
+# If CITADEL_TOOLS_PATH is set:
+#
+#     SRC_URI += "file://${CITADEL_TOOLS_PATH}"
+#
+SRC_URI += "${@source_uri(d)}"
+
 # what is this even for?
 CARGO_SRC_DIR=""
 
-S = "${WORKDIR}/${PN}"
-do_unpack_src() {
-    rm -rf ${WORKDIR}/${PN}
-    cp -a ${TOPDIR}/../citadel-tools/${PN} ${WORKDIR}
-    rm -rf ${WORKDIR}$/${PN}/target
-}
-# don't use cached task
-# do_unpack_src[nostamp] = "1"
-addtask unpack_src after do_unpack before do_patch
+def source_path(d):
+    tools_path = d.getVar("CITADEL_TOOLS_PATH")
+
+    if tools_path:
+        return tools_path 
+    else:
+        return "/git"
+
+def source_uri(d):
+    tools_path = d.getVar("CITADEL_TOOLS_PATH")
+    if tools_path:
+        return "file://" + tools_path
+    else:
+        return d.getVar("GIT_URI")
+
+
