@@ -36,6 +36,7 @@ S = "${WORKDIR}/linux-${LINUX_VERSION}"
 do_deploy_append() {
     rm ${DEPLOYDIR}/bzImage
     ln -sf bzImage-initramfs${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOYDIR}/bzImage
+    echo "${PV}" > ${DEPLOYDIR}/kernel.version
 }
 
 #
