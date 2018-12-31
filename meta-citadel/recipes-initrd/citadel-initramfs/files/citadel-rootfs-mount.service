@@ -1,11 +1,26 @@
 [Unit]
-Description=Mount citadel rootfs
+Description=Create rootfs device with citadel-mount rootfs
+DefaultDependencies=no
 
+#
+# Only run after all partitions have been discovered
+#
 ConditionPathExists=/dev/mapper/citadel-rootfsA
 ConditionPathExists=/dev/mapper/citadel-rootfsB
 ConditionPathExists=/dev/mapper/citadel-storage
 
+#
+# Pull in the unit that mounts 'extra' and 'modules' images
+#
+Wants=citadel-rootfs-setup.service
+
+#
+# citadel-mount needs to run in pax soft mode
+#
+Requires=systemd-sysctl.service
+After=systemd-sysctl.service
+
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/bin/sh -c 'echo "hello world"'
+ExecStart=/usr/libexec/citadel-mount rootfs

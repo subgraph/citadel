@@ -4,6 +4,12 @@ NO_RECOMMENDATIONS = "1"
 
 PACKAGE_INSTALL = "\
     citadel-initramfs \
+    citadel-mount \
+    citadel-install \
+    strace \
+    xz \
+    tar \
+    btrfs-tools \
     base-passwd \
     busybox \
     kbd \
@@ -75,6 +81,7 @@ PACKAGE_INSTALL = "\
     kernel-module-intel-ishtp \
     kernel-module-intel-ishtp-hid \
     kernel-module-intel-rng \
+    kernel-module-lz4 \
     kernel-module-msi-wmi \
     kernel-module-mxm-wmi \
     kernel-module-radeon \
@@ -87,6 +94,7 @@ PACKAGE_INSTALL = "\
     kernel-module-wmi \
     kernel-module-xhci-plat-hcd \
     liberation-fonts \
+    util-linux \
     plymouth \
 "
 

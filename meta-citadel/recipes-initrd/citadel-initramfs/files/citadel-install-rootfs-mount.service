@@ -1,0 +1,25 @@
+[Unit]
+Description=Mount citadel rootfs in install/live mode
+DefaultDependencies=no
+
+# Only run in initramfs
+ConditionPathExists=/etc/initrd-release
+
+# Only run in install or live mode
+ConditionKernelCommandLine=|citadel.install
+ConditionKernelCommandLine=|citadel.live
+
+# Only run if root is set to this exact path
+ConditionKernelCommandLine=root=/dev/mapper/rootfs
+
+Wants=citadel-rootfs-setup.service citadel-install-rootfs-setup.service
+
+Requires=systemd-sysctl.service systemd-udev-settle.service
+After=systemd-sysctl.service systemd-udev-settle.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/usr/bin/plymouth message --text="Copying files from boot disk and decompressing rootfs image"
+ExecStart=/usr/libexec/citadel-install copy-artifacts
+ExecStart=/usr/libexec/citadel-mount rootfs

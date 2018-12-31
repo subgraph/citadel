@@ -1,0 +1,19 @@
+[Unit]
+Description=Set up citadel for install/live boot
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=sysroot.mount citadel-rootfs-setup.service
+Requires=sysroot.mount
+Before=initrd-root-fs.target shutdown.target
+AssertPathExists=/etc/initrd-release
+
+# Only run in install or live modes 
+ConditionKernelCommandLine=|citadel.install
+ConditionKernelCommandLine=|citadel.live
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/usr/bin/plymouth message --text="Setting up filesystem in RAM for live boot"
+ExecStart=/usr/libexec/citadel-install live-setup
+ExecStartPost=/usr/bin/plymouth message --text="Starting desktop"

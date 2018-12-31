@@ -1,5 +1,17 @@
 [Unit]
 Description=Watch for new entries in /dev/mapper
+DefaultDependencies=no
+
+# Only run in initramfs
+ConditionPathExists=/etc/initrd-release
+
+# Only run if root is set to this exact path, since that's
+# the path created by 'citadel-mount rootfs'
+ConditionKernelCommandLine=root=/dev/mapper/rootfs
+
+# Don't run if running from installer or in live mode
+ConditionKernelCommandLine=!citadel.install
+ConditionKernelCommandLine=!citadel.live
 
 [Path]
 PathChanged=/dev/mapper

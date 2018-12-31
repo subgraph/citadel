@@ -10,6 +10,11 @@ SRC_URI = "\
     file://11-dm.rules \
     file://citadel-rootfs-mount.path \
     file://citadel-rootfs-mount.service \
+    file://citadel-rootfs-setup.service \
+    file://citadel-install-rootfs-mount.service \
+    file://citadel-install-rootfs-setup.service \
+    file://citadel-image.conf \
+    file://99-grsec.conf \
 "
 
 S = "${WORKDIR}"
@@ -25,17 +30,30 @@ do_install() {
     install -d ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/citadel-rootfs-setup.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/citadel-install-rootfs-mount.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/citadel-install-rootfs-setup.service ${D}${systemd_system_unitdir}
 
     install -d ${D}${systemd_system_unitdir}/sysinit.target.wants
     ln -s ../citadel-rootfs-mount.path ${D}${systemd_system_unitdir}/sysinit.target.wants/citadel-rootfs-mount.path
+    ln -s ../citadel-rootfs-setup.service ${D}${systemd_system_unitdir}/sysinit.target.wants/citadel-rootfs-setup.service
+    ln -s ../citadel-install-rootfs-mount.service ${D}${systemd_system_unitdir}/sysinit.target.wants/citadel-install-rootfs-mount.service
+
+    install -d ${D}${libdir}/sysctl.d/
+    install -m 0644 ${WORKDIR}/99-grsec.conf ${D}${libdir}/sysctl.d/
 
     install -d ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/initrd-release ${D}${sysconfdir}
     install -m 644 ${WORKDIR}/crypttab ${D}${sysconfdir}
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 644 ${WORKDIR}/11-dm.rules ${D}${sysconfdir}/udev/rules.d
+
+    install -d ${D}${datadir}/citadel
+    install -m 644 ${S}/citadel-image.conf ${D}${datadir}/citadel/
+
     install -d ${D}/dev
     mknod -m 622 ${D}/dev/console c 5 1
+    mknod -m 644 ${D}/dev/loop0 b 7 0
 }
 
 FILES_${PN} += "/dev/console /boot /dev /usr /etc /proc /run /sys /tmp"
