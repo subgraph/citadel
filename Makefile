@@ -1,4 +1,4 @@
-.PHONY: help docker-image docker-shell citadel-image citadel-kernel user-rootfs update-submodules build-appimg install-build-deps
+.PHONY: help docker-image docker-shell citadel-image citadel-kernel user-rootfs update-submodules build-appimg install-build-deps installer
 
 BASE_DIR = $(shell pwd)
 BASE_BINDMOUNT = type=bind,source=$(BASE_DIR),target=/home/builder/citadel
@@ -9,6 +9,9 @@ ifdef REALM_NAME
 undefine DOCKER_RUN
 undefine DOCKER_RUN_PRIV
 endif
+
+APPIMG_TARFILE = build/appimg/appimg-rootfs.tar.xz
+INSTALLER_IMAGE = build/images/citadel-installer.img
 
 #
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
@@ -23,14 +26,16 @@ docker-image: ## Create docker builder image.  You need to run this one time bef
 docker-shell: ## Open an interactive shell in the docker build container configured for running bitbake commands.
 	$(DOCKER_RUN)
 
-citadel-image: ## Build citadel-image with bitbake 
-	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-image"
+installer: ${APPIMG_TARFILE} ## Build citadel installer image
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake --continue citadel-installer-image"
+	@echo "Installer image:"
+	@ls -l $(INSTALLER_IMAGE)
+
+rootfs: ## Build citadel rootfs image with bitbake 
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-rootfs-image"
 
 citadel-kernel: ## Build citadel-kernel with bitbake
 	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-kernel"
-
-bootloader: ## Build systemd-boot
-	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake systemd-boot"
 
 build-appimg: ## Build an application image
 	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
@@ -41,5 +46,8 @@ update-submodules: ## Retrieve or update submodule projects
 install-build-deps:
 	sudo apt install --no-install-recommends build-essential python bzip2 cpio chrpath diffstat file texinfo inkscape libgmp-dev libmpc-dev libelf-dev gawk
 
-clean-citadel-tools:
-	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake -ccleansstate citadel-rootfs && bitbake -ccleansstate citadel-realms && bitbake -ccleansstate citadel-desktopd"
+$(APPIMG_TARFILE):
+	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
+
+$(INSTALLER_IMAGE): $(APPIMG_TARFILE)
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-installer-image"

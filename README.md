@@ -50,37 +50,30 @@ To run a shell inside the docker build container:
 
 The shell will run in the build directory and be configured to run build commands with `bitbake`.  
 
-To build a full citadel image:
+To build a full citadel installer image:
 
-    $ make citadel-image
+    $ make installer
 
 The build will take several hours the first time, but for later builds the build system will use cached artifacts stored 
 in `citadel/build/sstate-cache` for components that have not changed and new builds will usually only take a few minutes.
 
-## Some Assembly Required
+## Installer Image
 
-Currently there are some rather unreliable scripts to make it possible to turn build output into something that you can install and run.
+If the installer build completes successfully, the installer disk image can be found in `citadel/build/images/citadel-installer.img`.
 
-Very soon these scripts will be replaced by an actual installer that you can just build by running a make target, but that doesn't quite exist yet.
+Write this file to a USB stick (for example /dev/sdb is the USB drive you want to write to):
 
-### Running `scripts/create_install_pack` to create installpack.tar
+    # dd if=citadel/build/images/citadel-installer.img of=/dev/sdb bs=4M
 
-Before creating the installpack, some artifacts must exist in the build/images directory:
+The installer image is a live disk from which you can run an installer program to perform a permanent installation. To
+run the installer, open a citadel terminal, su to root, and run:
 
-  * `make citadel-image`  Creates: `images/citadel-image-intel-corei7-64.ext2`
-  * `make citadel-kernel` Creates: `images/bzImage`
-  * `make bootloader`     Creates: `images/systemd-bootx64.efi`
-  * `make appimg-rootfs`  Creates: `appimg/appimg-rootfs.tar.xz`
+    # /usr/libexec/citadel-installer
 
-After all of those components have been build, you can run `scripts/create_install_pack` which will create a file in the current directory called `installpack.tar`.  
+You can also directly specify the disk to use on the command line.  Replace /dev/sda in the example with the actual 
+disk you want to install to. You can even use the usb disk you booted the installer from!
 
-You can then unpack this tarball somewhere and run a script inside of it called `install.sh` to install to a USB stick (do this first, at least until you understand the process) or to install to internal disk drive.
-
-    $ tar xvf installpack.tar
-    $ cd installpack
-    $ sudo ./install.sh /dev/sdb
-
-The install.sh script redirects all output from the commands it runs to a file install.log in the current directory.  If the last line of output does not say "Install completed successfully" then something failed.  Look in install.log for information about what went wrong.  The script itself does not print any output when it fails, it will just stop at one of the steps and it appears as if everything worked since there is no error output.
+    # /usr/libexec/citadel-installer /dev/sda
 
 # Reproducible builds
 
