@@ -3,7 +3,7 @@ DESCRIPTION = "Citadel resources"
 LICENSE = "MIT"
 
 PACKAGE_INSTALL = "\
-    packagegroup-firmware \
+    linux-firmware \
     adapta-gtk-theme \
     paper-icon-theme \
     gnome-backgrounds \
