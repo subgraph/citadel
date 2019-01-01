@@ -204,3 +204,20 @@ INHERIT+="toaster buildhistory"
 # will also build citadel-image with powertop package installed
 #
 # DISTROOVERRIDES = "citadel-powertop"
+
+
+#
+# Set to build citadel-tools recipes from a local copy on the filesystem rather than
+# check out the source code from git.
+#
+# Use this when you want to build citadel images with code that is in progress and
+# has not yet been checked in and/or pushed to github.
+#
+# CITADEL_TOOLS_PATH = "/home/user/citadel-tools"
+#
+# You can also set this for individual recipes to avoid always rebuilding the
+# entire set of citadel-tools on every change.
+#
+# CITADEL_TOOLS_PATH_pn-citadel-mount = "/home/user/citadel-tools"
+# CITADEL_TOOLS_PATH_pn-citadel-realms = "/home/user/citadel-tools"
+#
