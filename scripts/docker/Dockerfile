@@ -28,7 +28,8 @@ RUN apt update && apt install -y gawk \
     nano \
     sudo \
     debootstrap \
-    inkscape
+    inkscape \
+    cryptsetup-bin
 
 # python
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
