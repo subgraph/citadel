@@ -125,15 +125,6 @@ do_install() {
     install -d ${D}${libdir}/firmware
     install -d ${D}${datadir}/backgrounds
     install -d ${D}/opt/share
-
-    ln -sf /opt/share/themes/Adapta ${D}/usr/share/themes/Adapta
-    ln -sf /opt/share/themes/Adapta-Eta ${D}/usr/share/themes/Adapta-Eta
-    ln -sf /opt/share/themes/Adapta-Nokto ${D}/usr/share/themes/Adapta-Nokto
-    ln -sf /opt/share/themes/Adapta-Nokto-Eta ${D}/usr/share/themes/Adapta-Nokto-Eta
-    ln -sf /opt/share/icons/Paper ${D}/usr/share/icons/Paper
-    ln -sf /opt/share/icons/Adwaita ${D}/usr/share/icons/Adwaita
-    ln -sf /opt/share/backgrounds/gnome ${D}/usr/share/backgrounds/gnome
-    ln -sf /opt/share/gnome-background-properties ${D}/usr/share/gnome-background-properties
 }
 
 FILES_${PN} = "/"
