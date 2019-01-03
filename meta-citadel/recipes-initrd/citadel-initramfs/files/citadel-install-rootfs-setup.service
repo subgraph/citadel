@@ -3,7 +3,7 @@ Description=Set up citadel for install/live boot
 DefaultDependencies=no
 Conflicts=shutdown.target
 After=sysroot.mount citadel-rootfs-setup.service
-Requires=sysroot.mount
+Requires=sysroot.mount citadel-rootfs-setup.service
 Before=initrd-root-fs.target shutdown.target
 AssertPathExists=/etc/initrd-release
 
