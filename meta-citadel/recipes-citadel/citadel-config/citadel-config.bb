@@ -29,6 +29,11 @@ UDEV_RULES = "\
     file://udev/scsi-alpm.rules \
 "
 
+IPTABLES_RULES = "\
+    file://iptables/empty-filter.rules \
+    file://iptables/iptables.rules \
+"
+
 SRC_URI = "\
     file://locale.conf \
     file://environment.sh \
@@ -40,12 +45,15 @@ SRC_URI = "\
     file://share/dot.profile \
     file://share/dot.vimrc \
     file://polkit/citadel.rules \
+    file://iptables-flush.sh \
     file://systemd/zram-swap.service \
+    file://systemd/iptables.service \
     file://citadel/citadel-image.conf \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
     ${UDEV_RULES} \
+    ${IPTABLES_RULES} \
 "
 
 USERADD_PACKAGES = "${PN}"
@@ -58,6 +66,7 @@ RDEPENDS_${PN} = "bash"
 inherit allarch systemd useradd
 
 SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path"
+SYSTEMD_SERVICE_${PN} = "iptables.service"
 
 do_install() {
     install -m 0755 -d ${D}/storage
@@ -72,6 +81,7 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${datadir}/citadel
+    install -m 0755 -d ${D}${datadir}/iptables
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
 
@@ -83,6 +93,7 @@ do_install() {
 
     install -d ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/zram-swap.service ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/systemd/iptables.service ${D}${systemd_system_unitdir}
 
     install -m 644 ${WORKDIR}/systemd/watch-run-user.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/watch-run-user.service ${D}${systemd_system_unitdir}
@@ -100,6 +111,10 @@ do_install() {
 
     install -m 0644 ${WORKDIR}/udev/pci-pm.rules ${D}${sysconfdir}/udev/rules.d/
     install -m 0644 ${WORKDIR}/udev/scsi-alpm.rules ${D}${sysconfdir}/udev/rules.d/
+
+    install -m 0644 ${WORKDIR}/iptables/iptables.rules ${D}${datadir}/iptables/
+    install -m 0644 ${WORKDIR}/iptables/empty-filter.rules ${D}${datadir}/iptables/
+    install -m 0644 ${WORKDIR}/iptables-flush.sh ${D}${datadir}/iptables/
 
     install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
     install -m 0644 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
