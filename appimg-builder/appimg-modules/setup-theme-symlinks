@@ -1,0 +1,9 @@
+#
+# /opt/share is a tree that is mounted into realm from citadel
+#
+mkdir -p /opt/share
+ln -sf /opt/share/themes/Adapta /usr/share/themes/Adapta
+ln -sf /opt/share/themes/Adapta-Eta /usr/share/themes/Adapta-Eta
+ln -sf /opt/share/themes/Adapta-Nokto /usr/share/themes/Adapta-Nokto
+ln -sf /opt/share/themes/Adapta-Nokto-Eta /usr/share/themes/Adapta-Nokto-Eta
+ln -sf /opt/share/icons/Paper /usr/share/icons/Paper

@@ -6,7 +6,7 @@ BASE_PACKAGES="debootstrap iproute2 less xz-utils sudo dbus libpam-systemd opens
 
 BASE_PRE_INSTALL_MODULES="utility-library configure-locale create-user set-hostname no-install-recommends write-apt-sources"
 
-BASE_POST_INSTALL_MODULES="loginctl-enable-linger configure-systemd install-configure-host0 install-launch-script"
+BASE_POST_INSTALL_MODULES="loginctl-enable-linger configure-systemd install-configure-host0 install-launch-script setup-theme-symlinks"
 
 trap "exit 1" TERM
 export TOP_PID=$$
