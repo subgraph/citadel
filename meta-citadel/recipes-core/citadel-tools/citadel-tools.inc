@@ -8,7 +8,7 @@ inherit cargo
 #
 # Update this when changes are pushed to github
 #
-SRCREV = "c992b32946813137f5a162d486b0e315f4d992cd"
+SRCREV = "8e341d6005deabbf25a807c4fa99031072388ebc"
 
 GIT_URI = "git://github.com/subgraph/citadel-tools.git;protocol=https"
 
