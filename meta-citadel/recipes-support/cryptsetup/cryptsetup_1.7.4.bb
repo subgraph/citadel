@@ -25,6 +25,8 @@ PACKAGECONFIG[gcrypt] = "--with-crypto_backend=gcrypt,,libgcrypt"
 
 RDEPENDS_${PN} += "lvm2 lvm2-udevrules"
 
+RDEPENDS_${PN}_class-native = ""
+
 RRECOMMENDS_${PN} = "kernel-module-aes-generic \
                      kernel-module-dm-crypt \
                      kernel-module-md5 \
