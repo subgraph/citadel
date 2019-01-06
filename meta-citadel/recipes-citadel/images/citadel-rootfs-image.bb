@@ -4,7 +4,7 @@ LICENSE = "MIT"
 
 SYSTEMD_DEFAULT_TARGET = "graphical.target"
 
-ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; write_etc_citadel_channel; symlink_lib64; setup_var; "
+ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; write_etc_citadel_channel; symlink_lib64; setup_var; append_os_release;"
 
 IMAGE_INSTALL += "\
     packagegroup-citadel-base \
@@ -66,6 +66,11 @@ setup_var() {
 
     # do_rootfs() will fail otherwise
     ln -sf ../usr/share/factory/var/lib ${IMAGE_ROOTFS}/var/lib
+}
+
+append_os_release() {
+    echo "CITADEL_CHANNEL=\"${CITADEL_IMAGE_CHANNEL}\"" >> ${IMAGE_ROOTFS}/etc/os-release
+    echo "CITADEL_ROOTFS_VERSION=\"${CITADEL_IMAGE_VERSION_rootfs}\"" >> ${IMAGE_ROOTFS}/etc/os-release
 }
 
 do_rm_var_link() {
