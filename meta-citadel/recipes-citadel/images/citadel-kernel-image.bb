@@ -1,11 +1,10 @@
-
-DESCRIPTION = "Kernel modules"
+DESCRIPTION = "Resource image containing citadel kernel and kernel modules"
 LICENSE = "MIT"
 
 PACKAGE_INSTALL = "kernel-modules"
 
-CITADEL_IMAGE_VERSION = "${CITADEL_IMAGE_VERSION_modules}"
-CITADEL_IMAGE_TYPE = "modules"
+CITADEL_IMAGE_VERSION = "${CITADEL_IMAGE_VERSION_kernel}"
+CITADEL_IMAGE_TYPE = "kernel"
 
 require citadel-image.inc
 inherit citadel-image

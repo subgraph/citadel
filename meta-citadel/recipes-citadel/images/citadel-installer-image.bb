@@ -24,7 +24,7 @@ do_rootfs[umask] = "022"
 do_rootfs[depends] += "\
     citadel-rootfs-image:do_image_complete \
     citadel-extra-image:do_image_complete \
-    citadel-modules-image:do_image_complete \
+    citadel-kernel-image:do_image_complete \
     citadel-kernel:do_deploy \
     systemd-boot:do_deploy \
 "
@@ -58,7 +58,7 @@ install_image_files() {
     install -d ${IMAGE_ROOTFS}/images
     install_resource_image "rootfs" ${CITADEL_IMAGE_VERSION_rootfs}
     install_resource_image "extra" ${CITADEL_IMAGE_VERSION_extra}
-    install_resource_image "modules" ${CITADEL_IMAGE_VERSION_modules}
+    install_resource_image "kernel" ${CITADEL_IMAGE_VERSION_kernel}
     install ${TOPDIR}/appimg/appimg-rootfs.tar.xz ${IMAGE_ROOTFS}/images/
 }
 
@@ -105,10 +105,10 @@ EOF
 install_resource_image() {
     version=$(printf "%03d" ${2})
 
-    if [ "${1}" = "modules" ]; then
+    if [ "${1}" = "kernel" ]; then
         kversion=$(cat ${DEPLOY_DIR_IMAGE}/kernel.version)
-        src_fname="citadel-modules-${kversion}-${CITADEL_IMAGE_CHANNEL}-${version}.img"
-        dst_fname="citadel-modules-${kversion}.img"
+        src_fname="citadel-kernel-${kversion}-${CITADEL_IMAGE_CHANNEL}-${version}.img"
+        dst_fname="citadel-kernel-${kversion}.img"
     else
         src_fname="citadel-${1}-${CITADEL_IMAGE_CHANNEL}-${version}.img"
         dst_fname="citadel-${1}.img"

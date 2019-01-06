@@ -10,7 +10,7 @@ ConditionPathExists=/dev/mapper/citadel-rootfsB
 ConditionPathExists=/dev/mapper/citadel-storage
 
 #
-# Pull in the unit that mounts 'extra' and 'modules' images
+# Pull in the unit that mounts 'extra' and 'kernel' images
 #
 Wants=citadel-rootfs-setup.service
 

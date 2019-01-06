@@ -9,6 +9,10 @@ inherit image
 
 CITADEL_IMAGE_CHANNEL ??= "dev"
 
+kernel_id() {
+    sha256sum ${DEPLOY_DIR_IMAGE}/bzImage-intel-corei7-64.bin | cut -d' ' -f1
+}
+
 do_citadel_mkimage() {
     cat > ${B}/mkimage.conf << EOF
 image-type = "${CITADEL_IMAGE_TYPE}"
@@ -19,9 +23,11 @@ EOF
 
     ver=$(printf "%03d" ${CITADEL_IMAGE_VERSION})
 
-    if [ "${CITADEL_IMAGE_TYPE}" = "modules" ]; then
+    if [ "${CITADEL_IMAGE_TYPE}" = "kernel" ]; then
+        KERNEL_ID=$(kernel_id)
         echo "kernel-version = \"${CITADEL_KERNEL_VERSION}\"" >> ${B}/mkimage.conf
-        fname="citadel-modules-${CITADEL_KERNEL_VERSION}-${CITADEL_IMAGE_CHANNEL}-${ver}.img"
+        echo "kernel-id = \"${KERNEL_ID}\"" >> ${B}/mkimage.conf
+        fname="citadel-kernel-${CITADEL_KERNEL_VERSION}-${CITADEL_IMAGE_CHANNEL}-${ver}.img"
     else
         fname="citadel-${CITADEL_IMAGE_TYPE}-${CITADEL_IMAGE_CHANNEL}-${ver}.img"
     fi
@@ -30,3 +36,5 @@ EOF
 }
 
 addtask do_citadel_mkimage after do_image_ext2 before do_image_complete
+do_citadel_mkimage[cleandirs] = "${B}"
+

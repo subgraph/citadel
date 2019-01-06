@@ -109,12 +109,21 @@ INITRAMFS_MAXSIZE = "512000"
 INITRAMFS_FSTYPES = "cpio.lz4"
 IMAGE_FSTYPES = "${INITRAMFS_FSTYPES}"
 inherit core-image
+require ${THISDIR}/../../recipes-citadel/images/citadel-image.inc
 
 IMAGE_ROOTFS_SIZE = "8192"
 IMAGE_ROOTFS_EXTRA_SPACE = "0"
 
-ROOTFS_POSTPROCESS_COMMAND += "remove_blk_availability; "
+ROOTFS_POSTPROCESS_COMMAND += "remove_blk_availability; append_initrd_release; "
 
 remove_blk_availability() {
     rm ${IMAGE_ROOTFS}${systemd_system_unitdir}/blk-availability.service
+}
+
+append_initrd_release() {
+    KERNEL_ID=$(generate_kernel_id)
+    cat >> ${IMAGE_ROOTFS}/etc/initrd-release << EOF
+CITADEL_KERNEL_VERSION="${CITADEL_KERNEL_VERSION}"
+CITADEL_KERNEL_ID="${KERNEL_ID}"
+EOF
 }
