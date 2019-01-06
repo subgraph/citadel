@@ -10,7 +10,7 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 inherit deploy
 require citadel-image.inc
 
-KERNEL_CMDLINE = "root=/dev/mapper/rootfs citadel.nosignatures citadel.verbose fstab=no luks=no splash systemd.debug-shell=1"
+KERNEL_CMDLINE = "root=/dev/mapper/rootfs citadel.verbose fstab=no luks=no splash"
 
 do_rootfs() {
     install_efi_files
@@ -39,6 +39,9 @@ install_efi_files() {
     make_loader_conf > ${IMAGE_ROOTFS}/loader/loader.conf
     #make_install_conf > ${IMAGE_ROOTFS}/loader/entries/install.conf
     make_live_conf > ${IMAGE_ROOTFS}/loader/entries/live.conf
+
+    install -d ${IMAGE_ROOTFS}/misc
+    make_citadel_conf > ${IMAGE_ROOTFS}/misc/citadel.conf
 }
 
 SYSLINUX_MODULES = "ldlinux.c32 menu.c32 libutil.c32 gptmbr.bin"
@@ -74,6 +77,13 @@ make_live_conf() {
     echo "title Run Live Subgraph OS (Citadel)"
     echo "linux /bzImage"
     echo "options ${KERNEL_CMDLINE} citadel.live"
+}
+
+CITADEL_KERNEL_CMDLINE = "add_efi_memmap intel_iommu=off cryptomgr.notests rcupdate.rcu_expedited=1 rcu_nocbs=0-64 tsc=reliable no_timer_check noreplace-smp i915.fastboot=1 quiet splash"
+make_citadel_conf() {
+    echo "title Subgraph OS (Citadel)"
+    echo "linux /bzImage"
+    echo "options ${CITADEL_KERNEL_CMDLINE}"
 }
 
 make_syslinux_conf() {
