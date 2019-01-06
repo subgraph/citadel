@@ -65,8 +65,7 @@ RDEPENDS_${PN} = "bash"
 
 inherit allarch systemd useradd
 
-SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path"
-SYSTEMD_SERVICE_${PN} = "iptables.service"
+SYSTEMD_SERVICE_${PN} = "zram-swap.service watch-run-user.path iptables.service"
 
 do_install() {
     install -m 0755 -d ${D}/storage
