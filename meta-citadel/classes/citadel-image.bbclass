@@ -1,5 +1,5 @@
 
-DEPENDS_append = " citadel-image-native mtools-native"
+DEPENDS_append = " citadel-image-native mtools-native cryptsetup-native"
 
 # Block size must be 4096 or dm-verity won't work
 EXTRA_IMAGECMD_ext2 = "-i 4096 -b 4096"
@@ -14,7 +14,7 @@ do_citadel_mkimage() {
 image-type = "${CITADEL_IMAGE_TYPE}"
 channel = "${CITADEL_IMAGE_CHANNEL}"
 version = ${CITADEL_IMAGE_VERSION}
-source = "${IMGDEPLOYDIR}/${IMAGE_NAME}.rootfs.ext2"
+source = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ext2"
 EOF
 
     ver=$(printf "%03d" ${CITADEL_IMAGE_VERSION})
