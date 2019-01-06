@@ -1,5 +1,5 @@
 [Unit]
-Description=Set up citadel rootfs by mounting 'modules' and 'extra'
+Description=Set up citadel rootfs by mounting 'kernel' and 'extra'
 DefaultDependencies=no
 Conflicts=shutdown.target
 After=sysroot.mount
@@ -10,5 +10,6 @@ AssertPathExists=/etc/initrd-release
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/libexec/citadel-mount modules
+ExecStart=/usr/libexec/citadel-mount overlay
+ExecStart=/usr/libexec/citadel-mount kernel
 ExecStart=/usr/libexec/citadel-mount extra 
