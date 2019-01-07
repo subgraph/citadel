@@ -35,6 +35,7 @@ OPTIONS
 
     --no-efi               Do not use OVMF UEFI bios
     --memory size          Set custom guest RAM size
+    --debug                Boot installer with console and journald dumped to terminal
 
 To exit kernel boot type 'ctrl-a x' (See escape sequences in qemu-system man page)
 
@@ -44,12 +45,17 @@ exit 0
 
 BOOT_TARGET=""
 MEMORY_ARG="-m 4G"
+INSTALLER_DEBUG=0
 
 while [[ $# -gt 0 ]]; do
     key=${1}
     case $key in
         --no-efi)
             EFI_BIOS=""
+            shift
+            ;;
+        --debug)
+            INSTALLER_DEBUG=1
             shift
             ;;
         --memory)
@@ -75,16 +81,25 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+COMMON_INSTALLER_ARGS="\
+    ${ENABLE_KVM} \
+    ${MEMORY_ARG} \
+    ${EFI_BIOS} \
+    -vga virtio \
+    -usb -device usb-tablet,id=input0 \
+    -drive format=raw,file=${BUILD_ROOT}/images/citadel-installer.img \
+    -net none \
+    -smp 2"
+
 boot_installer() {
-    ${QEMU} \
-        ${ENABLE_KVM} \
-        ${EFI_BIOS} \
-        ${MEMORY_ARG} \
-      -vga virtio \
-      -usb -device usb-tablet,id=input0 \
-      -drive format=raw,file=${BUILD_ROOT}/images/citadel-installer.img \
-      -net none \
-      -smp 2
+    if [[ ${INSTALLER_DEBUG} -eq 1 ]]; then
+    ${QEMU} ${COMMON_INSTALLER_ARGS} \
+        -serial stdio \
+        -kernel ${BUILD_ROOT}/images/bzImage \
+        -append "console=ttyS0 earlyprintk=ttyS0 root=/dev/mapper/rootfs citadel.verbose citadel.live fstab=no luks=no systemd.journald.forward_to_console=1" 
+    else
+        ${QEMU} ${COMMON_INSTALLER_ARGS} 
+    fi
 }
 
 boot_kernel() {
