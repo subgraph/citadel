@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# build/tmp-glibc/work/x86_64-linux/qemu-helper-native/1.0-r1/recipe-sysroot-native/usr/bin/qemu-system-x86_64
+
+SCRIPT=$(realpath ${BASH_SOURCE})
+BUILD_ROOT=$(realpath $(dirname ${SCRIPT})/../build)
+SYSROOT=${BUILD_ROOT}/tmp-glibc/work/x86_64-linux/qemu-helper-native/1.0-r1/recipe-sysroot-native
+QEMU=${SYSROOT}/usr/bin/qemu-system-x86_64
+
+
+if [[ ! -f ${QEMU} ]]; then
+    >&2 printf "Qemu binary not found at: ${QEMU}\n"
+    exit 1
+fi
+
+ENABLE_KVM="--enable-kvm -cpu host"
+
+if [[ ! -c "/dev/kvm" ]]; then
+    printf "Disabling KVM because /dev/kvm is not available\n"
+    ENABLE_KVM=""
+fi
+
+EFI_BIOS="-bios /usr/share/qemu/OVMF.fd" 
+if [[ ! -f "/usr/share/qemu/OVMF.fd" ]]; then
+    printf "Disabling EFI boot because OVMF.fd not found in /usr/share/qemu\n"
+    EFI_BIOS=""
+fi
+
+usage() {
+cat <<-EOF
+USAGE: qemu-boot [options] installer      Boot build/images/citadel-installer.img
+       qemu-boot [options] kernel         Boot build/images/bzImage
+
+OPTIONS
+
+    --no-efi               Do not use OVMF UEFI bios
+    --memory size          Set custom guest RAM size
+
+To exit kernel boot type 'ctrl-a x' (See escape sequences in qemu-system man page)
+
+EOF
+exit 0
+}
+
+BOOT_TARGET=""
+MEMORY_ARG="-m 4G"
+
+while [[ $# -gt 0 ]]; do
+    key=${1}
+    case $key in
+        --no-efi)
+            EFI_BIOS=""
+            shift
+            ;;
+        --memory)
+            MEMORY_ARG="-m ${2}"
+            shift
+            shift
+            ;;
+        kernel)
+            BOOT_TARGET="kernel"
+            shift
+            ;;
+        installer)
+            BOOT_TARGET="installer"
+            shift
+            ;;
+        --help)
+            usage
+            ;;
+        *)
+            printf "Unknown option ${key}\n"
+            usage
+            ;;
+    esac
+done
+
+boot_installer() {
+    ${QEMU} \
+        ${ENABLE_KVM} \
+        ${EFI_BIOS} \
+        ${MEMORY_ARG} \
+      -vga virtio \
+      -usb -device usb-tablet,id=input0 \
+      -drive format=raw,file=${BUILD_ROOT}/images/citadel-installer.img \
+      -net none \
+      -smp 2
+}
+
+boot_kernel() {
+    echo "kernel"
+    ${QEMU} \
+        ${ENABLE_KVM} \
+        ${MEMORY_ARG} \
+        -nographic \
+        -smp 2 \
+        -append "rd.emergency console=ttyS0 earlyprintk=ttyS0" \
+        -kernel ${BUILD_ROOT}/images/bzImage
+}
+
+if [[ ${BOOT_TARGET} = "kernel" ]]; then
+    boot_kernel
+elif [[ ${BOOT_TARGET} = "installer" ]]; then
+    boot_installer
+else
+    usage
+fi
+
