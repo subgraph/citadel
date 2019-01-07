@@ -18,6 +18,7 @@ do_citadel_mkimage() {
 image-type = "${CITADEL_IMAGE_TYPE}"
 channel = "${CITADEL_IMAGE_CHANNEL}"
 version = ${CITADEL_IMAGE_VERSION}
+timestamp = "${DATETIME}"
 source = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ext2"
 EOF
 
@@ -37,4 +38,5 @@ EOF
 
 addtask do_citadel_mkimage after do_image_ext2 before do_image_complete
 do_citadel_mkimage[cleandirs] = "${B}"
+do_citadel_mkimage[vardepsexclude] = "DATETIME"
 
