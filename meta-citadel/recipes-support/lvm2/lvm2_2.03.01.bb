@@ -1,11 +1,24 @@
 require lvm2.inc
 
-SRC_URI[md5sum] = "153b7bb643eb26073274968e9026fa8f"
-SRC_URI[sha256sum] = "b815a711a2fabaa5c3dc1a4a284df0268bf0f325f0fc0f5c9530c9bbb54b9964"
+SRCREV = "913c28917e62577a2ef67152b2e5159237503dda"
 
-SRC_URI += "file://0001-explicitly-do-not-install-libdm.patch"
+SRC_URI = "git://github.com/lvmteam/lvm2.git;protocol=https;branch=master \
+           file://lvm.conf \
+           file://0001-implement-libc-specific-reopen_stream.patch \
+           file://0002-Guard-use-of-mallinfo-with-__GLIBC__.patch \
+           file://0003-include-fcntl.h-for-O_-defines-and-fcntl-signature.patch \
+           file://0004-tweak-MODPROBE_CMD-for-cross-compile.patch \
+           file://0001-Avoid-bashisms-in-init-scripts.patch \
+           file://0005-do-not-build-manual.patch \
+           file://0006-start-lvm2-monitor.service-after-tmp.mount.patch \
+           file://0001-explicitly-do-not-install-libdm.patch \
+           "
 
 DEPENDS += "autoconf-archive-native"
+
+inherit multilib_script
+
+MULTILIB_SCRIPTS = "${PN}:${sysconfdir}/lvm/lvm.conf"
 
 CACHED_CONFIGUREVARS += "MODPROBE_CMD=${base_sbindir}/modprobe"
 
@@ -28,11 +41,12 @@ PACKAGE_BEFORE_PN = "${PN}-scripts ${PN}-udevrules"
 
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_SERVICE_${PN} = "${@bb.utils.contains('PACKAGECONFIG', 'dmeventd', 'lvm2-monitor.service dm-event.socket dm-event.service', '', d)} \
-                         ${@bb.utils.contains('PACKAGECONFIG', 'lvmetad', 'lvm2-lvmetad.socket lvm2-pvscan@.service', '', d)} \
                          blk-availability.service"
 SYSTEMD_AUTO_ENABLE = "disable"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
+
+EXTRA_OECONF_append_class-nativesdk = " --with-confdir=${sysconfdir}"
 
 FILES_${PN} += "${libdir}/device-mapper/*.so"
 FILES_${PN}-scripts = " \
@@ -44,7 +58,9 @@ FILES_${PN}-scripts = " \
 # Specified explicitly for the udev rules, just in case that it does not get picked
 # up automatically:
 FILES_${PN}-udevrules = "${nonarch_base_libdir}/udev/rules.d"
+RDEPENDS_${PN}-udevrules = "${PN}"
 RDEPENDS_${PN}_append_class-target = " libdevmapper"
+RDEPENDS_${PN}_append_class-nativesdk = " libdevmapper"
 
 RDEPENDS_${PN}-scripts = "${PN} (= ${EXTENDPKGV}) bash"
 RRECOMMENDS_${PN}_class-target = "${PN}-scripts (= ${EXTENDPKGV})"
