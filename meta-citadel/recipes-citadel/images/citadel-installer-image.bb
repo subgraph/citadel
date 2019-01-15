@@ -140,7 +140,7 @@ addtask do_deploy after do_image before do_build
 write_boot_image() {
     IMAGE_PATH=${1}
     BLOCKS_ROOTFS=$(du -bks ${IMAGE_ROOTFS} | cut -f1)
-    BLOCKS_EXTRA=2048
+    BLOCKS_EXTRA=65536
     IMAGE_SIZE=$(expr ${BLOCKS_ROOTFS} + ${BLOCKS_EXTRA})
 
     if [ -e ${IMAGE_PATH} ]; then
