@@ -123,10 +123,15 @@ remove_blk_availability() {
     rm ${IMAGE_ROOTFS}${systemd_system_unitdir}/blk-availability.service
 }
 
+generate_kernel_id() {
+    sha256sum ${DEPLOY_DIR_IMAGE}/bzImage-intel-corei7-64.bin | cut -d' ' -f1
+}
+
 append_initrd_release() {
     KERNEL_ID=$(generate_kernel_id)
     cat >> ${IMAGE_ROOTFS}/etc/initrd-release << EOF
 CITADEL_KERNEL_VERSION="${CITADEL_KERNEL_VERSION}"
 CITADEL_KERNEL_ID="${KERNEL_ID}"
 EOF
+    echo "${KERNEL_ID}" > ${DEPLOY_DIR_IMAGE}/kernel.id
 }
