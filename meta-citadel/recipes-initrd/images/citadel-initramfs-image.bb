@@ -6,7 +6,10 @@ PACKAGE_INSTALL = "\
     citadel-initramfs \
     citadel-mount \
     citadel-install \
+    cryptsetup \
     strace \
+    lvm2 \
+    lvm2-udevrules \
     xz \
     tar \
     btrfs-tools \
