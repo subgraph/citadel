@@ -14,6 +14,6 @@ ConditionKernelCommandLine=|citadel.live
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStartPre=/usr/bin/plymouth message --text="Setting up filesystem in RAM for live boot"
+ExecStartPre=-/usr/bin/plymouth message --text="Setting up filesystem in RAM for live boot"
 ExecStart=/usr/libexec/citadel-install live-setup
-ExecStartPost=/usr/bin/plymouth message --text="Starting desktop"
+ExecStartPost=-/usr/bin/plymouth message --text="Starting desktop"
