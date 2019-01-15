@@ -1,7 +1,7 @@
-diff -uprN a/scripts/gcc-plugins/checker_plugin.c b/scripts/gcc-plugins/checker_plugin.c
---- a/scripts/gcc-plugins/checker_plugin.c	2017-12-03 13:20:42.743986199 -0500
-+++ b/scripts/gcc-plugins/checker_plugin.c	2017-12-03 13:33:14.506519393 -0500
-@@ -457,7 +457,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/checker_plugin.c b/scripts/gcc-plugins/checker_plugin.c
+--- a/scripts/gcc-plugins/checker_plugin.c	2019-01-08 17:19:45.113540981 -0500
++++ b/scripts/gcc-plugins/checker_plugin.c	2019-01-15 12:52:45.604592209 -0500
+@@ -457,7 +457,7 @@
  //	PASS_INFO(context, "ssa", 1, PASS_POS_INSERT_AFTER);
  	PASS_INFO(context, "phiprop", 1, PASS_POS_INSERT_AFTER);
  
@@ -10,10 +10,10 @@ diff -uprN a/scripts/gcc-plugins/checker_plugin.c b/scripts/gcc-plugins/checker_
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/colorize_plugin.c b/scripts/gcc-plugins/colorize_plugin.c
---- a/scripts/gcc-plugins/colorize_plugin.c	2017-12-03 13:20:42.743986199 -0500
-+++ b/scripts/gcc-plugins/colorize_plugin.c	2017-12-03 13:33:43.865657576 -0500
-@@ -121,7 +121,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/colorize_plugin.c b/scripts/gcc-plugins/colorize_plugin.c
+--- a/scripts/gcc-plugins/colorize_plugin.c	2019-01-08 17:19:45.113540981 -0500
++++ b/scripts/gcc-plugins/colorize_plugin.c	2019-01-15 12:52:45.605592245 -0500
+@@ -121,7 +121,7 @@
  
  	PASS_INFO(colorize_rearm, "*free_lang_data", 1, PASS_POS_INSERT_AFTER);
  
@@ -22,10 +22,10 @@ diff -uprN a/scripts/gcc-plugins/colorize_plugin.c b/scripts/gcc-plugins/coloriz
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/constify_plugin.c b/scripts/gcc-plugins/constify_plugin.c
---- a/scripts/gcc-plugins/constify_plugin.c	2017-12-03 13:20:42.744986204 -0500
-+++ b/scripts/gcc-plugins/constify_plugin.c	2017-12-03 13:31:56.239151019 -0500
-@@ -546,7 +546,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/constify_plugin.c b/scripts/gcc-plugins/constify_plugin.c
+--- a/scripts/gcc-plugins/constify_plugin.c	2019-01-08 17:19:45.114540987 -0500
++++ b/scripts/gcc-plugins/constify_plugin.c	2019-01-15 12:52:45.606592280 -0500
+@@ -536,7 +536,7 @@
  
  	PASS_INFO(check_local_variables, "ssa", 1, PASS_POS_INSERT_BEFORE);
  
@@ -34,10 +34,10 @@ diff -uprN a/scripts/gcc-plugins/constify_plugin.c b/scripts/gcc-plugins/constif
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/cyc_complexity_plugin.c b/scripts/gcc-plugins/cyc_complexity_plugin.c
---- a/scripts/gcc-plugins/cyc_complexity_plugin.c	2017-12-03 13:20:42.744986204 -0500
-+++ b/scripts/gcc-plugins/cyc_complexity_plugin.c	2017-12-03 13:34:33.724892242 -0500
-@@ -55,7 +55,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/cyc_complexity_plugin.c b/scripts/gcc-plugins/cyc_complexity_plugin.c
+--- a/scripts/gcc-plugins/cyc_complexity_plugin.c	2019-01-08 17:19:45.114540987 -0500
++++ b/scripts/gcc-plugins/cyc_complexity_plugin.c	2019-01-15 12:52:45.607592316 -0500
+@@ -55,7 +55,7 @@
  
  	PASS_INFO(cyc_complexity, "ssa", 1, PASS_POS_INSERT_AFTER);
  
@@ -46,10 +46,10 @@ diff -uprN a/scripts/gcc-plugins/cyc_complexity_plugin.c b/scripts/gcc-plugins/c
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
---- a/scripts/gcc-plugins/gcc-common.h	2017-12-03 13:20:42.745986209 -0500
-+++ b/scripts/gcc-plugins/gcc-common.h	2017-12-03 13:29:54.228576760 -0500
-@@ -189,6 +189,26 @@ static inline tree build_const_char_stri
+diff -Nru a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
+--- a/scripts/gcc-plugins/gcc-common.h	2019-01-08 17:19:45.114540987 -0500
++++ b/scripts/gcc-plugins/gcc-common.h	2019-01-15 12:52:45.613592529 -0500
+@@ -193,6 +193,26 @@
  	return cstr;
  }
  
@@ -75,11 +75,11 @@ diff -uprN a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-common.h
 +
  static inline void error_gcc_version(struct plugin_gcc_version *version)
  {
- 	error(G_("incompatible gcc/plugin versions: need '%s' '%s' '%s' '%s' but have '%s' '%s' '%s' '%s'\n'%s':\n'%s'"),
-diff -uprN a/scripts/gcc-plugins/initify_plugin.c b/scripts/gcc-plugins/initify_plugin.c
---- a/scripts/gcc-plugins/initify_plugin.c	2017-12-03 13:20:42.744986204 -0500
-+++ b/scripts/gcc-plugins/initify_plugin.c	2017-12-03 13:32:44.566378477 -0500
-@@ -1819,7 +1819,7 @@ __visible int plugin_init(struct plugin_
+ 	error(G_("incompatible gcc/plugin versions: need %s %s %s %s but have %s %s %s %s"),
+diff -Nru a/scripts/gcc-plugins/initify_plugin.c b/scripts/gcc-plugins/initify_plugin.c
+--- a/scripts/gcc-plugins/initify_plugin.c	2019-01-08 17:19:45.115540993 -0500
++++ b/scripts/gcc-plugins/initify_plugin.c	2019-01-15 12:52:45.614592565 -0500
+@@ -1819,7 +1819,7 @@
  
  	PASS_INFO(initify, "inline", 1, PASS_POS_INSERT_AFTER);
  
@@ -88,10 +88,10 @@ diff -uprN a/scripts/gcc-plugins/initify_plugin.c b/scripts/gcc-plugins/initify_
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/kallocstat_plugin.c b/scripts/gcc-plugins/kallocstat_plugin.c
---- a/scripts/gcc-plugins/kallocstat_plugin.c	2017-12-03 13:20:42.744986204 -0500
-+++ b/scripts/gcc-plugins/kallocstat_plugin.c	2017-12-03 13:33:57.240720527 -0500
-@@ -119,7 +119,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/kallocstat_plugin.c b/scripts/gcc-plugins/kallocstat_plugin.c
+--- a/scripts/gcc-plugins/kallocstat_plugin.c	2019-01-08 17:19:45.115540993 -0500
++++ b/scripts/gcc-plugins/kallocstat_plugin.c	2019-01-15 12:52:45.614592565 -0500
+@@ -119,7 +119,7 @@
  
  	PASS_INFO(kallocstat, "ssa", 1, PASS_POS_INSERT_AFTER);
  
@@ -100,10 +100,10 @@ diff -uprN a/scripts/gcc-plugins/kallocstat_plugin.c b/scripts/gcc-plugins/kallo
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/kernexec_plugin.c b/scripts/gcc-plugins/kernexec_plugin.c
---- a/scripts/gcc-plugins/kernexec_plugin.c	2017-12-03 13:20:42.744986204 -0500
-+++ b/scripts/gcc-plugins/kernexec_plugin.c	2017-12-03 13:34:23.499844120 -0500
-@@ -360,7 +360,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/kernexec_plugin.c b/scripts/gcc-plugins/kernexec_plugin.c
+--- a/scripts/gcc-plugins/kernexec_plugin.c	2019-01-08 17:19:45.115540993 -0500
++++ b/scripts/gcc-plugins/kernexec_plugin.c	2019-01-15 12:52:45.615592601 -0500
+@@ -360,7 +360,7 @@
  	PASS_INFO(kernexec_fptr, "pre", 1, PASS_POS_INSERT_AFTER);
  	PASS_INFO(kernexec_retaddr, "pro_and_epilogue", 1, PASS_POS_INSERT_AFTER);
  
@@ -112,10 +112,10 @@ diff -uprN a/scripts/gcc-plugins/kernexec_plugin.c b/scripts/gcc-plugins/kernexe
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/latent_entropy_plugin.c b/scripts/gcc-plugins/latent_entropy_plugin.c
---- a/scripts/gcc-plugins/latent_entropy_plugin.c	2017-12-03 13:20:42.745986209 -0500
-+++ b/scripts/gcc-plugins/latent_entropy_plugin.c	2017-12-03 13:34:09.419777850 -0500
-@@ -584,7 +584,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/latent_entropy_plugin.c b/scripts/gcc-plugins/latent_entropy_plugin.c
+--- a/scripts/gcc-plugins/latent_entropy_plugin.c	2019-01-08 17:19:45.116540999 -0500
++++ b/scripts/gcc-plugins/latent_entropy_plugin.c	2019-01-15 12:52:45.615592601 -0500
+@@ -577,7 +577,7 @@
  
  	PASS_INFO(latent_entropy, "optimized", 1, PASS_POS_INSERT_BEFORE);
  
@@ -124,10 +124,10 @@ diff -uprN a/scripts/gcc-plugins/latent_entropy_plugin.c b/scripts/gcc-plugins/l
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-plugins/randomize_layout_plugin.c
---- a/scripts/gcc-plugins/randomize_layout_plugin.c	2017-12-03 13:20:42.745986209 -0500
-+++ b/scripts/gcc-plugins/randomize_layout_plugin.c	2017-12-03 13:32:55.752431126 -0500
-@@ -894,7 +894,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-plugins/randomize_layout_plugin.c
+--- a/scripts/gcc-plugins/randomize_layout_plugin.c	2019-01-08 17:19:45.116540999 -0500
++++ b/scripts/gcc-plugins/randomize_layout_plugin.c	2019-01-15 12:52:45.616592636 -0500
+@@ -859,7 +859,7 @@
  	find_bad_casts_pass_info.ref_pass_instance_number	= 1;
  	find_bad_casts_pass_info.pos_op			= PASS_POS_INSERT_AFTER;
  
@@ -136,10 +136,11 @@ diff -uprN a/scripts/gcc-plugins/randomize_layout_plugin.c b/scripts/gcc-plugins
  		error(G_("incompatible gcc/plugin versions"));
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/sancov_plugin.c b/scripts/gcc-plugins/sancov_plugin.c
---- a/scripts/gcc-plugins/sancov_plugin.c	2017-12-03 13:20:42.745986209 -0500
-+++ b/scripts/gcc-plugins/sancov_plugin.c	2017-12-03 13:33:29.458589768 -0500
-@@ -114,7 +114,7 @@ __visible int plugin_init(struct plugin_
+Binary files a/scripts/gcc-plugins/rap_plugin/rap_plugin.so and b/scripts/gcc-plugins/rap_plugin/rap_plugin.so differ
+diff -Nru a/scripts/gcc-plugins/sancov_plugin.c b/scripts/gcc-plugins/sancov_plugin.c
+--- a/scripts/gcc-plugins/sancov_plugin.c	2019-01-08 17:19:45.117541005 -0500
++++ b/scripts/gcc-plugins/sancov_plugin.c	2019-01-15 12:52:45.617592672 -0500
+@@ -114,7 +114,7 @@
  	PASS_INFO(sancov, "nrv", 1, PASS_POS_INSERT_BEFORE);
  #endif
  
@@ -148,10 +149,10 @@ diff -uprN a/scripts/gcc-plugins/sancov_plugin.c b/scripts/gcc-plugins/sancov_pl
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c
---- a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c	2017-12-03 13:20:42.755986255 -0500
-+++ b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c	2017-12-03 13:32:32.419321305 -0500
-@@ -242,7 +242,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c
+--- a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c	2019-01-08 17:19:45.185541401 -0500
++++ b/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c	2019-01-15 12:52:45.617592672 -0500
+@@ -232,7 +232,7 @@
  	PASS_INFO(disable_ubsan_si_overflow, "ubsan", 1, PASS_POS_REPLACE);
  #endif
  
@@ -160,10 +161,10 @@ diff -uprN a/scripts/gcc-plugins/size_overflow_plugin/size_overflow_plugin.c b/s
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackleak_plugin.c
---- a/scripts/gcc-plugins/stackleak_plugin.c	2017-12-03 13:20:42.745986209 -0500
-+++ b/scripts/gcc-plugins/stackleak_plugin.c	2017-12-03 13:32:13.267231164 -0500
-@@ -304,7 +304,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackleak_plugin.c
+--- a/scripts/gcc-plugins/stackleak_plugin.c	2019-01-08 17:19:45.186541407 -0500
++++ b/scripts/gcc-plugins/stackleak_plugin.c	2019-01-15 12:52:45.618592708 -0500
+@@ -313,7 +313,7 @@
  	PASS_INFO(stackleak_tree_instrument, "optimized", 1, PASS_POS_INSERT_BEFORE);
  	PASS_INFO(stackleak_final, "final", 1, PASS_POS_INSERT_BEFORE);
  
@@ -172,10 +173,10 @@ diff -uprN a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackl
  		error_gcc_version(version);
  		return 1;
  	}
-diff -uprN a/scripts/gcc-plugins/structleak_plugin.c b/scripts/gcc-plugins/structleak_plugin.c
---- a/scripts/gcc-plugins/structleak_plugin.c	2017-12-03 13:20:42.745986209 -0500
-+++ b/scripts/gcc-plugins/structleak_plugin.c	2017-12-03 13:31:29.704026128 -0500
-@@ -206,7 +206,7 @@ __visible int plugin_init(struct plugin_
+diff -Nru a/scripts/gcc-plugins/structleak_plugin.c b/scripts/gcc-plugins/structleak_plugin.c
+--- a/scripts/gcc-plugins/structleak_plugin.c	2019-01-08 17:19:45.186541407 -0500
++++ b/scripts/gcc-plugins/structleak_plugin.c	2019-01-15 12:52:45.620592779 -0500
+@@ -201,7 +201,7 @@
  
  	PASS_INFO(structleak, "early_optimizations", 1, PASS_POS_INSERT_BEFORE);
  
