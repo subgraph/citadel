@@ -15,7 +15,7 @@ crate://crates.io/libc/0.2.45 \
 crate://crates.io/nix/0.12.0 \
 crate://crates.io/proc-macro2/0.4.24 \
 crate://crates.io/quote/0.6.10 \
-crate://crates.io/ring/0.13.2 \
+crate://crates.io/ring/0.13.5 \
 crate://crates.io/rustc-demangle/0.1.11 \
 crate://crates.io/rustc-serialize/0.3.24 \
 crate://crates.io/serde/1.0.82 \

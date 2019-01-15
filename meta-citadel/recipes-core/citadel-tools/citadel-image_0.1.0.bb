@@ -8,7 +8,7 @@ crate://crates.io/atty/0.2.11 \
 crate://crates.io/backtrace-sys/0.1.24 \
 crate://crates.io/backtrace/0.3.9 \
 crate://crates.io/bitflags/1.0.4 \
-crate://crates.io/cc/1.0.25 \
+crate://crates.io/cc/1.0.28 \
 crate://crates.io/cfg-if/0.1.6 \
 crate://crates.io/clap/2.32.0 \
 crate://crates.io/failure/0.1.3 \
@@ -20,7 +20,7 @@ crate://crates.io/proc-macro2/0.4.24 \
 crate://crates.io/quote/0.6.10 \
 crate://crates.io/redox_syscall/0.1.43 \
 crate://crates.io/redox_termios/0.1.1 \
-crate://crates.io/ring/0.13.2 \
+crate://crates.io/ring/0.13.5 \
 crate://crates.io/rustc-demangle/0.1.9 \
 crate://crates.io/rustc-serialize/0.3.24 \
 crate://crates.io/serde/1.0.82 \
