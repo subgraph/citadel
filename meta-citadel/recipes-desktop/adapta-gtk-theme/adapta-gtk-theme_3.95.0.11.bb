@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263 \
                     file://LICENSE_CC_BY_SA4;md5=e277f2eefa979e093628e4fb368f5044"
 
 SRC_URI = "git://github.com/adapta-project/adapta-gtk-theme.git;protocol=https"
-SRCREV = "69ed6d4da1c19455780427a40e193302c0919537"
+SRCREV = "589d00cba24b2076f41f4022140ff442556eb9ca"
 
 S = "${WORKDIR}/git"
 
