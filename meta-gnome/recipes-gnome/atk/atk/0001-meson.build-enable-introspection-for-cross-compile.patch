@@ -1,0 +1,22 @@
+From 2a3300378813ce86d532b3852119b2ef29157755 Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Sun, 13 Jan 2019 21:04:00 -0500
+Subject: [PATCH] sup
+
+---
+ atk/meson.build | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/atk/meson.build b/atk/meson.build
+index 616a3e6..941ded8 100644
+--- a/atk/meson.build
++++ b/atk/meson.build
+@@ -137,7 +137,7 @@ libatk_dep = declare_dependency(link_with: libatk,
+                                 dependencies: gobject_dep,
+                                 sources: atk_enum_h)
+ 
+-if not meson.is_cross_build() and get_option('introspection')
++if get_option('introspection')
+   gnome.generate_gir(libatk,
+                      sources: atk_sources + atk_headers + [ atk_enum_h ] + [ atk_version_h ],
+                      namespace: 'Atk',

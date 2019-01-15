@@ -1,0 +1,46 @@
+ibus: Add automake decorations to sed in appropriate paths
+
+  Multiple vapidir paths are required to build ibus correctly,
+  so decorations are added to the automake files to allow for
+  sed'ing the appropriate path during do_configure_prepend.
+
+  Upstream-status: Inappropriate [configuration]
+
+  Signed-off-by: Brendan Kerrigan <kerriganb@ainfosec.com>
+
+diff --git a/engine/Makefile.am b/engine/Makefile.am
+index 86f0e2b..7e922b5 100644
+--- a/engine/Makefile.am
++++ b/engine/Makefile.am
+@@ -53,6 +53,7 @@ AM_VALAFLAGS = \
+ 	--vapidir=$(top_builddir)/bindings/vala \
+ 	--pkg=ibus-1.0 \
+ 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
++	@EXTRA_AM_VALAFLAGS@ \
+ 	$(NULL)
+ 
+ libexec_PROGRAMS = \
+diff --git a/tools/Makefile.am b/tools/Makefile.am
+index 5c18d3d..fe727c1 100644
+--- a/tools/Makefile.am
++++ b/tools/Makefile.am
+@@ -61,6 +61,7 @@ AM_VALAFLAGS = \
+ 	--pkg=posix \
+ 	--pkg=config \
+ 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
++	@EXTRA_AM_VALAFLAGS@ \
+ 	$(NULL)
+ 
+ bin_PROGRAMS = ibus
+diff --git a/ui/gtk3/Makefile.am b/ui/gtk3/Makefile.am
+index aaba7a4..ba48175 100644
+--- a/ui/gtk3/Makefile.am
++++ b/ui/gtk3/Makefile.am
+@@ -80,6 +80,7 @@ AM_VALAFLAGS = \
+ 	--pkg=xi \
+ 	--pkg=gdk-wayland \
+ 	--target-glib="$(VALA_TARGET_GLIB_VERSION)" \
++	@EXTRA_AM_VALAFLAGS@ \
+ 	$(NULL)
+ 
+ if ENABLE_LIBNOTIFY

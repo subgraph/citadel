@@ -1,25 +1,25 @@
-From e771fb2af8b8e12640f01390d0695f9338142ee5 Mon Sep 17 00:00:00 2001
+From e1efcaf6a1181a0c1538b561dd83e73563b5ee53 Mon Sep 17 00:00:00 2001
 From: Bruce Leidl <bruce@subgraph.com>
-Date: Thu, 22 Mar 2018 19:50:28 -0400
-Subject: [PATCH] Make goa cups and user accounts optional
+Date: Sun, 13 Jan 2019 19:50:40 -0500
+Subject: [PATCH] make goa cups and blah blah
 
-There is also a path leak fix
 ---
- meson.build                            | 13 +++++++++++++
- meson_options.txt                      |  4 ++++
+ meson.build                            | 15 ++++++++++++++-
+ meson_options.txt                      |  7 ++++++-
  panels/background/bg-pictures-source.c | 20 ++++++++++++++++++++
  panels/background/meson.build          | 15 +++++++++++----
  panels/meson.build                     | 15 ++++++++++++---
  shell/cc-panel-loader.c                |  6 ++++++
- 6 files changed, 66 insertions(+), 7 deletions(-)
+ tests/meson.build                      |  2 +-
+ 7 files changed, 70 insertions(+), 10 deletions(-)
 
 diff --git a/meson.build b/meson.build
-index 2d0d45e..a61de4a 100644
+index 2a8519c..b7ce0e5 100644
 --- a/meson.build
 +++ b/meson.build
-@@ -97,6 +97,13 @@ libgd = subproject(
+@@ -96,6 +96,13 @@ libgvc = subproject(
  )
- libgd_dep = libgd.get_variable('libgd_dep')
+ libgvc_dep = libgvc.get_variable('libgvc_dep')
  
 +enable_goa = get_option('online_accounts')
 +enable_cups = get_option('cups')
@@ -31,7 +31,7 @@ index 2d0d45e..a61de4a 100644
  goa_req_version = '>= 3.25.3'
  pulse_req_version = '>= 2.0'
  
-@@ -108,7 +115,9 @@ gio_dep = dependency('gio-2.0')
+@@ -107,7 +114,9 @@ gio_dep = dependency('gio-2.0')
  glib_dep = dependency('glib-2.0', version: '>= 2.53.0')
  gnome_desktop_dep = dependency('gnome-desktop-3.0', version: '>= 3.27.90')
  gnome_settings_dep = dependency('gnome-settings-daemon', version: '>= 3.25.90')
@@ -41,7 +41,7 @@ index 2d0d45e..a61de4a 100644
  gsettings_desktop_dep = dependency('gsettings-desktop-schemas', version: '>= 3.27.2')
  libxml_dep = dependency('libxml-2.0')
  polkit_gobject_dep = dependency('polkit-gobject-1', version: '>= 0.103')
-@@ -129,6 +138,8 @@ common_deps = [
+@@ -128,6 +137,8 @@ common_deps = [
    dependency('gtk+-3.0', version: '>= 3.22.20')
  ]
  
@@ -50,7 +50,7 @@ index 2d0d45e..a61de4a 100644
  # Check for CUPS 1.4 or newer
  cups_dep = dependency('cups', version : '>= 1.4', required: false)
  assert(cups_dep.found(), 'CUPS 1.4 or newer not found')
-@@ -149,6 +160,8 @@ foreach header: check_headers
+@@ -148,6 +159,8 @@ foreach header: check_headers
    assert(cc.has_header(header[1], args: cups_cflags), 'CUPS headers not found: ' + header[1])
  endforeach
  
@@ -59,14 +59,25 @@ index 2d0d45e..a61de4a 100644
  # Optional dependency for the user accounts panel
  enable_cheese = get_option('cheese')
  if enable_cheese
+@@ -282,4 +295,4 @@ output += '     NetworkManager (Network panel) ............. ' + host_is_linux.t
+ output += '     Wacom (Wacom tablet panel) ................. ' + host_is_linux_not_s390.to_string() + '\n'
+ output += '     Wayland .................................... ' + enable_wayland.to_string() + '\n'
+ 
+-message(output)
+\ No newline at end of file
++message(output)
 diff --git a/meson_options.txt b/meson_options.txt
-index 7498af4..d5e2548 100644
+index a347168..e0c3b23 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
-@@ -3,3 +3,7 @@ option('documentation', type: 'boolean', value: false, description: 'build docum
+@@ -3,4 +3,9 @@ option('documentation', type: 'boolean', value: false, description: 'build docum
  option('gnome_session_libexecdir', type: 'string', value: '', description: 'Directory for gnome-session\'s libexecdir')
  option('ibus', type: 'boolean', value: true, description: 'build with IBus support')
- option('wayland', type: 'boolean', value: true, description: 'build with Wayland support')
+ option('tracing', type: 'boolean', value: false, description: 'add extra debugging information')
+-option('wayland', type: 'boolean', value: true, description: 'build with Wayland support')
+\ No newline at end of file
++option('wayland', type: 'boolean', value: true, description: 'build with Wayland support')
++
 +option('staging_dir', type: 'string', description: 'set staging directory for cross-compile')
 +option('online_accounts', type: 'boolean', value: false, description: 'build with support for gnome-online-accounts')
 +option('cups', type: 'boolean', value: false, description: 'build with support for CUPS')
@@ -239,7 +250,7 @@ index bb34b69..0db3dae 100644
    '-DGNOMELOCALEDIR="@0@"'.format(control_center_localedir),
    '-DDATADIR="@0@"'.format(control_center_datadir),
 diff --git a/panels/meson.build b/panels/meson.build
-index d671c47..a823bc8 100644
+index 37a3436..ba10d34 100644
 --- a/panels/meson.build
 +++ b/panels/meson.build
 @@ -9,16 +9,13 @@ panels = [
@@ -259,7 +270,7 @@ index d671c47..a823bc8 100644
  ]
  
  if host_is_linux
-@@ -32,6 +29,18 @@ if host_is_linux_not_s390
+@@ -33,6 +30,18 @@ if host_is_linux_not_s390
    ]
  endif
  
@@ -279,32 +290,41 @@ index d671c47..a823bc8 100644
  panels_libs = []
  foreach cappletname: panels
 diff --git a/shell/cc-panel-loader.c b/shell/cc-panel-loader.c
-index 675833c..da96263 100644
+index 6b5c6e3..032a03c 100644
 --- a/shell/cc-panel-loader.c
 +++ b/shell/cc-panel-loader.c
-@@ -91,16 +91,22 @@ static struct {
-   PANEL_TYPE("wifi",             cc_wifi_panel_get_type         ),
+@@ -104,9 +104,13 @@ static struct {
+   PANEL_TYPE("wifi",             cc_wifi_panel_get_type,                 cc_wifi_panel_static_init_func),
  #endif
-   PANEL_TYPE("notifications",    cc_notifications_panel_get_type),
+   PANEL_TYPE("notifications",    cc_notifications_panel_get_type,        NULL),
 +#ifdef WITH_GOA
-   PANEL_TYPE("online-accounts",  cc_goa_panel_get_type          ),
+   PANEL_TYPE("online-accounts",  cc_goa_panel_get_type,                  NULL),
 +#endif
-   PANEL_TYPE("power",            cc_power_panel_get_type        ),
+   PANEL_TYPE("power",            cc_power_panel_get_type,                NULL),
 +#ifdef WITH_CUPS
-   PANEL_TYPE("printers",         cc_printers_panel_get_type     ),
+   PANEL_TYPE("printers",         cc_printers_panel_get_type,             NULL),
 +#endif
-   PANEL_TYPE("privacy",          cc_privacy_panel_get_type      ),
-   PANEL_TYPE("region",           cc_region_panel_get_type       ),
-   PANEL_TYPE("search",           cc_search_panel_get_type       ),
-   PANEL_TYPE("sharing",          cc_sharing_panel_get_type      ),
-   PANEL_TYPE("sound",            cc_sound_panel_get_type        ),
-   PANEL_TYPE("universal-access", cc_ua_panel_get_type           ),
+   PANEL_TYPE("privacy",          cc_privacy_panel_get_type,              NULL),
+   PANEL_TYPE("region",           cc_region_panel_get_type,               NULL),
+   PANEL_TYPE("search",           cc_search_panel_get_type,               NULL),
+@@ -116,7 +120,9 @@ static struct {
+   PANEL_TYPE("thunderbolt",      cc_bolt_panel_get_type,                 NULL),
+ #endif
+   PANEL_TYPE("universal-access", cc_ua_panel_get_type,                   NULL),
 +#ifdef WITH_USER_ACCOUNTS
-   PANEL_TYPE("user-accounts",    cc_user_panel_get_type         ),
+   PANEL_TYPE("user-accounts",    cc_user_panel_get_type,                 NULL),
 +#endif
  #ifdef BUILD_WACOM
-   PANEL_TYPE("wacom",            cc_wacom_panel_get_type        ),
+   PANEL_TYPE("wacom",            cc_wacom_panel_get_type,                cc_wacom_panel_static_init_func),
  #endif
--- 
-2.16.2
-
+diff --git a/tests/meson.build b/tests/meson.build
+index 7c894e4..cc2031c 100644
+--- a/tests/meson.build
++++ b/tests/meson.build
+@@ -3,5 +3,5 @@ subdir('common')
+ #if host_is_linux
+ #  subdir('network')
+ #endif
+-subdir('printers')
++#subdir('printers')
+ subdir('info')
