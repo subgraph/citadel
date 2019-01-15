@@ -58,6 +58,7 @@ install-build-deps:
 	sudo apt install --no-install-recommends build-essential python bzip2 cpio chrpath diffstat file texinfo inkscape libgmp-dev libmpc-dev libelf-dev gawk
 
 $(APPIMG_TARFILE):
+	@mkdir -p build/appimg
 	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
 
 $(INSTALLER_IMAGE): $(APPIMG_TARFILE)
