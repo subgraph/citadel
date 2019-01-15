@@ -45,6 +45,12 @@ fetch-all: ## Download all source packages needed for build in advance
 	echo 'BB_NUMBER_THREADS="2"' > build/conf/fetch-prefile.conf
 	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake --read=conf/fetch-prefile.conf --continue --runall=fetch citadel-installer-image"
 
+installer-test: ## Boot installer image with Qemu
+	@scripts/qemu-boot installer
+
+kernel-test: ## Boot kernel with Qemu ('ctrl-a x' to exit qemu)
+	@scripts/qemu-boot kernel
+
 update-submodules: ## Retrieve or update submodule projects
 	git submodule update --init
 
