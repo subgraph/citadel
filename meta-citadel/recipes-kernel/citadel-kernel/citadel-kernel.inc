@@ -14,28 +14,11 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 LINUX_VERSION ?= "${PV}"
 LINUX_VERSION_EXTENSION_append = "-citadel"
 
-SRC_URI = "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-${LINUX_VERSION}.tar.xz;name=kernel"
-
-
-SRC_URI += "https://github.com/minipli/linux-unofficial_grsec/releases/download/v${LINUX_VERSION}-unofficial_grsec/v${LINUX_VERSION}-unofficial_grsec-${PATCH_DATE_TAG}.diff;name=patch"
-
-SRC_URI += " \
-    file://defconfig \
-    file://ignore-sysroot-for-plugin-build.patch \
-    file://0114-smpboot-reuse-timer-calibration.patch \
-    file://0116-Initialize-ata-before-graphics.patch \
-    file://0117-WireGuard.patch \
-    file://0118-More-gcc8-plugin-fixes.patch \
-    file://0119-do-not-alias-select-params.patch \
-    file://0120-Fix-gcc8-wrestrict-error.patch \
-    file://0001-libata-Add-new-med_power_with_dipm-link_power_manage.patch \
-    "
-
 S = "${WORKDIR}/linux-${LINUX_VERSION}"
 
 do_deploy_append() {
     rm ${DEPLOYDIR}/bzImage
-    ln -sf bzImage-initramfs${KERNEL_IMAGE_BASE_NAME}.bin ${DEPLOYDIR}/bzImage
+    ln -sf bzImage-initramfs-${KERNEL_IMAGE_NAME}.bin ${DEPLOYDIR}/bzImage
     echo "${PV}" > ${DEPLOYDIR}/kernel.version
 }
 
