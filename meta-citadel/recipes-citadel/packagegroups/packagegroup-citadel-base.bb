@@ -41,8 +41,7 @@ RDEPENDS_${PN} = "\
     pciutils \
     sysfsutils \
     wpa-supplicant \
-    vim \
-    vifm \
+    vim-tiny \
     nano \
     tzdata \
     tzdata-americas \
