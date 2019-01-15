@@ -48,7 +48,6 @@ SRC_URI = "\
     file://iptables-flush.sh \
     file://systemd/zram-swap.service \
     file://systemd/iptables.service \
-    file://citadel/citadel-image.conf \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
@@ -79,7 +78,6 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/NetworkManager
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
-    install -m 0755 -d ${D}${datadir}/citadel
     install -m 0755 -d ${D}${datadir}/iptables
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
@@ -122,8 +120,6 @@ do_install() {
     install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 
     install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
-
-    install -m 0644 ${S}/citadel/citadel-image.conf ${D}${datadir}/citadel
 
     # This probably belongs in lvm2 recipe
     install -d ${D}${systemd_system_unitdir}/sysinit.target.wants
