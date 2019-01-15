@@ -4,7 +4,7 @@ LICENSE = "MIT"
 
 SYSTEMD_DEFAULT_TARGET = "graphical.target"
 
-ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; write_etc_citadel_channel; symlink_lib64; setup_var; append_os_release;"
+ROOTFS_POSTPROCESS_COMMAND += "set_citadel_user_password; symlink_lib64; setup_var; append_os_release;"
 
 IMAGE_INSTALL += "\
     packagegroup-citadel-base \
@@ -24,10 +24,6 @@ set_blank_user_password() {
 set_citadel_user_password() {
     # crypt("citadel", "aa")
     sed -i 's%^citadel:!:%citadel:aadg8rGtZzOY6:%' ${IMAGE_ROOTFS}/etc/shadow
-}
-
-write_etc_citadel_channel() {
-    echo "${CITADEL_IMAGE_CHANNEL} ${CITADEL_IMAGE_VERSION_rootfs}" > ${IMAGE_ROOTFS}/etc/citadel-channel
 }
 
 setup_var() {
@@ -53,7 +49,7 @@ setup_var() {
     mv ${IMAGE_ROOTFS}/home/root ${IMAGE_ROOTFS}/usr/share/factory/home
 
     rm ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
-    ln -sf /opt/share/themes/Adapta/gnome-shell/gnome-shell-theme.gresource ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
+    ln -sf /opt/share/themes/Adapta-Eta/gnome-shell/gnome-shell-theme.gresource ${IMAGE_ROOTFS}/usr/share/gnome-shell/gnome-shell-theme.gresource
 
     ln -sf /opt/share/themes/Adapta ${IMAGE_ROOTFS}/usr/share/themes/Adapta
     ln -sf /opt/share/themes/Adapta-Eta ${IMAGE_ROOTFS}/usr/share/themes/Adapta-Eta
