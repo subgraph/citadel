@@ -20,25 +20,28 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+installer: ${APPIMG_TARFILE} ## Build citadel installer image (This will build everything)
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake --continue citadel-installer-image"
+	@echo "Installer image:"
+	@ls -l $(INSTALLER_IMAGE)
+
+rootfs: ## Build only citadel rootfs image
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-rootfs-image"
+
+kernel: ## Build only citadel kernel
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-kernel"
+
+appimg: ## Build only application image
+	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
+
 docker-image: ## Create docker builder image.  You need to run this one time before running anything else.
 	docker build -t citadel-builder scripts/docker
 
 docker-shell: ## Open an interactive shell in the docker build container configured for running bitbake commands.
 	$(DOCKER_RUN)
 
-installer: ${APPIMG_TARFILE} ## Build citadel installer image
-	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake --continue citadel-installer-image"
-	@echo "Installer image:"
-	@ls -l $(INSTALLER_IMAGE)
-
-rootfs: ## Build citadel rootfs image with bitbake 
-	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-rootfs-image"
-
-citadel-kernel: ## Build citadel-kernel with bitbake
-	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake citadel-kernel"
-
-build-appimg: ## Build an application image
-	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
+update-submodules: ## Retrieve or update submodule projects
+	git submodule update --init
 
 fetch-all: ## Download all source packages needed for build in advance
 	mkdir -p build/conf
@@ -50,9 +53,6 @@ installer-test: ## Boot installer image with Qemu
 
 kernel-test: ## Boot kernel with Qemu ('ctrl-a x' to exit qemu)
 	@scripts/qemu-boot kernel
-
-update-submodules: ## Retrieve or update submodule projects
-	git submodule update --init
 
 install-build-deps:
 	sudo apt install --no-install-recommends build-essential python bzip2 cpio chrpath diffstat file texinfo inkscape libgmp-dev libmpc-dev libelf-dev gawk
