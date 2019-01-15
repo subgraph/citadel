@@ -1,4 +1,3 @@
-syntax on
 set nocompatible
 set hidden
 set modeline
