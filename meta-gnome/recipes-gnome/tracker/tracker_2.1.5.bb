@@ -38,7 +38,6 @@ EXTRA_OECONF = "\
     --with-unicode-support=libunistring \
     --enable-minimal \
     --disable-introspection \
-    --disable-tracker-fts \
     --disable-libstemmer \
     --disable-journal \
     --disable-network-manager \
