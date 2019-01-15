@@ -49,9 +49,6 @@ do_install() {
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 644 ${WORKDIR}/11-dm.rules ${D}${sysconfdir}/udev/rules.d
 
-    install -d ${D}${datadir}/citadel
-    install -m 644 ${S}/citadel-image.conf ${D}${datadir}/citadel/
-
     install -d ${D}/dev
     mknod -m 622 ${D}/dev/console c 5 1
     mknod -m 644 ${D}/dev/loop0 b 7 0
