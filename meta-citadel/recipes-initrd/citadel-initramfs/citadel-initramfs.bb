@@ -8,12 +8,12 @@ SRC_URI = "\
     file://initrd-release \
     file://crypttab \
     file://11-dm.rules \
+    file://citadel-lvm-activate.service \
     file://citadel-rootfs-mount.path \
     file://citadel-rootfs-mount.service \
     file://citadel-rootfs-setup.service \
     file://citadel-install-rootfs-mount.service \
     file://citadel-install-rootfs-setup.service \
-    file://citadel-image.conf \
     file://99-grsec.conf \
 "
 
@@ -28,6 +28,7 @@ do_install() {
     done
 
     install -d ${D}${systemd_system_unitdir}
+    install -m 644 ${WORKDIR}/citadel-lvm-activate.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-setup.service ${D}${systemd_system_unitdir}

@@ -13,6 +13,8 @@ ConditionKernelCommandLine=root=/dev/mapper/rootfs
 ConditionKernelCommandLine=!citadel.install
 ConditionKernelCommandLine=!citadel.live
 
+Requires=citadel-lvm-activate.service
+
 [Path]
 PathChanged=/dev/mapper
 

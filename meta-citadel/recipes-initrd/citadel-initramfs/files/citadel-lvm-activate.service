@@ -1,0 +1,18 @@
+[Unit]
+Description=Activate LVM volumes
+DefaultDependencies=no
+AssertPathExists=/etc/initrd-release
+
+# Don't run if running from installer or in live mode
+ConditionKernelCommandLine=!citadel.install
+ConditionKernelCommandLine=!citadel.live
+
+Requires=cryptsetup.target
+After=cryptsetup.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/vgchange -v -aay --sysinit
+
+
