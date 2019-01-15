@@ -1,3 +1,4 @@
+# https://github.com/systemd/systemd/issues/1551
 SUBSYSTEM!="block", GOTO="dm_end"
 KERNEL!="dm-[0-9]*", GOTO="dm_end"
 ACTION!="add|change", GOTO="dm_end"
