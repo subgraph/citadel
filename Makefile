@@ -40,6 +40,11 @@ citadel-kernel: ## Build citadel-kernel with bitbake
 build-appimg: ## Build an application image
 	$(DOCKER_RUN_PRIV) bash -c 'sudo APPIMG_BUILDER_BASE=$${PWD}/appimg-builder appimg-builder/stage-one.sh --no-confirm -z -d build/appimg'
 
+fetch-all: ## Download all source packages needed for build in advance
+	mkdir -p build/conf
+	echo 'BB_NUMBER_THREADS="2"' > build/conf/fetch-prefile.conf
+	$(DOCKER_RUN) bash -c "source setup-build-env && bitbake --read=conf/fetch-prefile.conf --continue --runall=fetch citadel-installer-image"
+
 update-submodules: ## Retrieve or update submodule projects
 	git submodule update --init
 
