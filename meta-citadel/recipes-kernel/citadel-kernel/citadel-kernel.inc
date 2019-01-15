@@ -2,7 +2,17 @@ DESCRIPTION = "Citadel linux kernel"
 SECTION = "kernel"
 LICENSE = "GPLv2"
 
+BUILD_LDFLAGS = "-L${STAGING_LIBDIR} \
+    -Wl,-rpath-link,${STAGING_LIBDIR} \
+    -Wl,-rpath,${STAGING_LIBDIR} \
+    -Wl,-O1 \
+    -Wl,--dynamic-linker=${STAGING_LIBDIR}/ld-linux-x86-64.so.2"
+
+BUILD_CFLAGS = "-O2 -pipe -v"
+
 inherit kernel 
+
+EXTRA_OEMAKE = 'HOSTCC="x86_64-oe-linux-gcc --sysroot=${RECIPE_SYSROOT}" HOSTCXX="x86_64-oe-linux-g++ --sysroot=${RECIPE_SYSROOT} -isystem ${STAGING_INCDIR_NATIVE}" HOSTCFLAGS="${BUILD_CFLAGS} ${BUILD_LDFLAGS}" HOSTLDFLAGS="--sysroot=${RECIPE_SYSROOT} ${BUILD_LDFLAGS}"'
 
 # if OVERRIDES contains citadel-powertop, then find defconfig in citadel-powertop dirctory
 # This config disables CONFIG_GRKERNSEC_KMEM and enables CONFIG_DEBUG_FS so that
@@ -46,8 +56,7 @@ RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 #
 # coreutils for /usr/bin/seq which pax size overflow gcc plugin uses
 
-DEPENDS += "openssl-native coreutils-native lz4-native"
-HOST_EXTRACFLAGS += "-I${STAGING_INCDIR_NATIVE}"
+DEPENDS += "libgcc openssl coreutils-native lz4-native"
 
 COMPATIBLE_MACHINE = "(intel-corei7-64)"
 
