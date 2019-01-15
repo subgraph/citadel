@@ -1,12 +1,11 @@
 #!/bin/bash
 
-# build/tmp-glibc/work/x86_64-linux/qemu-helper-native/1.0-r1/recipe-sysroot-native/usr/bin/qemu-system-x86_64
+EXTRA_KERNEL_CMDLINE=""
 
 SCRIPT=$(realpath ${BASH_SOURCE})
 BUILD_ROOT=$(realpath $(dirname ${SCRIPT})/../build)
 SYSROOT=${BUILD_ROOT}/tmp-glibc/work/x86_64-linux/qemu-helper-native/1.0-r1/recipe-sysroot-native
 QEMU=${SYSROOT}/usr/bin/qemu-system-x86_64
-
 
 if [[ ! -f ${QEMU} ]]; then
     >&2 printf "Qemu binary not found at: ${QEMU}\n"
@@ -45,7 +44,7 @@ exit 0
 
 BOOT_TARGET=""
 MEMORY_ARG="-m 4G"
-INSTALLER_DEBUG=0
+DEBUG_MODE=0
 
 while [[ $# -gt 0 ]]; do
     key=${1}
@@ -55,7 +54,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         --debug)
-            INSTALLER_DEBUG=1
+            DEBUG_MODE=1
             shift
             ;;
         --memory)
@@ -92,25 +91,33 @@ COMMON_INSTALLER_ARGS="\
     -smp 2"
 
 boot_installer() {
-    if [[ ${INSTALLER_DEBUG} -eq 1 ]]; then
+    if [[ ${DEBUG_MODE} -eq 1 ]]; then
     ${QEMU} ${COMMON_INSTALLER_ARGS} \
         -serial stdio \
         -kernel ${BUILD_ROOT}/images/bzImage \
-        -append "console=ttyS0 earlyprintk=ttyS0 root=/dev/mapper/rootfs citadel.verbose citadel.live fstab=no luks=no systemd.journald.forward_to_console=1" 
+        -append "console=ttyS0 earlyprintk=ttyS0 root=/dev/mapper/rootfs citadel.verbose citadel.install fstab=no luks=no systemd.journald.forward_to_console=1 ${EXTRA_KERNEL_CMDLINE}"
     else
         ${QEMU} ${COMMON_INSTALLER_ARGS} 
     fi
 }
 
 boot_kernel() {
-    echo "kernel"
+    EXTRA_OPTIONS=""
+    KERNEL_IMAGE="bzImage"
+    if [[ ${DEBUG_MODE} -eq 1 ]]; then
+       EXTRA_OPTIONS="-s -S"
+       KERNEL_IMAGE="bzImage-intel-corei7-64.bin"
+    fi
+
     ${QEMU} \
         ${ENABLE_KVM} \
         ${MEMORY_ARG} \
+        ${EXTRA_OPTIONS} \
         -nographic \
+        -no-reboot \
         -smp 2 \
-        -append "rd.emergency console=ttyS0 earlyprintk=ttyS0" \
-        -kernel ${BUILD_ROOT}/images/bzImage
+        -append "rd.emergency console=ttyS0 earlyprintk=ttyS0 ${EXTRA_KERNEL_CMDLINE}" \
+        -kernel ${BUILD_ROOT}/images/${KERNEL_IMAGE}
 }
 
 if [[ ${BOOT_TARGET} = "kernel" ]]; then
