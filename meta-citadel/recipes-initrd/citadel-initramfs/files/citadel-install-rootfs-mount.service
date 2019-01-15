@@ -14,8 +14,9 @@ ConditionKernelCommandLine=root=/dev/mapper/rootfs
 
 Wants=citadel-rootfs-setup.service citadel-install-rootfs-setup.service
 
-Requires=systemd-sysctl.service systemd-udev-settle.service
-After=systemd-sysctl.service systemd-udev-settle.service
+Requires=systemd-sysctl.service
+After=systemd-sysctl.service
+Before=citadel-rootfs-setup.service
 
 [Service]
 Type=oneshot
