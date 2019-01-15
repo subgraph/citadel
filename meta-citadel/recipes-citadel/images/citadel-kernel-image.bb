@@ -9,6 +9,8 @@ CITADEL_IMAGE_TYPE = "kernel"
 require citadel-image.inc
 inherit citadel-image
 
+do_rootfs[depends] += "citadel-kernel:do_deploy"
+
 ROOTFS_POSTPROCESS_COMMAND += "write_manifest_file; copy_kernel; "
 
 write_manifest_file() {
