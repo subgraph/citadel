@@ -4,8 +4,8 @@ NO_RECOMMENDATIONS = "1"
 
 PACKAGE_INSTALL = "\
     citadel-initramfs \
-    citadel-mount \
-    citadel-install \
+    citadel-tools-mount \
+    citadel-tools-install \
     cryptsetup \
     strace \
     lvm2 \

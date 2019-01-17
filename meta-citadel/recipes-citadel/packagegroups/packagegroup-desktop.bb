@@ -10,7 +10,7 @@ CITADEL_POWERTOP_append_citadel-powertop= "powertop"
 
 RDEPENDS_${PN} = "\
     ${CITADEL_POWERTOP} \
-    citadel-desktopd \
+    citadel-tools-desktopd \
     accountsservice \
     upower \
     colord \

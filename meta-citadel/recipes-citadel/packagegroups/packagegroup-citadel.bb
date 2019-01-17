@@ -7,8 +7,8 @@ RDEPENDS_${PN} = "\
     packagegroup-gnome \
     packagegroup-sway \
     packagegroup-theme \
-    citadel-mount \
-    citadel-install \
-    citadel-realms \
-    citadel-image \
+    citadel-tools-mount \
+    citadel-tools-install \
+    citadel-tools-realms \
+    citadel-tools-image \
 "

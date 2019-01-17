@@ -1,5 +1,5 @@
 
-DEPENDS_append = " citadel-image-native mtools-native cryptsetup-native coreutils-native"
+DEPENDS_append = " citadel-tools-native mtools-native cryptsetup-native coreutils-native"
 
 # Block size must be 4096 or dm-verity won't work
 EXTRA_IMAGECMD_ext2 = "-i 4096 -b 4096"
