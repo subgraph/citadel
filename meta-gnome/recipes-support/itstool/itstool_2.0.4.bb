@@ -1,6 +1,6 @@
 SUMMARY = "XML to PO and back again using W3C ITS rules"
 HOMEPAGE = "http://itstool.org/"
-LICENSE = "Unknown & GPLv3"
+LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=59c57b95fd7d0e9e238ebbc7ad47c5a5 \
                     file://COPYING.GPL3;md5=d32239bcb673463ab874e80d47fae504"
 
