@@ -9,6 +9,7 @@ RDEPENDS_${PN} = "\
     gnome-desktop \
     gnome-bluetooth \
     gnome-control-center \
+    gnome-screenshot \
     gnome-settings-daemon \
     gnome-tweaks \
     gnome-terminal \

@@ -1,0 +1,27 @@
+From e221a3df1cc2ad20f90dfb0b959e88ef1d371afa Mon Sep 17 00:00:00 2001
+From: Bruce Leidl <bruce@subgraph.com>
+Date: Sat, 19 Jan 2019 17:25:08 -0500
+Subject: [PATCH] Don't process or install appstream file
+
+---
+ src/meson.build | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/src/meson.build b/src/meson.build
+index 1fc6b1b..7812f5c 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -38,13 +38,6 @@ i18n.merge_file('desktop',
+                 install: true,
+                 install_dir: gnome_screenshot_appsdir)
+ 
+-i18n.merge_file('desktop',
+-                input: 'org.gnome.Screenshot.metainfo.xml.in',
+-                output: 'org.gnome.Screenshot.metainfo.xml',
+-                po_dir: join_paths(meson.current_source_dir(), '../po'),
+-                install: true,
+-                install_dir: gnome_screenshot_appdatadir)
+-
+ service_conf = configuration_data ()
+ service_conf.set('bindir', gnome_screenshot_bindir)
+ configure_file(input: 'org.gnome.Screenshot.service.in',
