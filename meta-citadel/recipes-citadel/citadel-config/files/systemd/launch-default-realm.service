@@ -5,6 +5,6 @@ ConditionPathExists=/realms/default.realm
 
 
 [Service]
-ExecStart=/usr/bin/realms start
+ExecStart=/usr/libexec/citadel-boot start-realms
 Type=oneshot
 RemainAfterExit=yes
