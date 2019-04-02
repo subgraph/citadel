@@ -14,6 +14,7 @@ BASH_COMPLETION = "\
 "
 
 RDEPENDS_${PN} = "\
+    keyutils \
     citadel-config \
     base-files \
     base-passwd \
@@ -22,6 +23,7 @@ RDEPENDS_${PN} = "\
     syslinux-extlinux \
     keymaps \
     kbd \
+    nnn \
     console-tools \
     coreutils \
     gzip \
@@ -65,6 +67,7 @@ RDEPENDS_${PN} = "\
     openssh-ssh \
     cryptsetup \
     e2fsprogs \
+    e2fsprogs-resize2fs \
     dosfstools \
     libpam \
     wireguard-tools \

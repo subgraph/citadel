@@ -10,7 +10,6 @@ CITADEL_POWERTOP_append_citadel-powertop= "powertop"
 
 RDEPENDS_${PN} = "\
     ${CITADEL_POWERTOP} \
-    citadel-tools-desktopd \
     accountsservice \
     upower \
     colord \
@@ -33,6 +32,7 @@ RDEPENDS_${PN} = "\
     gtk+3 \
     libnotify \
     ttf-bitstream-vera \
+    ttf-dejavu-sans-mono \
     startup-notification \
     gconf \
     gcr \
@@ -44,4 +44,5 @@ RDEPENDS_${PN} = "\
     librsvg \
     librsvg-gtk \
     glib-2.0-utils \
+    xdg-dbus-proxy \
 "

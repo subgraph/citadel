@@ -11,7 +11,6 @@ RDEPENDS_${PN} = "\
     gnome-control-center \
     gnome-screenshot \
     gnome-settings-daemon \
-    gnome-tweaks \
     gnome-terminal \
     gnome-usage \
     libgnome-desktop \
