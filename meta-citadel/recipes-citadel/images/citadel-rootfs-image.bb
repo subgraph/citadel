@@ -42,9 +42,8 @@ setup_var() {
     mv ${IMAGE_ROOTFS}/var/run ${IMAGE_ROOTFS}/usr/share/factory/var
     mv ${IMAGE_ROOTFS}/var/lock ${IMAGE_ROOTFS}/usr/share/factory/var
 
-    cp ${IMAGE_ROOTFS}/etc/skel/.??* ${IMAGE_ROOTFS}/home/citadel
-    cp ${IMAGE_ROOTFS}/etc/skel/.??* ${IMAGE_ROOTFS}/home/root
-    rm -rf ${IMAGE_ROOTFS}/etc/skel
+    cp -r ${IMAGE_ROOTFS}/usr/share/factory/skel/.??* ${IMAGE_ROOTFS}/home/citadel
+    cp -r ${IMAGE_ROOTFS}/usr/share/factory/skel/.??* ${IMAGE_ROOTFS}/home/root
     mv ${IMAGE_ROOTFS}/home/citadel ${IMAGE_ROOTFS}/usr/share/factory/home
     mv ${IMAGE_ROOTFS}/home/root ${IMAGE_ROOTFS}/usr/share/factory/home
 
