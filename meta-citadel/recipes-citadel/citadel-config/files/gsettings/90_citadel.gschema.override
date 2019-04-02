@@ -6,8 +6,10 @@ tap-to-click=true
 picture-uri='file:///usr/share/backgrounds/gnome/Icescape.jpg'
 
 [org.gnome.desktop.screensaver]
-primary-color='#023c88'
 picture-uri='file:////usr/share/gnome-control-center/pixmaps/noise-texture-light.png'
+color-shading-type='solid'
+primary-color='#425265'
+
 
 
 [org.gnome.desktop.wm.preferences]
