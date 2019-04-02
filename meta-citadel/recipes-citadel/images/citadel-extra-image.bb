@@ -7,6 +7,7 @@ PACKAGE_INSTALL = "\
     adapta-gtk-theme \
     paper-icon-theme \
     gnome-backgrounds \
+    base16-vim \
     adwaita-icon-theme \
     adwaita-icon-theme-cursors \
     adwaita-icon-theme-hires \
