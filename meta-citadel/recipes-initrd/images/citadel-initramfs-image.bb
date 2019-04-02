@@ -4,15 +4,13 @@ NO_RECOMMENDATIONS = "1"
 
 PACKAGE_INSTALL = "\
     citadel-initramfs \
-    citadel-tools-mount \
-    citadel-tools-install \
+    citadel-tools \
     cryptsetup \
-    strace \
     lvm2 \
     lvm2-udevrules \
     xz \
     tar \
-    btrfs-tools \
+    dconf \
     base-passwd \
     busybox \
     kbd \
