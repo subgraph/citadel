@@ -48,6 +48,11 @@ SRC_URI = "\
     file://iptables-flush.sh \
     file://systemd/zram-swap.service \
     file://systemd/iptables.service \
+    file://skel/profile \
+    file://skel/bashrc \
+    file://skel/vimrc \
+    file://apt-cacher-ng/acng.conf \
+    file://apt-cacher-ng/security.conf \
     ${DEFAULT_REALM_UNITS} \
     ${MODPROBE_CONFIG} \
     ${SYSCTL_CONFIG} \
@@ -79,6 +84,7 @@ do_install() {
     install -m 0755 -d ${D}${sysconfdir}/polkit-1/rules.d
     install -m 0755 -d ${D}${sysconfdir}/modprobe.d
     install -m 0755 -d ${D}${datadir}/iptables
+    install -m 0755 -d ${D}${datadir}/factory/skel
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager
     install -m 0700 -d ${D}${localstatedir}/lib/NetworkManager/system-connections
 
@@ -97,6 +103,11 @@ do_install() {
     install -m 644 ${WORKDIR}/systemd/launch-default-realm.path ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/systemd/launch-default-realm.service ${D}${systemd_system_unitdir}
 
+    # skel files for new realms
+    install -m 644 -T ${WORKDIR}/skel/profile ${D}${sysconfdir}/skel/.profile
+    install -m 644 -T ${WORKDIR}/skel/bashrc ${D}${sysconfdir}/skel/.bashrc
+    install -m 644 -T ${WORKDIR}/skel/vimrc ${D}${sysconfdir}/skel/.vimrc
+
     # disable some pax and grsecurity features so that debootstrap will work
     # this should be removed later
     install -m 0644 ${WORKDIR}/sysctl/99-grsec-debootstrap.conf ${D}${libdir}/sysctl.d/
@@ -113,13 +124,17 @@ do_install() {
     install -m 0644 ${WORKDIR}/iptables/empty-filter.rules ${D}${datadir}/iptables/
     install -m 0644 ${WORKDIR}/iptables-flush.sh ${D}${datadir}/iptables/
 
-    install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${sysconfdir}/skel/.bashrc
-    install -m 0644 ${WORKDIR}/share/dot.profile ${D}${sysconfdir}/skel/.profile
-    install -m 0644 ${WORKDIR}/share/dot.vimrc ${D}${sysconfdir}/skel/.vimrc
+    install -m 0644 ${WORKDIR}/share/dot.bashrc ${D}${datadir}/factory/skel/.bashrc
+    install -m 0644 ${WORKDIR}/share/dot.profile ${D}${datadir}/factory/skel/.profile
+    install -m 0644 ${WORKDIR}/share/dot.vimrc ${D}${datadir}/factory/skel/.vimrc
 
     install -m 0644 ${WORKDIR}/polkit/citadel.rules ${D}${sysconfdir}/polkit-1/rules.d/
 
     install -m 0644 ${WORKDIR}/modprobe.d/audio_powersave.conf ${D}${sysconfdir}/modprobe.d/
+
+    install -d ${D}${datadir}/apt-cacher-ng/conf
+    install -m 0644 ${WORKDIR}/apt-cacher-ng/acng.conf ${D}${datadir}/apt-cacher-ng/conf/
+    install -m 0644 ${WORKDIR}/apt-cacher-ng/security.conf ${D}${datadir}/apt-cacher-ng/conf/
 
     # This probably belongs in lvm2 recipe
     install -d ${D}${systemd_system_unitdir}/sysinit.target.wants
