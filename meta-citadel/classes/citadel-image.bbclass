@@ -2,9 +2,9 @@
 DEPENDS_append = " citadel-tools-native mtools-native cryptsetup-native coreutils-native"
 
 # Block size must be 4096 or dm-verity won't work
-EXTRA_IMAGECMD_ext2 = "-i 4096 -b 4096"
-IMAGE_FSTYPES = "ext2"
-IMAGE_OVERHEAD_FACTOR = "1.1"
+EXTRA_IMAGECMD_ext4 = "-i 4096 -b 4096"
+IMAGE_FSTYPES = "ext4"
+IMAGE_OVERHEAD_FACTOR = "1.2"
 
 inherit image
 
@@ -17,7 +17,7 @@ image-type = "${CITADEL_IMAGE_TYPE}"
 channel = "${CITADEL_IMAGE_CHANNEL}"
 version = ${CITADEL_IMAGE_VERSION}
 timestamp = "${DATETIME}"
-source = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ext2"
+source = "${IMGDEPLOYDIR}/${IMAGE_LINK_NAME}.ext4"
 compress = ${CITADEL_IMAGE_COMPRESS}
 EOF
 
@@ -31,11 +31,11 @@ EOF
     else
         fname="citadel-${CITADEL_IMAGE_TYPE}-${CITADEL_IMAGE_CHANNEL}-${ver}.img"
     fi
-    citadel-image build ${B}
+    citadel-mkimage ${B}
     mv ${B}/${fname} ${IMGDEPLOYDIR}
 }
 
-addtask do_citadel_mkimage after do_image_ext2 before do_image_complete
+addtask do_citadel_mkimage after do_image_ext4 before do_image_complete
 do_citadel_mkimage[cleandirs] = "${B}"
 do_citadel_mkimage[vardepsexclude] = "DATETIME"
 
