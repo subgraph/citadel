@@ -8,8 +8,7 @@ Before=initrd-root-fs.target shutdown.target
 AssertPathExists=/etc/initrd-release
 
 [Service]
+KeyringMode=shared
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/libexec/citadel-mount overlay
-ExecStart=/usr/libexec/citadel-mount kernel
-ExecStart=/usr/libexec/citadel-mount extra 
+ExecStart=/usr/libexec/citadel-boot setup

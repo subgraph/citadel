@@ -22,5 +22,4 @@ Before=citadel-rootfs-setup.service
 Type=oneshot
 RemainAfterExit=yes
 ExecStartPre=-/usr/bin/plymouth message --text="Copying files from boot disk and decompressing rootfs image"
-ExecStart=/usr/libexec/citadel-install copy-artifacts
-ExecStart=/usr/libexec/citadel-mount rootfs
+ExecStart=/usr/libexec/citadel-boot rootfs

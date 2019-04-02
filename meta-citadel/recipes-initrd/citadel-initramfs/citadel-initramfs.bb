@@ -13,7 +13,6 @@ SRC_URI = "\
     file://citadel-rootfs-mount.service \
     file://citadel-rootfs-setup.service \
     file://citadel-install-rootfs-mount.service \
-    file://citadel-install-rootfs-setup.service \
     file://99-grsec.conf \
 "
 
@@ -33,7 +32,6 @@ do_install() {
     install -m 644 ${WORKDIR}/citadel-rootfs-mount.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-rootfs-setup.service ${D}${systemd_system_unitdir}
     install -m 644 ${WORKDIR}/citadel-install-rootfs-mount.service ${D}${systemd_system_unitdir}
-    install -m 644 ${WORKDIR}/citadel-install-rootfs-setup.service ${D}${systemd_system_unitdir}
 
     install -d ${D}${systemd_system_unitdir}/sysinit.target.wants
     ln -s ../citadel-rootfs-mount.path ${D}${systemd_system_unitdir}/sysinit.target.wants/citadel-rootfs-mount.path

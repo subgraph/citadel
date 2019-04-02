@@ -13,6 +13,7 @@ ConditionPathExists=/dev/mapper/citadel-storage
 # Pull in the unit that mounts 'extra' and 'kernel' images
 #
 Wants=citadel-rootfs-setup.service
+Before=citadel-rootfs-setup.service
 
 #
 # citadel-mount needs to run in pax soft mode
@@ -21,6 +22,7 @@ Requires=systemd-sysctl.service
 After=systemd-sysctl.service
 
 [Service]
+KeyringMode=shared
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/libexec/citadel-mount rootfs
+ExecStart=/usr/libexec/citadel-boot rootfs
