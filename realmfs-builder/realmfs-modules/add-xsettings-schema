@@ -1,0 +1,5 @@
+
+SCHEMA_DIR=/usr/share/glib-2.0/schemas
+install_file 0644 org.gnome.settings-daemon.enums.xml $SCHEMA_DIR
+install_file 0644 org.gnome.settings-daemon.plugins.xsettings.gschema.xml $SCHEMA_DIR
+glib-compile-schemas $SCHEMA_DIR

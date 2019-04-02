@@ -1,12 +1,12 @@
 #!/bin/bash
 
-APPIMG_BUILDER_BASE="/usr/share/appimg-builder"
+REALMFS_BUILDER_BASE="/usr/share/realmfs-builder"
 
 #
 # If you're looking for the base lists of packages that are always installed
 # and modules that are always run, they're defined here in common.inc
 #
-source ${APPIMG_BUILDER_BASE}/common.inc
+source ${REALMFS_BUILDER_BASE}/common.inc
 
 if [ "$EUID" -ne 0 ]; then
     fatal "The stage-two.sh script is not running as root."
@@ -22,7 +22,7 @@ fi
 
 # running module 'utility-library' replaces this function with a more powerful version
 module() {
-    local modpath=${APPIMG_BUILDER_BASE}/appimg-modules/${1}
+    local modpath=${REALMFS_BUILDER_BASE}/realmfs-modules/${1}
     [[ -f ${modpath} ]] || fatal "Could not find module '${1}'"
     source ${modpath}
 }

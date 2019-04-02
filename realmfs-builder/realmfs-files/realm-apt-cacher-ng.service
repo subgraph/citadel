@@ -1,0 +1,15 @@
+[Unit]
+Description=Apt-Cacher NG software download proxy
+After=network.target
+ConditionPathExists=/usr/share/apt-cacher-ng/conf
+
+[Service]
+ExecStart=/usr/sbin/apt-cacher-ng -c /usr/share/apt-cacher-ng/conf ForeGround=1
+User=1000
+Group=1000
+# this can be changed to notify if the support was enabled at build time
+Type=notify
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,10 +1,10 @@
-Application Image Builder
+Base RealmFS Image Builder
 =========================
 
-Application Images (or appimgs for short) are created with this builder
-framework. The build is controlled by a configuration file which can customize
-the build process in various ways such as adding extra packages and specifying
-shell functions to be run at certain stages.
+RealmFS Images are created with this builder framework. The build is controlled
+by a configuration file which can customize the build process in various ways
+such as adding extra packages and specifying shell functions to be run at certain
+stages.
 
 The configuration file is really just a shell script but it should follow the 
 conventions described in the Configuration File section of this document.
@@ -20,17 +20,17 @@ directory the rootfs is built on.If you are tweaking a config and making repeate
 builds this is not only a lot faster, but will also avoid hammering SSD drives with
 excessive writes (and write amplification).
 
-By default the application image builder is self-hosting and can always be
+By default the RealmFS image builder is self-hosting and can always be
 run from inside images that it creates.  Building an image is as easy as:
 
     mkdir work && cd work      : Make a directory to work in
-    appimg-builder --new       : writes a template file build.conf in current directory
+    realmfs-builder --new       : writes a template file build.conf in current directory
     vim build.conf             : (optionally) make some changes to the template
-    sudo appimg-builder        : Build an application image
+    sudo realmfs-builder        : Build a RealmFS image
 
 If you want you can even skip the steps of creating and editing a config file and
-just run appimg-build in a work directory and it will build the default appimg we use 
-with Citadel.
+just run realmfs-build in a work directory and it will build the default base realmfs
+image we use with Citadel.
 
 Stage One
 ---------
@@ -44,7 +44,7 @@ Stage Two
 
 The stage-two.sh script mostly just orchestrates the execution of small
 fragments of shell script code that are called 'modules'.  The base framework
-modules can be found in the directory /usr/share/appimg-builder/appimg-modules.
+modules can be found in the directory /usr/share/realmfs-builder/realmfs-modules.
 
 It imports the configuration file with the 'source' command after all the key
 variables and functions have been defined.  It's possible to override any of
@@ -81,7 +81,7 @@ corresponding 'base' variable that could be overidden if necessary.
 - Modules
 
 Modules can be functions that you define or they can be loaded from files on
-disk. To use files rather than functions a directory named 'appimg-modules'
+disk. To use files rather than functions a directory named 'realmfs-modules'
 must exist as a subdirectory of the directory containing the configuration file.
 Any files you place in this directory will be found by name during the module
 execution stages.
@@ -89,7 +89,7 @@ execution stages.
 - Installing Files
 
 If you would like to have external files such as configuration files copied into
-the image, create 'appimg-files' as a subdirectory of the directory containing
+the image, create 'realmfs-files' as a subdirectory of the directory containing
 the configuration file.  You can then use the install_file command inside of a
 module to copy the files from this directory. You can either store the files to
 install in a flat directory or organize them into subdirectories mirroring the
@@ -99,14 +99,14 @@ refers to the directory in which your configuration file is located.
 
    (1): install_file [mode] [file] [target directory]
   
-   Example: Install BASE/appimg-files/my_config.conf 
+   Example: Install BASE/realmfs-files/my_config.conf 
               to /etc/mydaemon/my_config.conf 
   
         install_file 0644 my_config.conf /etc/mydaemon
      
    (2): install_file [mode] [full path] 
   
-   Example: Install BASE/appimg-files/etc/mydaemon/my_config.conf 
+   Example: Install BASE/realmfs-files/etc/mydaemon/my_config.conf 
               to /etc/mydaemon/my_config.conf
   
         install_file 0644 /etc/mydaemon/my_config.conf

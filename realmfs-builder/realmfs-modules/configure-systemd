@@ -14,3 +14,7 @@ cat > ${loginconfdir}/50-no-kill-user-processes.conf << EOF
 [Login]
 KillUserProcesses=no
 EOF
+
+info "Creating /var/log/journal"
+mkdir -p /var/log/journal
+systemd-tmpfiles --create --prefix /var/log/journal

@@ -1,0 +1,17 @@
+info "Setting up apt-cacher-ng"
+
+apt-get --assume-no install apt-cacher-ng
+systemctl -q disable apt-cacher-ng.service
+
+#
+# Configure RealmFS to use download updates through apt-cacher realm
+#
+install_file 0644 000apt-cacher-ng-proxy /etc/apt/apt.conf.d/
+sed -i 's%https:%http://HTTPS/%' /etc/apt/sources.list
+
+#
+# Configure RealmFS to potentially run as apt-cacher system realm
+#
+mkdir -p /usr/share/apt-cacher-ng
+install_file 0644 realm-apt-cacher-ng.service /usr/lib/systemd/system
+systemctl -q enable realm-apt-cacher-ng.service

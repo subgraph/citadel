@@ -1,6 +1,6 @@
 
 info "utility library loaded"
-SEARCH_PATH="/tmp/appimg-build;${APPIMG_BUILDER_BASE}"
+SEARCH_PATH="/tmp/realmfs-build;${REALMFS_BUILDER_BASE}"
 
 # Searches for modules and files in SEARCH_PATH directories
 #
@@ -9,7 +9,7 @@ SEARCH_PATH="/tmp/appimg-build;${APPIMG_BUILDER_BASE}"
 #
 search_item() {
     local IFS=";" subtype=${1} item=${2}
-    local subdir="appimg-${subtype}s"
+    local subdir="realmfs-${subtype}s"
 
     for dir in ${SEARCH_PATH}; do
         local fullpath=${dir}/${subdir}/${item}
@@ -25,7 +25,7 @@ search_item() {
 #
 # Execute a module by name.  If a function exists with the
 # requested module name it will be executed, otherwise scripts 
-# with this name are searched for in SEARCH_PATH /appimg-modules
+# with this name are searched for in SEARCH_PATH /realmfs-modules
 # subdirectories.
 #
 

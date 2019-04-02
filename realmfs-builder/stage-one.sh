@@ -1,7 +1,7 @@
 #!/bin/bash
 
-: ${APPIMG_BUILDER_BASE:="/usr/share/appimg-builder"}
-source ${APPIMG_BUILDER_BASE}/common.inc
+: ${REALMFS_BUILDER_BASE:="/usr/share/realmfs-builder"}
+source ${REALMFS_BUILDER_BASE}/common.inc
 
 umount_if_tmpfs() {
     if findmnt -t tmpfs -M ${1} > /dev/null; then
@@ -46,14 +46,14 @@ setup_chroot() {
     mount chsys ${ROOTFS}/sys -t sysfs
     mount chtmp ${ROOTFS}/tmp -t tmpfs
 
-    # Install a copy of appimg-builder inside new image
+    # Install a copy of realmfs-builder inside new image
     mkdir -p ${ROOTFS}/usr/share
-    cp -a ${APPIMG_BUILDER_BASE} ${ROOTFS}/usr/share
-    ln -s /usr/share/appimg-builder/stage-one.sh ${ROOTFS}/usr/bin/appimg-builder
+    cp -a ${REALMFS_BUILDER_BASE} ${ROOTFS}/usr/share
+    ln -s /usr/share/realmfs-builder/stage-one.sh ${ROOTFS}/usr/bin/realmfs-builder
 
-    # $BUILDFILE and any extra files go in /tmp/appimg-build of rootfs
-    mkdir -p ${ROOTFS}/tmp/appimg-build
-    cp ${BUILDFILE} ${ROOTFS}/tmp/appimg-build/build.conf
+    # $BUILDFILE and any extra files go in /tmp/realmfs-build of rootfs
+    mkdir -p ${ROOTFS}/tmp/realmfs-build
+    cp ${BUILDFILE} ${ROOTFS}/tmp/realmfs-build/build.conf
 }
 
 cleanup_chroot() {
@@ -79,14 +79,14 @@ run_chroot_stage() {
         DEBCONF_NONINTERACTIVE_SEEN=true \
         LC_ALL=C LANGUAGE=C LANG=C \
         DEBIAN_RELEASE=${DEBIAN_RELEASE} DEBIAN_MIRROR=${DEBIAN_MIRROR} \
-        chroot ${ROOTFS} /usr/share/appimg-builder/stage-two.sh /tmp/appimg-build/build.conf
+        chroot ${ROOTFS} /usr/share/realmfs-builder/stage-two.sh /tmp/realmfs-build/build.conf
 
     info "chroot installation stage finished, cleaning chroot setup"
     cleanup_chroot
 }
 
 generate_tarball() {
-    local tarball=${WORKDIR}/appimg-rootfs.tar
+    local tarball=${WORKDIR}/realmfs-rootfs.tar
 
     info "----- Generating rootfs tarball -----"
     tar -C ${ROOTFS} --numeric-owner -c --xattrs --xattrs-include=* -f $tarball .
@@ -100,20 +100,31 @@ generate_tarball() {
     echo
 }
 
+generate_image() {
+#    BLOCKS=$(du -ks ${ROOTFS} | cut -f1)
+#    BLOCKS=$(expr ${BLOCKS} \* 12 / 10)
+#    SIZE=$(expr ${BLOCKS} \* 1024)
+#    echo "Size is ${SIZE}"
+    BLOCKS=$(expr 340 \* 1024)
+    # allow online resize up to 32G
+    dd if=/dev/zero of=${WORKDIR}/citadel-realmfs.ext4 seek=${BLOCKS} count=0 bs=4096
+    mkfs.ext4 -d ${ROOTFS} -i 4096 -b 4096 -F ${WORKDIR}/citadel-realmfs.ext4 ${BLOCKS}
+}
+
 usage() {
 cat <<-EOF
-USAGE: appimg-builder [options] [config-file]
+USAGE: realmfs-builder [options] [config-file]
 
 OPTIONS
 
     --new               Create a configuration file template called build.conf in the current directory
-    -d <directory>      Choose a non-default directory for build output (currently: $(pwd)/appimg)
+    -d <directory>      Choose a non-default directory for build output (currently: $(pwd)/realmfs)
     -t                  Create a tarball but don't compress it
     -z                  Create a tarball compressed with xz
     --no-tmpfs          Do not use tmpfs as rootfs build directory
     --no-confirm        Do not ask for confirmation before beginning
 
-For more documentation see /usr/share/appimg-builder/README
+For more documentation see /usr/share/realmfs-builder/README
 
 EOF
 exit 0
@@ -123,7 +134,7 @@ ask_confirm() {
     local use_tmpfs="No"
     [[ ${USE_TMPFS} -eq 1 ]] && use_tmpfs="Yes"
 
-    printf "About to build application image with the following parameters:\n\n"
+    printf "About to build RealmFS image with the following parameters:\n\n"
     printf "\tBuild Configuration File : ${BUILDFILE}\n"
     printf "\tOutput rootfs directory  : ${ROOTFS}\n"
     printf "\tBuild rootfs on tmpfs    : ${use_tmpfs}\n"
@@ -141,12 +152,13 @@ try_config() {
     printf "${rp}"
 }
     
-WORKDIR="$(pwd)/appimg"
+WORKDIR="$(pwd)/realmfs"
 
 DO_TAR=0
 DO_XZ=0
 USE_TMPFS=1
 NO_CONFIRM=0
+DO_IMG=0
 
 while [[ $# -gt 0 ]]; do
     key=${1}
@@ -167,6 +179,10 @@ while [[ $# -gt 0 ]]; do
             DO_TAR=1 DO_XZ=1
             shift
             ;;
+        -i)
+            DO_IMG=1
+            shift
+            ;;
 
         --no-tmpfs)
             USE_TMPFS=0
@@ -179,7 +195,7 @@ while [[ $# -gt 0 ]]; do
             ;;
 
         --new)
-            cp --verbose ${APPIMG_BUILDER_BASE}/build-template.conf build.conf
+            cp --verbose ${REALMFS_BUILDER_BASE}/build-template.conf build.conf
             exit 0
             ;;
 
@@ -199,12 +215,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [ "$EUID" -ne 0 ]; then
-    echo "The appimg-builder must be run with root privileges."
+    echo "The realmfs-builder must be run with root privileges."
     exit 1
 fi
 
 if [[ -z ${BUILDFILE} ]]; then
-    BUILDFILE=$(try_config "${PWD}/build.conf" || try_config "${APPIMG_BUILDER_BASE}/basic-image.conf") || fatal "Could not find a configuration file to use"
+    BUILDFILE=$(try_config "${PWD}/build.conf" || try_config "${REALMFS_BUILDER_BASE}/basic-image.conf") || fatal "Could not find a configuration file to use"
 fi
 
 ROOTFS=${WORKDIR}/rootfs
@@ -213,9 +229,9 @@ CACHE_DIR=${WORKDIR}/var-cache-apt-archives
 [[ ${NO_CONFIRM} -ne 1 ]] && ask_confirm
 
 # black magick from stack overflow
-exec > >(tee -a $WORKDIR/appimg-build.log) 2>&1
+exec > >(tee -a $WORKDIR/realmfs-build.log) 2>&1
 
-info "Starting build of application image from configuration file ${BUILDFILE}"
+info "Starting build of RealmFS image from configuration file ${BUILDFILE}"
 
 source ${BUILDFILE}
 
@@ -225,10 +241,13 @@ run_debootstrap
 
 run_chroot_stage
 
+
 info "rootfs build is completed:"
 info "    $(du -sh ${ROOTFS})"
 
-if [[ ${DO_TAR} -eq 1 ]]; then
+if [[ ${DO_IMG} -eq 1 ]]; then
+    generate_image
+elif [[ ${DO_TAR} -eq 1 ]]; then
     generate_tarball
 fi
 
